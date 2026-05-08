@@ -45,13 +45,13 @@ shadow_image_west = pygame.transform.flip(
     True,
     False)
 
-shadow_image_south = pygame.transform.rotate(
+shadow_image_north = pygame.transform.rotate(
     shadow_image_east,
     90,
 )
 
-shadow_image_north = pygame.transform.flip(
-    shadow_image_south,
+shadow_image_south = pygame.transform.flip(
+    shadow_image_north,
     False,
     True
 )
@@ -85,17 +85,20 @@ while running:
                 if direction == 1:
                     x_mod = 1
                 elif direction == 2:
-                    y_mod = -1
+                    y_mod = 1
                 elif direction == 3:
                     x_mod = -1
-                elif direction == 4:
-                    y_mod = 1
+                elif direction == 0:
+                    y_mod = -1
 
                 player.x += (player_size * (shadow_length - 1) * x_mod)
                 player.y += (player_size * (shadow_length - 1) * y_mod)
 
                 direction = (direction + 2)% 4
                 print(direction)
+
+            elif event.key == pygame.K_t:
+                direction = (direction + 1) % 4
 
     keys = pygame.key.get_pressed()
 
@@ -107,8 +110,6 @@ while running:
         player.x -= speed
     if keys[pygame.K_d]:
         player.x += speed
-    if keys[pygame.K_t]:
-        direction = (direction + 1)% 4
 
     if direction == 1:
         shadow_horiz.topleft = player.topleft
