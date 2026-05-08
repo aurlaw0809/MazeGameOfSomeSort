@@ -17,6 +17,9 @@ player_image = pygame.transform.scale(
 )
 
 # Create darker shadow version
+
+shadow_length = 5
+
 shadow_image = player_image.copy()
 
 dark_surface = pygame.Surface(
@@ -34,13 +37,13 @@ shadow_image.blit(
 
 shadow_image = pygame.transform.scale(
     shadow_image,
-    (player_size * 2, player_size)
+    (player_size * shadow_length, player_size)
 )
 
 #main
 
 player = pygame.Rect(200, 200, player_size, player_size)
-shadow = pygame.Rect(100, 200, player_size, player_size)
+shadow = pygame.Rect(200, 200, player_size * shadow_length, player_size)
 
 speed = 5
 
@@ -59,16 +62,10 @@ while running:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
 
-                old_player_pos = player.topleft
-
-                player.x = shadow.x + (player_size * direction)
+                player.x += (player_size * (shadow_length - 1) * direction)
                 player.y = shadow.y
 
                 direction *= -1
-
-                shadow.topleft = old_player_pos
-
-    old_position = player.topleft
 
     keys = pygame.key.get_pressed()
 
@@ -81,7 +78,10 @@ while running:
     if keys[pygame.K_d]:
         player.x += speed
 
-    shadow.topleft = old_position
+    if direction == 1:
+        shadow.topleft = player.topleft
+    elif direction == -1:
+        shadow.topright = player.topright
 
     #drawing
     screen.fill((218, 255, 133))
@@ -101,7 +101,7 @@ while running:
         )
         screen.blit(
             flipped_shadow,
-            (shadow.x - player_size, shadow.y)
+            (shadow.x, shadow.y)
         )
         current_player_image = pygame.transform.flip(
             player_image,
