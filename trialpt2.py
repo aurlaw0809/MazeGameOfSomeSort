@@ -41,13 +41,19 @@ shadow_image_east = pygame.transform.scale(
 )
 
 shadow_image_west = pygame.transform.flip(
-            shadow_image_east,
-            True,
-            False)
+    shadow_image_east,
+    True,
+    False)
 
 shadow_image_south = pygame.transform.rotate(
     shadow_image_east,
     90,
+)
+
+shadow_image_north = pygame.transform.flip(
+    shadow_image_south,
+    False,
+    True
 )
 
 #main
@@ -101,6 +107,8 @@ while running:
         player.x -= speed
     if keys[pygame.K_d]:
         player.x += speed
+    if keys[pygame.K_t]:
+        direction = (direction + 1)% 4
 
     if direction == 1:
         shadow_horiz.topleft = player.topleft
@@ -117,11 +125,11 @@ while running:
     if direction == 1:
         screen.blit(shadow_image_east, shadow_horiz)
     elif direction == 2:
-        pass
+        screen.blit(shadow_image_south, shadow_vert)
     elif direction == 3:
         screen.blit(shadow_image_west, shadow_horiz)
     elif direction == 0:
-        pass
+        screen.blit(shadow_image_north, shadow_vert)
 
     screen.blit(player_image, player)
 
