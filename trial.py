@@ -35,19 +35,36 @@ shadow_image.blit(
     special_flags=pygame.BLEND_RGBA_SUB
 )
 
-shadow_image = pygame.transform.scale(
+shadow_image_east = pygame.transform.scale(
     shadow_image,
     (player_size * shadow_length, player_size)
+)
+
+shadow_image_west = pygame.transform.flip(
+    shadow_image_east,
+    True,
+    False)
+
+shadow_image_north = pygame.transform.rotate(
+    shadow_image_east,
+    90,
+)
+
+shadow_image_south = pygame.transform.flip(
+    shadow_image_north,
+    False,
+    True
 )
 
 #main
 
 player = pygame.Rect(200, 200, player_size, player_size)
-shadow = pygame.Rect(200, 200, player_size * shadow_length, player_size)
+shadow_horiz = pygame.Rect(200, 200, player_size * shadow_length, player_size)
+shadow_vert = pygame.Rect(200, 200, player_size, player_size * shadow_length)
 
 speed = 5
 
-# 1 = shadow to the east, -1 = shadow to the west
+# 1 = shadow to the east, 2 = shadow to the south, 3 = shadow to the west, 0 = shadow to the north
 direction = 1
 running = True
 
@@ -62,10 +79,26 @@ while running:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
 
-                player.x += (player_size * (shadow_length - 1) * direction)
-                player.y = shadow.y
+                x_mod = 0
+                y_mod = 0
 
-                direction *= -1
+                if direction == 1:
+                    x_mod = 1
+                elif direction == 2:
+                    y_mod = 1
+                elif direction == 3:
+                    x_mod = -1
+                elif direction == 0:
+                    y_mod = -1
+
+                player.x += (player_size * (shadow_length - 1) * x_mod)
+                player.y += (player_size * (shadow_length - 1) * y_mod)
+
+                direction = (direction + 2)% 4
+                print(direction)
+
+            elif event.key == pygame.K_t:
+                direction = (direction + 1) % 4
 
     keys = pygame.key.get_pressed()
 
@@ -79,37 +112,27 @@ while running:
         player.x += speed
 
     if direction == 1:
-        shadow.topleft = player.topleft
-    elif direction == -1:
-        shadow.topright = player.topright
+        shadow_horiz.topleft = player.topleft
+    elif direction == 2:
+        shadow_vert.topleft = player.topleft
+    elif direction == 3:
+        shadow_horiz.bottomright = player.bottomright
+    elif direction == 0:
+        shadow_vert.bottomright = player.bottomright
 
     #drawing
     screen.fill((218, 255, 133))
 
     if direction == 1:
-        screen.blit(
-            shadow_image,
-            (shadow.x, shadow.y)
-        )
-        current_player_image = player_image
+        screen.blit(shadow_image_east, shadow_horiz)
+    elif direction == 2:
+        screen.blit(shadow_image_south, shadow_vert)
+    elif direction == 3:
+        screen.blit(shadow_image_west, shadow_horiz)
+    elif direction == 0:
+        screen.blit(shadow_image_north, shadow_vert)
 
-    else:
-        flipped_shadow = pygame.transform.flip(
-            shadow_image,
-            True,
-            False
-        )
-        screen.blit(
-            flipped_shadow,
-            (shadow.x, shadow.y)
-        )
-        current_player_image = pygame.transform.flip(
-            player_image,
-            True,
-            False
-        )
-
-    screen.blit(current_player_image, player)
+    screen.blit(player_image, player)
 
     pygame.display.update()
     clock.tick(60)
