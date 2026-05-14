@@ -18,7 +18,7 @@ player_image = pygame.transform.scale(
 
 # Create darker shadow version
 
-shadow_length = 5
+shadow_length = 3
 
 shadow_image = player_image.copy()
 #shadow_image = pygame.image.load("circle_shaodow_maybe.png").convert_alpha()
