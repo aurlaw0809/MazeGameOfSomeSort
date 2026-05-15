@@ -5,7 +5,7 @@ pygame.init()
 #---------------------------------------------------------------------------------------------------------------------------------------------------------------
 #setup of window
 
-WIDTH, HEIGHT = 800, 800
+WIDTH, HEIGHT = 600, 600
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
 clock = pygame.time.Clock()
