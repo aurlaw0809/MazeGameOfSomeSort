@@ -1,61 +1,59 @@
-from pygame import key
+import pygame
 
-
-class Object:
-    def __init__(self, controller, name, pos, solid, size):
+class GameObject:
+    def __init__(self, controller, name, pos, solid, size, transparent):
         self.controller = controller
         self.name = name
         self.pos = pos
-        self.solid = solid
         self.size = size
+        self.solid = solid
+        self.transparent = transparent
 
     def __repr__(self):
-        return f'name: {self.name}, pos: {self.pos}, solid: {self.solid}'
+        return f'GameObject(name: {self.name}, pos: {self.pos}, size: {self.size}, solid: {self.solid}, transparent: {self.transparent})'
 
-    def is_solid(self):
-        return self.solid
-
+    def get_name(self):
+        return self.name
+    def get_pos(self):
+        return self.pos
     def get_size(self):
         return self.size
+    def get_solid(self):
+        return self.solid
+    def get_transparent(self):
+        return self.transparent
 
-
-class Character(Object):
-    def __init__(self, controller, name, pos, solid, size, speed, s_length):
-        super().__init__(controller, name, pos, solid, size)
-
+class Player(GameObject):
+    def __init__(self, controller, name, pos, solid, size, transparent, speed, s_angle, s_length):
+        GameObject.__init__(self, controller, name, pos, solid, size, transparent)
         self.speed = speed
-        self.s_direction = 0
-        self.rotating_clock = False
-        self.rotating_aclock = False
-        self.s_length = s_length
+        self.s_angle = s_angle
+        self.s_length = s_length #this should be an integer n s.t. the actual shadow length is n*player.size
 
     def __repr__(self):
-        return f'name: {self.name}, pos: {self.pos}, solid: {self.solid}, size: {self.size}, speed: {self.speed}'
+        return f'Player(name: {self.name}, pos: {self.pos}, size: {self.size}, solid: {self.solid}, transparent: {self.transparent}, speed: {self.speed}, s_angle: {self.s_angle}, s_length: {self.s_length})'
 
-    def get_shadow_direction(self):
-        return self.s_direction
-
-    def get_shadow_length(self):
+    def get_speed(self):
+        return self.speed
+    def get_s_angle(self):
+        return self.s_angle
+    def get_s_length(self):
         return self.s_length
 
-    def update_shadow_direction(self, angle):
-        self.s_direction = (self.s_direction + angle) % 360
+    def get_s_end_pos(self):
+        offset = pygame.Vector2(self.s_length * self.size, 0)
+        rotated_offset = offset.rotate(self.s_angle)
+        return pygame.Vector2(self.pos) + rotated_offset
 
-    def find_next_location(self, key):
-        if key.upper() == 'W':
-            return self.pos[0], self.pos[1] + self.speed
-        elif key.upper() == 'A':
-            return self.pos[0] - self.speed, self.pos[1]
-        elif key.upper() == 'S':
-            return self.pos[0], self.pos[1] - self.speed
-        elif key.upper() == 'D':
-            return self.pos[0] + self.speed, self.pos[1]
-        return None
+class Key(GameObject):
+    def __init__(self, controller, name, pos, solid, size, transparent, colour):
+        GameObject.__init__(self, controller, name, pos, solid, size, transparent)
+        self.colour = colour
+        self.key_found = False
 
-    def move(self, key):
-        self.pos = self.find_next_location(key)
+        def get_key_found():
+            return self.key_found
 
-    def move_by_vector(self, vector):
-        self.pos = self.pos[0] + vector.x, self.pos[1] + vector.y
-
-
+class Door(Key):
+    def __init__(self, controller, name, pos, solid, size, transparent, colour):
+        Key.__init__(self, controller, name, pos, solid, size, transparent, colour)

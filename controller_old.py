@@ -1,4 +1,4 @@
-from objects import Object, Character
+from objects_old import Object, Character
 import pygame
 
 class Game:
