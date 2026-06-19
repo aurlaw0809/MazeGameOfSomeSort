@@ -18,11 +18,7 @@ class Game:
                     return False
         return True
 
-    def check_valid_swap(self, p_pos, s_pos, s_size):
-        if not self.check_collisions(s_pos, s_size):
-            p_pos = s_pos
-
-    def move_character(self, character, key):
+    def move_character_by_key(self, character, key):
         move = False
         new_pos = character.find_next_location(key)
         size = character.get_size()
@@ -30,3 +26,17 @@ class Game:
             character.move(key)
             move = True
         return move
+
+    def move_character_by_pos(self, character, pos):
+        move = False
+        size = character.get_size()
+        if not self.check_collisions(pos, size):
+            character.move_to_pos(pos)
+            move = True
+        return move
+
+    def make_swap(self, player):
+        if not self.check_collisions(player.get_s_end_pos(), player.get_size()):
+            move_to = player.get_s_end_pos()
+
+            self.move_character_by_pos(player, move_to)
