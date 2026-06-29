@@ -3,7 +3,7 @@ from objects import GameObject, Player, Key, Door
 class Game:
     def __init__(self):
         self.characters = []
-        self.backgrounds = []
+        self.backgrounds = []#
 
     def set_up(self):
         self.characters.append(Player(self, 'fih', (0, 0), True, 25, False, 5))

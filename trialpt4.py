@@ -68,7 +68,7 @@ while running:
 
             if event.key == pygame.K_o:
                 rotating_clock = True
-            if event.key == pygame.K_p:
+            if event.key == pygame.K_p:#
                 rotating_aclock = True
 
             if event.key == pygame.K_SPACE:

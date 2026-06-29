@@ -34,7 +34,7 @@ class GameGUI:
         self.clock = pygame.time.Clock()
 
         self.game = Game()
-        self.game.set_up()
+        self.game.set_up() #
         self.move_direction: str | None = None
 
         self.screen = pygame.display.set_mode([500, 500])
