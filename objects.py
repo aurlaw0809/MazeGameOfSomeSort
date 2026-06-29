@@ -69,13 +69,21 @@ class Player(GameObject):
         if key == 'P':
             self.s_angle += 1
         elif key == 'O':
-            self.s_angle += 1
+            self.s_angle -= 1
 
     def s_length(self, key):
         if key == 'K':
             self.s_length -= 1
         elif key == 'L':
             self.s_length += 1
+
+    def s_rotate_by(self, degrees):
+        self.s_angle += degrees
+        self.s_angle %= 360
+
+    def s_snap_angle(self):
+        self.s_angle = round(self.s_angle / 45) * 45
+        self.s_angle %= 360
 
 class Key(GameObject):
     def __init__(self, controller, name, pos, solid, size, transparent, colour):
