@@ -3,7 +3,7 @@ from objects import GameObject, Player, Key, Door
 class Game:
     def __init__(self):
         self.characters = []
-        self.backgrounds = []#
+        self.backgrounds = []
 
     def set_up(self):
         self.characters.append(Player(self, 'fih', (0, 0), True, 25, False, 5))
@@ -18,7 +18,7 @@ class Game:
                     return True
                 else:
                     return False
-        return True
+        return False
 
     def move_character_by_key(self, character, key):
         move = False

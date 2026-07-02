@@ -37,11 +37,11 @@ class GameGUI:
         self.game.set_up() #
         self.move_direction: str | None = None
 
-        self.screen = pygame.display.set_mode([500, 500])
+        self.screen = pygame.display.set_mode((500, 500))
         self.running = True
 
         self.player = self.game.characters[0]
-        self.player_image = pygame.image.load('fish.png').convert_alpha()
+        self.player_image = pygame.image.load('goldfish.png').convert_alpha()
         self.player_image = pygame.transform.scale(self.player_image, (50, 50))
         self.player_rect = self.player_image.get_rect()
 
@@ -85,9 +85,9 @@ class GameGUI:
                     self.move_direction = 'D'
 
                 if event.key == pygame.K_k:
-                    self.player.s_length('K')
+                    self.player.s_lengthen('K')
                 if event.key == pygame.K_l:
-                    self.player.s_length('L')
+                    self.player.s_lengthen('L')
 
             if event.type == pygame.KEYUP:
 
@@ -113,6 +113,7 @@ class GameGUI:
 
     def _draw(self):
         """draw background first then characters"""
+        self.screen.fill((120, 176, 69))
         self._draw_characters()
         pygame.display.flip()
 
