@@ -1,5 +1,4 @@
 import pygame
-import math
 from controller import Game
 
 from pygame.locals import (
@@ -62,8 +61,6 @@ class GameGUI:
         pygame.quit()
 
     def _handle_input(self):
-        """checks key presses and adjusts GameGUI attributes depending on the presses"""
-
         for event in pygame.event.get():
 
             if event.type == pygame.QUIT or event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
@@ -106,11 +103,7 @@ class GameGUI:
                 if event.key == pygame.K_w or event.key == pygame.K_s or event.key == pygame.K_a or event.key == pygame.K_d:
                     self.move_direction = None
 
-            #checks for movement keys amd sets self.move_direction according to the key pressed.
-            #otherwise, set self.move_direction to None
-
     def _process_game_logic(self):
-        """implements character moves and checks if player has reached the exit"""
         if self.running and self.move_direction is not None:
             self.game.move_character_by_key(self.player, self.move_direction)
         if self.running and self.rotating_c:
@@ -119,17 +112,16 @@ class GameGUI:
             self.player.s_rotate('O')
 
     def _draw(self):
-        """draw background first then characters"""
         self.screen.fill((120, 176, 69))
         self._draw_shadow()
         self._draw_characters()
         pygame.display.flip()
 
     def _draw_characters(self):
-        """loop through the characters and draw a circle for each character"""
+        self.player_rect.center = (self.player.pos[0], self.player.pos[1])
+        self.screen.blit(self.player_image, self.player_rect)
         for character in self.game.characters:
-            self.player_rect.center = (self.player.pos[0], self.player.pos[1])
-            self.screen.blit(self.player_image, self.player_rect)
+            pass #update this when there's actually more than one character
 
     def _draw_shadow(self):
 
@@ -166,8 +158,7 @@ class GameGUI:
                 draw_x = int(centre_x + projected_x - self.player.size / 2)
                 draw_y = int(centre_y + projected_y - self.player.size / 2)
 
-                shadow_surface.set_at(
-                    (draw_x, draw_y), self.shadow_colour)
+                shadow_surface.set_at((draw_x, draw_y), self.shadow_colour)
 
         shadow_rect = shadow_surface.get_rect()
         shadow_rect.center = (self.player.pos[0], self.player.pos[1])
