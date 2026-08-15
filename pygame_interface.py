@@ -1,4 +1,5 @@
 import pygame
+import math
 from controller import Game
 
 from pygame.locals import (
@@ -43,8 +44,10 @@ class GameGUI:
         #player image
         self.player = self.game.characters[0]
         self.player_image = pygame.image.load('goldfish.png').convert_alpha()
-        self.player_image = pygame.transform.scale(self.player_image, (50, 50))
+        self.player_image = pygame.transform.scale(self.player_image, (self.player.get_size(), self.player.get_size()))
         self.player_rect = self.player_image.get_rect()
+
+        self.shadow_colour = (30, 30, 30, 100)
 
         self.rotating_c = False
         self.rotating_ac = False
@@ -59,7 +62,7 @@ class GameGUI:
         pygame.quit()
 
     def _handle_input(self):
-        """ Checks key presses and adjusts GameGUI attributes depending on the presses """
+        """checks key presses and adjusts GameGUI attributes depending on the presses"""
 
         for event in pygame.event.get():
 
@@ -107,7 +110,7 @@ class GameGUI:
             #otherwise, set self.move_direction to None
 
     def _process_game_logic(self):
-        """ Implements character moves and checks if player has reached the exit """
+        """implements character moves and checks if player has reached the exit"""
         if self.running and self.move_direction is not None:
             self.game.move_character_by_key(self.player, self.move_direction)
         if self.running and self.rotating_c:
@@ -118,14 +121,58 @@ class GameGUI:
     def _draw(self):
         """draw background first then characters"""
         self.screen.fill((120, 176, 69))
+        self._draw_shadow()
         self._draw_characters()
         pygame.display.flip()
 
     def _draw_characters(self):
-        """Loop through the characters and draw a circle for each character"""
+        """loop through the characters and draw a circle for each character"""
         for character in self.game.characters:
             self.player_rect.center = (self.player.pos[0], self.player.pos[1])
             self.screen.blit(self.player_image, self.player_rect)
+
+    def _draw_shadow(self):
+
+        """ method 1
+        shadow_length = self.player.get_s_length()
+        if shadow_length == 0:
+            return
+
+        angle = self.player.get_s_angle()
+        move_vector = pygame.Vector2(1, 0).rotate(angle)
+        maximum_distance = shadow_length * self.player.size
+
+        surface_size = (self.player.size + maximum_distance*2)
+        shadow_surface = pygame.Surface((surface_size, surface_size), pygame.SRCALPHA)
+
+        centre_x = surface_size // 2
+        centre_y = surface_size // 2
+
+        for x in range(self.player.size):
+            for y in range(self.player.size):
+
+                #get pixel and ignore if transparent
+                pixel = self.player_image.get_at((x, y))
+                if pixel.a == 0:
+                    continue
+
+                height_fraction = ((self.player.size - y) / self.player.size)
+
+                displacement = (height_fraction * maximum_distance)
+
+                projected_x = (x + move_vector.x * displacement)
+                projected_y = (y + move_vector.y * displacement)
+
+                draw_x = int(centre_x + projected_x - self.player.size / 2)
+                draw_y = int(centre_y + projected_y - self.player.size / 2)
+
+                shadow_surface.set_at(
+                    (draw_x, draw_y), self.shadow_colour)
+
+        shadow_rect = shadow_surface.get_rect()
+        shadow_rect.center = (self.player.pos[0], self.player.pos[1])
+        self.screen.blit(shadow_surface, shadow_rect)
+        """
 
 if __name__ == "__main__":
     game = GameGUI()

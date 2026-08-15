@@ -51,7 +51,7 @@ class Player(GameObject):
 
     def get_s_end_pos(self):
         offset = pygame.Vector2(self.s_length * self.size, 0)
-        rotated_offset = offset.rotate(self.s_angle) #TODO maybe make this negative
+        rotated_offset = offset.rotate(self.s_angle)
         return pygame.Vector2(self.pos) + rotated_offset
 
     def find_next_location(self, key):

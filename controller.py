@@ -6,7 +6,7 @@ class Game:
         self.backgrounds = []
 
     def set_up(self):
-        self.characters.append(Player(self, 'fih', (0, 0), True, 25, False, 5))
+        self.characters.append(Player(self, 'fih', (0, 0), True, 50, False, 5))
 
     def add_background_object(self, controller, name, pos, solid, size, transparent):
         self.backgrounds.append(GameObject(controller, name, pos, solid, size, transparent))
