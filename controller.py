@@ -13,12 +13,20 @@ class Game:
 
     def check_collisions(self, pos, size):
         for thing in self.backgrounds:
-            if (thing.get_pos()[0] - pos[0])^2 + (thing.get_pos()[1] - pos[1])^2 <= (size + thing.get_size())^2:
+            if (thing.get_pos()[0] - pos[0])**2 + (thing.get_pos()[1] - pos[1])**2 <= (size + thing.get_size())**2:
                 if thing.get_solid():
                     return True
                 else:
                     return False
         return False
+
+    def scan_radius(self, pos, size, interaction_radius):
+        possibilities = []
+        for thing in self.backgrounds:
+            if (thing.get_pos()[0] - pos[0])**2 + (thing.get_pos()[1] - pos[1])**2 <= (size + thing.get_size() + interaction_radius)**2:
+                if thing.get_interactable():
+                    possibilities.append(thing)
+        return possibilities
 
     def move_character_by_key(self, character, key):
         move = False

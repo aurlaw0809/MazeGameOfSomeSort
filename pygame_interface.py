@@ -30,7 +30,7 @@ class GameGUI:
         pygame.init()
         pygame.display.set_caption('Maze testing')
 
-        # Set clock so that FPS can be limited
+        #set clock so that FPS can be limited
         self.clock = pygame.time.Clock()
 
         self.game = Game()
@@ -40,6 +40,7 @@ class GameGUI:
         self.screen = pygame.display.set_mode((500, 500))
         self.running = True
 
+        #player image
         self.player = self.game.characters[0]
         self.player_image = pygame.image.load('goldfish.png').convert_alpha()
         self.player_image = pygame.transform.scale(self.player_image, (50, 50))
@@ -63,7 +64,7 @@ class GameGUI:
         for event in pygame.event.get():
 
             if event.type == pygame.QUIT or event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                running = False
+                self.running = False
 
             if event.type == pygame.KEYDOWN and self.running:
 
@@ -89,6 +90,9 @@ class GameGUI:
                 if event.key == pygame.K_l:
                     self.player.s_lengthen('L')
 
+                if event.key == pygame.K_e:
+                    self.game.scan_radius(self.player.get_pos(), self.player.get_size(), self.player.get_interaction_radius())
+
             if event.type == pygame.KEYUP:
 
                 if event.key == pygame.K_o or event.key == pygame.K_p:
@@ -99,8 +103,8 @@ class GameGUI:
                 if event.key == pygame.K_w or event.key == pygame.K_s or event.key == pygame.K_a or event.key == pygame.K_d:
                     self.move_direction = None
 
-            # Checks for movement keys amd sets self.move_direction according to the key pressed.
-            # Otherwise, set self.move_direction to None
+            #checks for movement keys amd sets self.move_direction according to the key pressed.
+            #otherwise, set self.move_direction to None
 
     def _process_game_logic(self):
         """ Implements character moves and checks if player has reached the exit """

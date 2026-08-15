@@ -8,6 +8,8 @@ class GameObject:
         self.size = size
         self.solid = solid
         self.transparent = transparent
+        self.interactable = False
+        self.interaction_radius = 50
 
     def __repr__(self):
         return f'GameObject(name: {self.name}, pos: {self.pos}, size: {self.size}, solid: {self.solid}, transparent: {self.transparent})'
@@ -22,6 +24,10 @@ class GameObject:
         return self.solid
     def get_transparent(self):
         return self.transparent
+    def get_interactable(self):
+        return self.interactable
+    def get_interaction_radius(self):
+        return self.interaction_radius
 
 class Player(GameObject):
     def __init__(self, controller, name, pos, solid, size, transparent, speed):
@@ -45,7 +51,7 @@ class Player(GameObject):
 
     def get_s_end_pos(self):
         offset = pygame.Vector2(self.s_length * self.size, 0)
-        rotated_offset = offset.rotate(self.s_angle)
+        rotated_offset = offset.rotate(self.s_angle) #TODO maybe make this negative
         return pygame.Vector2(self.pos) + rotated_offset
 
     def find_next_location(self, key):
@@ -70,6 +76,7 @@ class Player(GameObject):
             self.s_angle += 1
         elif key == 'O':
             self.s_angle -= 1
+        self.s_angle %= 360
 
     def s_lengthen(self, key):
         if key == 'K':
@@ -96,18 +103,20 @@ class Key(GameObject):
         self.transparent = True
         self.colour = colour
         self.key_found = False
+        self.interactable = True
 
-        def get_key_found():
-            return self.key_found
-        def get_colour():
-            return self.colour
+    def get_key_found(self):
+        return self.key_found
+    def get_colour(self):
+        return self.colour
 
 class Door(Key):
     def __init__(self, controller, name, pos, solid, size, transparent, colour):
         Key.__init__(self, controller, name, pos, solid, size, transparent, colour)
         self.solid = True
         self.transparent = False
+        self.interactable = True
 
-        def open_door():
-            self.solid = False
-            self.transparent = True
+    def open_door(self):
+        self.solid = False
+        self.transparent = True
