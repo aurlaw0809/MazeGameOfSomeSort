@@ -1,4 +1,6 @@
 import pygame
+import math
+import numpy as np
 from controller import Game
 
 from pygame.locals import (
@@ -150,12 +152,14 @@ class GameGUI:
         for character in self.game.characters:
             pass #update this when there's actually more than one character
 
+    """
     def _draw_shadow(self):
 
         shadow_length = self.player.get_s_length()
         if shadow_length == 0:
             return
-
+    """
+    """
         angle = self.player.get_s_angle()
         move_vector = pygame.Vector2(1, 0).rotate(angle)
         maximum_distance = shadow_length * self.player.get_size()
@@ -177,7 +181,7 @@ class GameGUI:
                 x_displacement = ((self.player.get_size() - x) / self.player.get_size() * maximum_distance)
                 y_displacement = ((self.player.get_size() - y) / self.player.get_size() * maximum_distance)
 
-                draw_x = int(x - self.player.get_size() / 2 + centre_x + move_vector.x * x_displacement)
+                draw_x = int(centre_x + move_vector.x * x_displacement)
                 draw_y = int(centre_y + move_vector.y * y_displacement)
 
                 #print(f'{x}, {centre_x}')
@@ -191,6 +195,97 @@ class GameGUI:
         shadow_rect = shadow_surface.get_rect()
         shadow_rect.center = (self.player.pos[0], self.player.pos[1] + self.player.get_size() / 2)
         self.screen.blit(shadow_surface, shadow_rect)
+        """
+    """
+        move_vector = pygame.Vector2(shadow_length * self.player.get_size(), 0).rotate(self.player.get_s_angle())
+        new_width = move_vector.x + self.player.get_size() / 2
+        shadow_surface = pygame.Surface((new_width, self.player.get_size()), pygame.SRCALPHA)
+
+        if move_vector.y == 0:
+            return None
+        else:
+            for y in range(self.player.get_size()):
+                offset = 0
+
+                if move_vector.x != 0:
+                    offset = y * move_vector.x / self.player.get_size()
+
+                for x in range(self.player.get_size()):
+                    pixel = self.player_image.get_at((x, y))
+                    if pixel.a == 0:
+                        continue
+
+                    shadow_surface.set_at((x + offset, y), self.shadow_colour)
+
+        shadow_surface = pygame.transform.scale(shadow_surface, (new_width, move_vector.y))
+
+        pygame.draw.circle(self.screen, (255, 0, 0),
+                           (self.player.pos[0], self.player.pos[1] + self.player.get_size() / 2), shadow_length * self.player.get_size())
+
+        shadow_rect = shadow_surface.get_rect()
+        shadow_rect.center = (self.player.pos[0], self.player.pos[1] + self.player.get_size() / 2)
+        self.screen.blit(shadow_surface, shadow_rect)
+        """
+
+    def shadow_image(self, image, size, colour):
+
+        new_image = pygame.Surface((size, size), pygame.SRCALPHA)
+        for y in range(size):
+            for x in range(size):
+                pixel = image.get_at((x, y))
+                if pixel.a == 0:
+                    continue
+
+                new_image.set_at((x, y), colour)
+
+        return new_image
+
+    def shear_image(self, image, offset):
+
+        width, height = image.get_size()
+
+        new_width = width + abs(offset)
+        result = pygame.Surface((new_width, height), pygame.SRCALPHA)
+
+        for y in range(height):
+            x_offset = int(offset * (height - y) / height)
+
+            if offset < 0:
+                x_offset += abs(offset)
+
+            for x in range(width):
+                pixel = image.get_at((x, y))
+                result.set_at((int(x + x_offset), int(y)), pixel)
+
+        return result
+
+    def _draw_shadow(self):
+
+        image = self.player_image
+        angle = self.player.get_s_angle()
+        size = self.player.get_size()
+        height = self.player.get_s_length()
+        colour = self.shadow_colour
+
+        move_vector = pygame.Vector2(height * size, 0).rotate(angle)
+        image = self.shadow_image(image, size, colour)
+        image = pygame.transform.smoothscale(image, (size, abs(move_vector.y)))
+
+        offset = move_vector.x
+        image = self.shear_image(image, offset)
+
+        if angle >= 270 and angle <= 360 or angle >= 0 and angle <= 90:
+            corner_x = self.player.pos[0] - self.player.get_size() / 2
+        else:
+            corner_x = self.player.pos[0] - self.player.get_size() / 2 + offset
+
+        if angle >= 0 and angle <= 180:
+            corner_y = self.player.pos[1] + self.player.get_size() / 2
+            image = pygame.transform.flip(image, False, True)
+        else:
+            corner_y = self.player.pos[1] + self.player.get_size() / 2 + move_vector.y
+
+        self.screen.blit(image, (corner_x, corner_y))
 
 if __name__ == "__main__":
     game = GameGUI()
