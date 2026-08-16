@@ -125,45 +125,44 @@ class GameGUI:
 
     def _draw_shadow(self):
 
-        """ method 1
         shadow_length = self.player.get_s_length()
         if shadow_length == 0:
             return
 
         angle = self.player.get_s_angle()
         move_vector = pygame.Vector2(1, 0).rotate(angle)
-        maximum_distance = shadow_length * self.player.size
+        maximum_distance = shadow_length * self.player.get_size()
 
-        surface_size = (self.player.size + maximum_distance*2)
+        surface_size = maximum_distance*2
         shadow_surface = pygame.Surface((surface_size, surface_size), pygame.SRCALPHA)
 
         centre_x = surface_size // 2
         centre_y = surface_size // 2
 
-        for x in range(self.player.size):
-            for y in range(self.player.size):
+        for x in range(self.player.get_size()):
+            for y in range(self.player.get_size()):
 
                 #get pixel and ignore if transparent
                 pixel = self.player_image.get_at((x, y))
                 if pixel.a == 0:
                     continue
 
-                height_fraction = ((self.player.size - y) / self.player.size)
+                x_displacement = ((self.player.get_size() - x) / self.player.get_size() * maximum_distance)
+                y_displacement = ((self.player.get_size() - y) / self.player.get_size() * maximum_distance)
 
-                displacement = (height_fraction * maximum_distance)
-
-                projected_x = (x + move_vector.x * displacement)
-                projected_y = (y + move_vector.y * displacement)
-
-                draw_x = int(centre_x + projected_x - self.player.size / 2)
-                draw_y = int(centre_y + projected_y - self.player.size / 2)
+                draw_x = int(centre_x + move_vector.x * x_displacement)
+                draw_y = int(centre_y + move_vector.y * y_displacement)
 
                 shadow_surface.set_at((draw_x, draw_y), self.shadow_colour)
 
+        #reference rectangle
+        rect = pygame.Rect(0, 0, surface_size, surface_size)
+        rect.center = (self.player.pos[0], self.player.pos[1] + self.player.get_size() / 2)
+        pygame.draw.rect(self.screen, (255, 0, 0), rect)
+
         shadow_rect = shadow_surface.get_rect()
-        shadow_rect.center = (self.player.pos[0], self.player.pos[1])
+        shadow_rect.center = (self.player.pos[0], self.player.pos[1] + self.player.get_size() / 2)
         self.screen.blit(shadow_surface, shadow_rect)
-        """
 
 if __name__ == "__main__":
     game = GameGUI()
