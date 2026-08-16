@@ -67,7 +67,7 @@ class GameGUI:
             self._handle_input()
             self._process_game_logic()
             self._draw()
-            self.clock.tick(10) # cap to 60 FPS
+            self.clock.tick(30) # cap to 60 FPS
         pygame.quit()
 
     def _handle_input(self):
@@ -177,7 +177,7 @@ class GameGUI:
                 x_displacement = ((self.player.get_size() - x) / self.player.get_size() * maximum_distance)
                 y_displacement = ((self.player.get_size() - y) / self.player.get_size() * maximum_distance)
 
-                draw_x = int(x + centre_x/2 + move_vector.x * x_displacement)
+                draw_x = int(x - self.player.get_size() / 2 + centre_x + move_vector.x * x_displacement)
                 draw_y = int(centre_y + move_vector.y * y_displacement)
 
                 #print(f'{x}, {centre_x}')
@@ -185,10 +185,8 @@ class GameGUI:
                 shadow_surface.set_at((draw_x, draw_y), self.shadow_colour)
 
         #reference rectangle
-        rect = pygame.Rect(0, 0, surface_size, surface_size)
-        print(self.player.get_pos())
-        rect.center = (self.player.pos[0], self.player.pos[1] + self.player.get_size() / 2)
-        pygame.draw.rect(self.screen, (255, 0, 0), rect)
+
+        pygame.draw.circle(self.screen, (255, 0, 0), (self.player.pos[0], self.player.pos[1] + self.player.get_size() / 2), surface_size / 2)
 
         shadow_rect = shadow_surface.get_rect()
         shadow_rect.center = (self.player.pos[0], self.player.pos[1] + self.player.get_size() / 2)
