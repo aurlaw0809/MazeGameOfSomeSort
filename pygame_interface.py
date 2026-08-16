@@ -192,20 +192,20 @@ class GameGUI:
         for character in self.game.characters:
             pass #update this when there's actually more than one character
 
-    def _draw_shadow(self, image, angle, anglemod, xmod, ymod, rotation):
+    def _draw_shadow(self, image, angle, xmod, ymod, rotation):
 
         size = self.player.get_size()
         height = self.player.get_s_length()
         colour = self.shadow_colour
+        angle += rotation
+        angle %= 360
 
-        move_vector = pygame.Vector2(height * size, 0).rotate((angle + anglemod)%360)
+        move_vector = pygame.Vector2(height * size, 0).rotate(angle)
         image = shadow_image(image, size, colour)
         image = pygame.transform.smoothscale(image, (size, abs(move_vector.y)))
 
         offset = move_vector.x
         image = shear_image(image, offset)
-
-        image = pygame.transform.rotate(image, rotation)
 
         if angle >= 270 and angle <= 360 or angle >= 0 and angle <= 90:
             corner_x = self.player.pos[0] - self.player.get_size() / 2
@@ -220,6 +220,8 @@ class GameGUI:
 
         corner_x += xmod * self.player.get_size()
         corner_y += ymod * self.player.get_size()
+
+        image = pygame.transform.rotate(image, rotation)
 
         background = pygame.Surface(image.get_size(), pygame.SRCALPHA)
         background.fill((255, 0, 0, 255))
@@ -245,13 +247,13 @@ class GameGUI:
         right_shadow = pygame.image.load(self.player_images[self.direction_order[(index + 3)%4]][self.player_moving_frame]).convert_alpha()
         right_shadow = pygame.transform.scale(right_shadow, (self.player.get_size(), self.player.get_size()))
 
-        #self._draw_shadow(front_shadow, angle, 0, 0, 0, 0)
+        #self._draw_shadow(front_shadow, angle, 0, 0, 0)
 
         if self.player_direction == 'S' or self.player_direction == 'W':
-            #self._draw_shadow(back_shadow, angle, 0, 0, -0.1, 0)
-            self._draw_shadow(left_shadow, angle, 90, 0, 0, -90)
+            #self._draw_shadow(back_shadow, angle, 0, -0.1, 0)
+            self._draw_shadow(left_shadow, angle, 0, 0, 90)
         else:
-            #self._draw_shadow(back_shadow, angle, 0, 0, -0.2, 0)
+            #self._draw_shadow(back_shadow, angle, 0, -0.2, 0)
             pass
 
 
