@@ -170,7 +170,7 @@ class GameGUI:
 
     def _draw(self):
         self.screen.fill((120, 176, 69))
-        self._draw_shadow()
+        self._draw_full_shadow()
         self._draw_characters()
         pygame.display.flip()
 
@@ -192,20 +192,20 @@ class GameGUI:
         for character in self.game.characters:
             pass #update this when there's actually more than one character
 
-    def _draw_shadow(self):
+    def _draw_shadow(self, image, angle, anglemod, xmod, ymod, rotation):
 
-        image = self.player_image
-        angle = self.player.get_s_angle()
         size = self.player.get_size()
         height = self.player.get_s_length()
         colour = self.shadow_colour
 
-        move_vector = pygame.Vector2(height * size, 0).rotate(angle)
+        move_vector = pygame.Vector2(height * size, 0).rotate((angle + anglemod)%360)
         image = shadow_image(image, size, colour)
         image = pygame.transform.smoothscale(image, (size, abs(move_vector.y)))
 
         offset = move_vector.x
         image = shear_image(image, offset)
+
+        image = pygame.transform.rotate(image, rotation)
 
         if angle >= 270 and angle <= 360 or angle >= 0 and angle <= 90:
             corner_x = self.player.pos[0] - self.player.get_size() / 2
@@ -218,7 +218,42 @@ class GameGUI:
         else:
             corner_y = self.player.pos[1] + self.player.get_size() / 2 + move_vector.y
 
+        corner_x += xmod * self.player.get_size()
+        corner_y += ymod * self.player.get_size()
+
+        background = pygame.Surface(image.get_size(), pygame.SRCALPHA)
+        background.fill((255, 0, 0, 255))
+        self.screen.blit(background, (corner_x, corner_y))
+
         self.screen.blit(image, (corner_x, corner_y))
+
+    def _draw_full_shadow(self):
+        image = self.player_image
+        angle = self.player.get_s_angle()
+
+        index = self.direction_order.index(self.player_direction)
+
+        front_shadow = self.player_image
+
+        back_shadow = pygame.image.load(self.player_images[self.direction_order[(index + 2)%4]][self.player_moving_frame]).convert_alpha()
+        back_shadow = pygame.transform.scale(back_shadow, (self.player.get_size(), self.player.get_size()))
+        back_shadow = pygame.transform.flip(back_shadow, True, False)
+
+        left_shadow = pygame.image.load(self.player_images[self.direction_order[(index + 1)%4]][self.player_moving_frame]).convert_alpha()
+        left_shadow = pygame.transform.scale(left_shadow, (self.player.get_size(), self.player.get_size()))
+
+        right_shadow = pygame.image.load(self.player_images[self.direction_order[(index + 3)%4]][self.player_moving_frame]).convert_alpha()
+        right_shadow = pygame.transform.scale(right_shadow, (self.player.get_size(), self.player.get_size()))
+
+        #self._draw_shadow(front_shadow, angle, 0, 0, 0, 0)
+
+        if self.player_direction == 'S' or self.player_direction == 'W':
+            #self._draw_shadow(back_shadow, angle, 0, 0, -0.1, 0)
+            self._draw_shadow(left_shadow, angle, 90, 0, 0, -90)
+        else:
+            #self._draw_shadow(back_shadow, angle, 0, 0, -0.2, 0)
+            pass
+
 
 if __name__ == "__main__":
     game = GameGUI()
