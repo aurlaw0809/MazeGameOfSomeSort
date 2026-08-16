@@ -41,8 +41,18 @@ class GameGUI:
         self.running = True
 
         #player image
+
         self.player = self.game.characters[0]
-        self.player_image = pygame.image.load('goldfish.png').convert_alpha()
+
+        self.player_direction = 'S'
+        self.player_moving = False
+        self.player_moving_frame = 0
+        self.player_images = {'S': ['assets/starchy/S0.png', 'assets/starchy/S1.png', 'assets/starchy/S2.png', 'assets/starchy/S3.png', 'assets/starchy/S4.png', 'assets/starchy/S5.png', 'assets/starchy/S6.png'],
+                              'A': ['assets/starchy/A0.png', 'assets/starchy/A1.png', 'assets/starchy/A2.png', 'assets/starchy/A3.png', 'assets/starchy/A4.png', 'assets/starchy/A5.png', 'assets/starchy/A6.png'],
+                              'D': ['assets/starchy/D0.png', 'assets/starchy/D1.png', 'assets/starchy/D2.png', 'assets/starchy/D3.png', 'assets/starchy/D4.png', 'assets/starchy/D5.png', 'assets/starchy/D6.png'],
+                              'W': ['assets/starchy/W0.png', 'assets/starchy/W1.png', 'assets/starchy/W2.png', 'assets/starchy/W3.png', 'assets/starchy/W4.png', 'assets/starchy/W5.png', 'assets/starchy/W6.png']}
+
+        self.player_image = pygame.image.load(self.player_images[self.player_direction][self.player_moving_frame]).convert_alpha()
         self.player_image = pygame.transform.scale(self.player_image, (self.player.get_size(), self.player.get_size()))
         self.player_rect = self.player_image.get_rect()
 
@@ -57,7 +67,7 @@ class GameGUI:
             self._handle_input()
             self._process_game_logic()
             self._draw()
-            self.clock.tick(60) # cap to 60 FPS
+            self.clock.tick(10) # cap to 60 FPS
         pygame.quit()
 
     def _handle_input(self):
@@ -78,12 +88,20 @@ class GameGUI:
 
                 if event.key == pygame.K_w:
                     self.move_direction = 'W'
+                    self.player_direction = 'W'
+                    self.player_moving = True
                 if event.key == pygame.K_s:
                     self.move_direction = 'S'
+                    self.player_direction = 'S'
+                    self.player_moving = True
                 if event.key == pygame.K_a:
                     self.move_direction = 'A'
+                    self.player_direction = 'A'
+                    self.player_moving = True
                 if event.key == pygame.K_d:
                     self.move_direction = 'D'
+                    self.player_direction = 'D'
+                    self.player_moving = True
 
                 if event.key == pygame.K_k:
                     self.player.s_lengthen('K')
@@ -102,6 +120,7 @@ class GameGUI:
 
                 if event.key == pygame.K_w or event.key == pygame.K_s or event.key == pygame.K_a or event.key == pygame.K_d:
                     self.move_direction = None
+                    self.player_moving = False
 
     def _process_game_logic(self):
         if self.running and self.move_direction is not None:
@@ -118,7 +137,15 @@ class GameGUI:
         pygame.display.flip()
 
     def _draw_characters(self):
+        if self.player_moving:
+            self.player_moving_frame += 1
+            self.player_moving_frame %= 7
+        else:
+            self.player_moving_frame = 0
+
         self.player_rect.center = (self.player.pos[0], self.player.pos[1])
+        self.player_image = pygame.image.load(self.player_images[self.player_direction][self.player_moving_frame]).convert_alpha()
+        self.player_image = pygame.transform.scale(self.player_image, (self.player.get_size(), self.player.get_size()))
         self.screen.blit(self.player_image, self.player_rect)
         for character in self.game.characters:
             pass #update this when there's actually more than one character
@@ -150,13 +177,16 @@ class GameGUI:
                 x_displacement = ((self.player.get_size() - x) / self.player.get_size() * maximum_distance)
                 y_displacement = ((self.player.get_size() - y) / self.player.get_size() * maximum_distance)
 
-                draw_x = int(centre_x + move_vector.x * x_displacement)
+                draw_x = int(x + centre_x/2 + move_vector.x * x_displacement)
                 draw_y = int(centre_y + move_vector.y * y_displacement)
+
+                #print(f'{x}, {centre_x}')
 
                 shadow_surface.set_at((draw_x, draw_y), self.shadow_colour)
 
         #reference rectangle
         rect = pygame.Rect(0, 0, surface_size, surface_size)
+        print(self.player.get_pos())
         rect.center = (self.player.pos[0], self.player.pos[1] + self.player.get_size() / 2)
         pygame.draw.rect(self.screen, (255, 0, 0), rect)
 
