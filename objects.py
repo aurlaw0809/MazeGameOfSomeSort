@@ -36,7 +36,7 @@ class Player(GameObject):
         self.transparent = False
         self.speed = speed
         self.direction = 0
-        self.s_angle = 0
+        self.s_angle = 315
         self.s_length = 1 #this should be an integer n s.t. the actual shadow length is n*player.size
 
     def __repr__(self):
@@ -92,9 +92,11 @@ class Player(GameObject):
         self.s_angle += degrees
         self.s_angle %= 360
 
+    """
     def s_snap_angle(self):
         self.s_angle = round(self.s_angle / 45) * 45
         self.s_angle %= 360
+    """
 
 class Key(GameObject):
     def __init__(self, controller, name, pos, solid, size, transparent, colour):

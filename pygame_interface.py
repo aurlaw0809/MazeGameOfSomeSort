@@ -154,7 +154,7 @@ class GameGUI:
                 if event.key == pygame.K_o or event.key == pygame.K_p:
                     self.rotating_c = False
                     self.rotating_ac = False
-                    self.player.s_snap_angle()
+                    #self.player.s_snap_angle()
 
                 if event.key == pygame.K_w or event.key == pygame.K_s or event.key == pygame.K_a or event.key == pygame.K_d:
                     self.move_direction = None
@@ -269,6 +269,7 @@ class GameGUI:
 
         self._draw_shadow(front_shadow, 0, 0, 0, False)
 
+        """
         if self.player_direction == 'S' or self.player_direction == 'W':
             self._draw_shadow(back_shadow, 0, -0.3, 0, False)
             self._draw_shadow(left_shadow, 0.3, 0.4, 90, True)
@@ -277,6 +278,7 @@ class GameGUI:
             self._draw_shadow(back_shadow, 0, -0.7, 0, False)
             self._draw_shadow(left_shadow, 0.1, 0.1, 90, True)
             self._draw_shadow(right_shadow, -0.1, 0.1, 90, True)
+        """
 
 
 if __name__ == "__main__":
