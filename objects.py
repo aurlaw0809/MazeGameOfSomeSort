@@ -85,8 +85,8 @@ class Player(GameObject):
                 self.s_length = 0
         elif key == 'L':
             self.s_length += 1
-            if self.s_length >= 10:
-                self.s_length = 10
+            if self.s_length >= 6:
+                self.s_length = 6
 
     def s_rotate_by(self, degrees):
         self.s_angle += degrees
