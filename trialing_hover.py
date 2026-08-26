@@ -123,8 +123,12 @@ while run:
     if button_selected:
         print_button_selected(chosen_button)
 
-    for thing in LIST_OF_BUTTONS:
-        thing.draw()
+    for i in range(0, len(LIST_OF_BUTTONS)):
+        if active_button == i:
+            LIST_OF_BUTTONS[i].make_active()
+        else:
+            LIST_OF_BUTTONS[i].make_inactive()
+        LIST_OF_BUTTONS[i].draw()
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -150,6 +154,13 @@ while run:
                 if active_button != -1:
                     chosen_button = active_button
                     button_selected = True
+
+            if event.key == pygame.K_SPACE:
+                if active_button != -1:
+                    active_button += 1
+                    active_button %= 4
+                else:
+                    active_button = 0
 
 
     pygame.display.flip()
