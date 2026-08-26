@@ -112,6 +112,15 @@ def calculate_angle(pos):
 
     return angle
 
+def find_swap_pos(pos, angle):
+    angle += 180
+    angle %= 180
+
+    new_x = max_x + min_x - pos[0]
+    new_y = max_y + min_y - pos[1]
+
+    return (new_x, new_y), angle
+
 clockwise = False
 anticlockwise = False
 
@@ -170,6 +179,8 @@ while run:
                 anticlockwise = True
             if event.key == pygame.K_p:
                 clockwise = True
+            if event.key == pygame.K_SPACE:
+                (slider.x, slider.y), angle = find_swap_pos((slider.x, slider.y), angle)
 
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_o:
