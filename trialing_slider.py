@@ -129,6 +129,8 @@ angle = 0
 run = True
 while run:
 
+    clock.tick(FPS)
+
     screen.fill((219, 227, 127))
 
     #screen.blit(test_grid, (0, 0))
