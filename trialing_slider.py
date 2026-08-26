@@ -152,11 +152,15 @@ while run:
 
     if anticlockwise:
         new_pos = pos_from_keys(-1, (slider.x, slider.y))
+        for i in range(0, 5):
+            new_pos = pos_from_keys(-1, new_pos)
         slider.x = new_pos[0]
         slider.y = new_pos[1]
 
     if clockwise:
         new_pos = pos_from_keys(1, (slider.x, slider.y))
+        for i in range(0, 5):
+            new_pos = pos_from_keys(1, new_pos)
         slider.x = new_pos[0]
         slider.y = new_pos[1]
 
