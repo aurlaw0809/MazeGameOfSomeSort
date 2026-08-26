@@ -16,8 +16,8 @@ BUTTON_TEXT_FONT = pygame.font.SysFont('comicsans', 30)
 BUTTON_TEXT_X = 10
 BUTTON_TEXT_Y = 5
 
-BUTTON_INACTIVE_COLOUR = (255, 255, 255, 100)
-BUTTON_ACTIVE_COLOUR = (255, 255, 255, 200)
+BUTTON_INACTIVE_COLOUR = (255, 255, 255, 50)
+BUTTON_ACTIVE_COLOUR = (255, 255, 255, 100)
 
 BUTTON_WIDTH = 200
 BUTTON_HEIGHT = 50
@@ -27,10 +27,10 @@ BUTTON_Y = 200
 
 BUTTON_SPACING = 25
 
-NUMBER_OF_BUTTONS = 4
-BUTTON_NAMES = ['button 0', 'button 1', 'button 2', 'button 3']
+BUTTON_NAMES = ['BUTTON 1', 'BUTTON 2']
+NUMBER_OF_BUTTONS = len(BUTTON_NAMES)
 
-screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SRCALPHA)
 pygame.display.set_caption("Trialing combo")
 
 bg = DynamicBackground(screen)

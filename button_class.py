@@ -128,7 +128,12 @@ class Button:
             self.colour = self.inactive_color
 
     def draw(self):
-        pygame.draw.rect(self.screen, self.colour, (self.x, self.y, self.width, self.height))
+        #pygame.draw.rect(self.screen, self.colour, (self.x, self.y, self.width, self.height))
+
+        surface = pygame.Surface((self.width, self.height), pygame.SRCALPHA)
+        surface.fill(self.colour)
+        self.screen.blit(surface, (self.x, self.y))
+
         text = self.text_font.render(f"{self.text}", True, self.text_color)
         self.screen.blit(text, (self.x + self.text_x, self.y + self.text_y))
 
