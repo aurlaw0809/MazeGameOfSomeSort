@@ -7,11 +7,11 @@ pygame.init()
 clock = pygame.time.Clock()
 FPS = 60
 
-SCREEN_WIDTH = 800
+SCREEN_WIDTH = 1200
 SCREEN_HEIGHT = 600
 
 BUTTON_TEXT_COLOUR = (255, 255, 255)
-BUTTON_TEXT_FONT = pygame.font.Font('assets/fonts/pressstart2p.ttf', 30)
+BUTTON_TEXT_FONT = pygame.font.Font('assets/fonts/pressstart2p.ttf', 20)
 
 BUTTON_TEXT_X = 10
 BUTTON_TEXT_Y = 10
@@ -20,27 +20,55 @@ BUTTON_INACTIVE_COLOUR = (255, 255, 255, 0)
 BUTTON_ACTIVE_COLOUR = (255, 255, 255, 100)
 
 BUTTON_WIDTH = 350
-BUTTON_HEIGHT = 50
+BUTTON_HEIGHT = 40
 
 BUTTON_X = 30
 BUTTON_Y = 300
 
-BUTTON_SPACING = 25
-
-BUTTON_NAMES = ['START', 'SETTINGS', 'LEADERBOARD', 'QUIT']
-NUMBER_OF_BUTTONS = len(BUTTON_NAMES)
+BUTTON_SPACING = 10
 
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SRCALPHA)
 pygame.display.set_caption("Trialing combo")
 
 bg = DynamicBackground(screen)
-buttons = ButtonList(screen, BUTTON_X, BUTTON_Y,
+
+#B = branch, F = finish game, T = toggle, E = entry, L = level
+
+pages = {'MM': [['START', 'SETTINGS', 'LEADERBOARD', 'QUIT'], ['MSS', 'MO', 'MRS', None], ['B', 'B', 'B', 'F']],
+         'MO': [['BACK', 'MUSIC', 'SOUND EFFECTS', 'NAME'], ['MM', None, None, None], ['B', 'T', 'T', 'E']],
+         'MRS': [['BACK', 'LVL. 1', 'LVL. 2', 'LVL. 3'], ['MM', None, None, None], ['B', 'L', 'L', 'L']],
+         'MRD': [['BACK'], ['MRS'], ['B']],
+         'MSS': [['BACK', 'LEVELS', 'TUTORIAL'], ['MM', 'MLS', None], ['B', 'B', 'L']],
+         'MLS': [['BACK', 'LVL. 1', 'LVL. 2', 'LVL. 3'], ['MSS', None, None, None], ['B', 'L', 'L', 'L']],}
+
+current_page = 'MM'
+
+def update_page():
+    BUTTON_NAMES = pages[current_page][0]
+    BUTTON_TYPES = pages[current_page][2]
+    NUMBER_OF_BUTTONS = len(BUTTON_NAMES)
+
+    buttons = ButtonList(screen, BUTTON_X, BUTTON_Y,
                      BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_SPACING,
-                     NUMBER_OF_BUTTONS, BUTTON_NAMES,
+                     NUMBER_OF_BUTTONS, BUTTON_NAMES, BUTTON_TYPES,
                      BUTTON_INACTIVE_COLOUR, BUTTON_ACTIVE_COLOUR,
                      BUTTON_TEXT_COLOUR, BUTTON_TEXT_FONT, BUTTON_TEXT_X, BUTTON_TEXT_Y)
 
+    return buttons
+
+def route_to_next_page(buttons, current_page):
+    button_number = buttons.get_chosen_button()
+    options = pages[current_page][1]
+    new_page = options[button_number]
+
+    if new_page == None:
+        new_page = current_page
+
+    return new_page
+
+
 run =True
+buttons = update_page()
 
 while run:
 
@@ -85,6 +113,11 @@ while run:
                 run = False
             if event.key == pygame.K_q:
                 run = False
+
+        if buttons.get_button_selected():
+            if buttons.get_chosen_button_type() == 'B':
+                current_page = route_to_next_page(buttons, current_page)
+                buttons = update_page()
 
     pygame.display.update()
 

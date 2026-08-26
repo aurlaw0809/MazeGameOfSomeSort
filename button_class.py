@@ -3,7 +3,7 @@ import pygame
 class ButtonList:
     def __init__(self, screen, x, y,
                  width, height, spacing,
-                 number_buttons, list_names,
+                 number_buttons, list_names, button_types,
                  inactive_color, active_colour,
                  text_color, text_font, text_x, text_y):
 
@@ -21,6 +21,7 @@ class ButtonList:
         self.number_buttons = number_buttons
         self.list_buttons = []
         self.list_names = list_names
+        self.button_types = button_types
 
         self.inactive_color = inactive_color
         self.active_colour = active_colour
@@ -48,21 +49,25 @@ class ButtonList:
                                             self.text_color,
                                             self.text_font,
                                             self.text_x,
-                                            self.text_y))
+                                            self.text_y,
+                                            self.button_types[i]))
 
     def print_button_selected(self, i):
         text = self.text_font.render(f"SELECTED: {self.list_names[i]}", True, self.text_color)
-        self.screen.blit(text, (20, 20))
+        self.screen.blit(text, (self.x, 20))
 
     def print_button_active(self, i):
         text = self.text_font.render(f"ACTIVE: {self.list_names[i]}", True, self.text_color)
-        self.screen.blit(text, (20, 50))
+        self.screen.blit(text, (self.x, 50))
 
     def draw(self):
         self.print_button_active(self.active_button)
 
         if self.button_selected:
             self.print_button_selected(self.chosen_button)
+        else:
+            text = self.text_font.render(f"SELECTED: NONE", True, self.text_color)
+            self.screen.blit(text, (self.x, 20))
 
         for i in range(0, self.number_buttons):
             if self.active_button == i:
@@ -96,29 +101,27 @@ class ButtonList:
     def get_list_buttons(self):
         return self.list_buttons
 
+    def get_chosen_button_type(self):
+        return self.button_types[self.chosen_button]
 
-class Button:
+
+class Button(ButtonList):
+
     def __init__(self, screen, x, y,
                  width, height,
                  inactive_color, active_colour,
-                 text, text_color, text_font, text_x, text_y):
+                 text, text_color, text_font, text_x, text_y,
+                 button_type):
 
-        self.screen = screen
-        self.x = x
-        self.y = y
-        self.width = width
-        self.height = height
+        super().__init__(screen, x, y,
+                         width, height, None,
+                         0, None, None,
+                         inactive_color, active_colour,
+                         text_color, text_font, text_x, text_y)
 
-        self.inactive_color = inactive_color
-        self.active_colour = active_colour
+        self.button_type = button_type
         self.active = False
-
         self.text = text
-        self.text_color = text_color
-        self.text_font = text_font
-        self.text_x = text_x
-        self.text_y = text_y
-
         self.colour = self.inactive_color
 
     def update_colour(self):
@@ -128,7 +131,6 @@ class Button:
             self.colour = self.inactive_color
 
     def draw(self):
-        #pygame.draw.rect(self.screen, self.colour, (self.x, self.y, self.width, self.height))
 
         surface = pygame.Surface((self.width, self.height), pygame.SRCALPHA)
         surface.fill(self.colour)
