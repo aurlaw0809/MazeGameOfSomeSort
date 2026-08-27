@@ -17,7 +17,7 @@ BUTTON_TEXT_X = 10
 BUTTON_TEXT_Y = 10
 
 BUTTON_INACTIVE_COLOUR = (255, 255, 255, 0)
-BUTTON_ACTIVE_COLOUR = (255, 255, 255, 100)
+BUTTON_ACTIVE_COLOUR = (255, 255, 255, 50)
 
 BUTTON_WIDTH = 350
 BUTTON_HEIGHT = 40
@@ -76,9 +76,20 @@ def update_toggle(buttons, current_page, pages_list):
 
     return pages_list
 
+def validate_user_input(buttons, database):
+    return True
+
+def update_user_input(buttons, current_page, pages_list):
+    button_number = buttons.get_chosen_button()
+    user_text = buttons.get_list_buttons()[button_number].get_user_text()
+
+    pages_list[current_page][1][button_number] = user_text
+
+    return pages_list
 
 
-run =True
+run = True
+text_box_selected = False
 buttons = update_page()
 
 while run:
@@ -88,61 +99,95 @@ while run:
     bg.draw()
     buttons.draw()
 
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            run = False
+    if not text_box_selected:
 
-        if event.type == pygame.MOUSEMOTION:
-            i = 0
-            for i in range(0, buttons.get_number_buttons()):
-                if buttons.get_list_buttons()[i].check_collision(event.pos):
-                    buttons.set_active_button(i)
+        for event in pygame.event.get():
 
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            if event.button == 1:
+            if event.type == pygame.QUIT:
+                run = False
+
+            if event.type == pygame.MOUSEMOTION:
                 i = 0
                 for i in range(0, buttons.get_number_buttons()):
-                    if buttons.get_list_buttons()[i].is_active():
-                        buttons.set_button_selected(True)
-                        buttons.set_chosen_button(i)
+                    if buttons.get_list_buttons()[i].check_collision(event.pos):
+                        buttons.set_active_button(i)
 
-                        #check here
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    i = 0
+                    for i in range(0, buttons.get_number_buttons()):
+                        if buttons.get_list_buttons()[i].is_active():
+                            buttons.set_button_selected(True)
+                            buttons.set_chosen_button(i)
+
+                            #check here
+
+                            if buttons.get_chosen_button_type() == 'T':
+                                buttons.get_list_buttons()[i].switch_toggled()
+                                pages = update_toggle(buttons, current_page, pages)
+
+                            if buttons.get_chosen_button_type() == 'E':
+                                buttons.get_list_buttons()[buttons.get_chosen_button()].selected_text_box()
+                                text_box_selected = True
+
+                            if buttons.get_chosen_button_type() == 'B':
+                                current_page = route_to_next_page(buttons, current_page)
+                                buttons = update_page()
+                                break
+
+
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RETURN:
+                    if buttons.get_active_button() != -1:
+                        buttons.set_chosen_button(buttons.get_active_button())
+                        buttons.set_button_selected(True)
 
                         if buttons.get_chosen_button_type() == 'T':
-                            buttons.get_list_buttons()[i].switch_toggled()
+                            buttons.get_list_buttons()[buttons.get_chosen_button()].switch_toggled()
                             pages = update_toggle(buttons, current_page, pages)
-                        
+
+                        if buttons.get_chosen_button_type() == 'E':
+                            buttons.get_list_buttons()[buttons.get_chosen_button()].selected_text_box()
+                            text_box_selected = True
+
                         if buttons.get_chosen_button_type() == 'B':
                             current_page = route_to_next_page(buttons, current_page)
                             buttons = update_page()
                             break
 
+                if event.key == pygame.K_SPACE:
+                    if buttons.get_active_button() != -1:
+                        buttons.set_active_button(buttons.get_active_button() + 1)
+                    else:
+                        buttons.set_active_button(0)
 
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_RETURN:
-                if buttons.get_active_button() != -1:
-                    buttons.set_chosen_button(buttons.get_active_button())
-                    buttons.set_button_selected(True)
-
-                    if buttons.get_chosen_button_type() == 'T':
-                        buttons.get_list_buttons()[buttons.get_chosen_button()].switch_toggled()
-                        pages = update_toggle(buttons, current_page, pages)
-
-                    if buttons.get_chosen_button_type() == 'B':
+                if event.key == pygame.K_ESCAPE:
+                    if current_page == 'MM':
+                        run = False
+                    else:
+                        buttons.set_chosen_button(0)
                         current_page = route_to_next_page(buttons, current_page)
                         buttons = update_page()
-                        break
 
-            if event.key == pygame.K_SPACE:
-                if buttons.get_active_button() != -1:
-                    buttons.set_active_button(buttons.get_active_button() + 1)
-                else:
-                    buttons.set_active_button(0)
+    else:
 
-            if event.key == pygame.K_ESCAPE:
+        for event in pygame.event.get():
+
+            if event.type == pygame.QUIT:
                 run = False
-            if event.key == pygame.K_q:
-                run = False
+
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_BACKSPACE:
+                    buttons.get_list_buttons()[buttons.get_chosen_button()].backspace_user_text()
+                elif event.unicode.isprintable() and event.key != pygame.K_SPACE and buttons.get_list_buttons()[buttons.get_chosen_button()].get_len_user_text() < 30:
+                    buttons.get_list_buttons()[buttons.get_chosen_button()].add_user_text(event.unicode)
+                elif event.key == pygame.K_RETURN:
+                    if validate_user_input(buttons, True):
+                        buttons.get_list_buttons()[buttons.get_chosen_button()].unselected_text_box()
+                        pages = update_user_input(buttons, current_page, pages)
+                        text_box_selected = False
+
+
 
     pygame.display.update()
 

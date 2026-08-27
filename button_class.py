@@ -44,11 +44,17 @@ class ButtonList:
             else:
                 toggled = False
 
+            if self.button_types[i] == 'E':
+                user_text = self.button_actions[i]
+            else:
+                user_text = None
+
             self.list_buttons.append(Button(self.screen,
                                             self.x,
                                             self.y + (self.height + self.spacing) * i,
                                             self.width,
                                             self.height,
+                                            self.spacing,
                                             self.inactive_color,
                                             self.active_colour,
                                             self.list_names[i],
@@ -57,7 +63,8 @@ class ButtonList:
                                             self.text_x,
                                             self.text_y,
                                             self.button_types[i],
-                                            toggled))
+                                            toggled,
+                                            user_text))
 
     def print_button_selected(self, i):
         text = self.text_font.render(f"SELECTED: {self.list_names[i]}", True, self.text_color)
@@ -82,6 +89,8 @@ class ButtonList:
             else:
                 self.list_buttons[i].make_inactive()
             self.list_buttons[i].draw()
+            if self.list_buttons[i].button_type == 'E':
+                self.list_buttons[i].draw_text_box()
 
     def set_active_button(self, i):
         self.active_button = i
@@ -118,13 +127,13 @@ class ButtonList:
 class Button(ButtonList):
 
     def __init__(self, screen, x, y,
-                 width, height,
+                 width, height, spacing,
                  inactive_color, active_colour,
                  text, text_color, text_font, text_x, text_y,
-                 button_type, toggled):
+                 button_type, toggled, user_text):
 
         super().__init__(screen, x, y,
-                         width, height, None,
+                         width, height, spacing,
                          0, None, None, None,
                          inactive_color, active_colour,
                          text_color, text_font, text_x, text_y)
@@ -133,8 +142,14 @@ class Button(ButtonList):
         self.active = False
         self.text = text
         self.colour = self.inactive_color
+        self.text_box_colour = self.inactive_color
 
         self.toggled = toggled
+
+        if user_text is None:
+            self.user_text = ''
+        else:
+            self.user_text = user_text
 
     def update_colour(self):
         if self.active or self.toggled:
@@ -176,3 +191,35 @@ class Button(ButtonList):
 
     def get_toggled(self):
         return self.toggled
+
+    def draw_text_box(self):
+        surface = pygame.Surface((self.width * 1.9, self.height), pygame.SRCALPHA)
+        surface.fill(self.text_box_colour)
+        self.screen.blit(surface, (self.x, self.y + self.height + self.spacing))
+
+        text = self.text_font.render(f"> {self.user_text}", True, self.text_color)
+
+        self.screen.blit(text, (self.x + self.text_x, self.y + self.height + self.spacing + self.text_y))
+
+    def add_user_text(self, text):
+        self.user_text += text
+        return self.user_text
+
+    def backspace_user_text(self):
+        self.user_text = self.user_text[:-1]
+        return self.user_text
+
+    def get_len_user_text(self):
+        if self.user_text == '':
+            return 0
+        else:
+            return len(self.user_text)
+
+    def get_user_text(self):
+        return self.user_text
+
+    def selected_text_box(self):
+        self.text_box_colour = self.active_colour
+
+    def unselected_text_box(self):
+        self.text_box_colour = self.inactive_color
