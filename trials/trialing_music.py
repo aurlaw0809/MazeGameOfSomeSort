@@ -4,7 +4,7 @@ pygame.init()
 pygame.mixer.init()
 
 # Load the music file (supports .mp3, .wav, and .ogg)
-pygame.mixer.music.load("assets/music/elevator_music1.mp3")
+pygame.mixer.music.load("../assets/music/elevator_music1.mp3")
 
 pygame.mixer.music.set_volume(0.5)
 

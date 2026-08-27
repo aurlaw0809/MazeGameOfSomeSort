@@ -12,22 +12,22 @@ SCREEN_HEIGHT = 600
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Trialing BG")
 
-sky = pygame.image.load('assets/skies/sky1/1.png').convert_alpha()
+sky = pygame.image.load('../assets/skies/sky1/1.png').convert_alpha()
 
 scale_factor = SCREEN_HEIGHT / sky.get_height()
 
 sky = pygame.transform.scale_by(sky, scale_factor)
 
-shoot = pygame.image.load('assets/skies/sky1/3.png').convert_alpha()
+shoot = pygame.image.load('../assets/skies/sky1/3.png').convert_alpha()
 shoot = pygame.transform.scale_by(shoot, scale_factor)
 
-back_cloud = pygame.image.load('assets/skies/sky1/2.png').convert_alpha()
+back_cloud = pygame.image.load('../assets/skies/sky1/2.png').convert_alpha()
 back_cloud = pygame.transform.scale_by(back_cloud, scale_factor)
 
-middle_cloud = pygame.image.load('assets/skies/sky1/4.png').convert_alpha()
+middle_cloud = pygame.image.load('../assets/skies/sky1/4.png').convert_alpha()
 middle_cloud = pygame.transform.scale_by(middle_cloud, scale_factor)
 
-front_cloud = pygame.image.load('assets/skies/sky1/5.png').convert_alpha()
+front_cloud = pygame.image.load('../assets/skies/sky1/5.png').convert_alpha()
 front_cloud = pygame.transform.scale_by(front_cloud, scale_factor)
 
 scroll1 = 0

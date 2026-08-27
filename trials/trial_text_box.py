@@ -11,7 +11,7 @@ SCREEN_HEIGHT = 600
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Trialing text box")
 
-font = pygame.font.Font('assets/fonts/pressstart2p.ttf', 30)
+font = pygame.font.Font('../assets/fonts/pressstart2p.ttf', 30)
 user_text = ''
 
 run = True
