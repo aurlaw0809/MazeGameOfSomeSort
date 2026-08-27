@@ -3,20 +3,23 @@ import random
 from dynamic_bg_class import DynamicBackground
 from button_class import ButtonList
 
+NORMAL_MUSIC_VOLUME = 0.5
+NORMAL_SOUND_EFFECT_VOLUME = 0.2
+
 pygame.init()
 pygame.mixer.init()
 
 pygame.mixer.music.load("assets/music/steven_universe.mp3")
-pygame.mixer.music.set_volume(0.5)
+pygame.mixer.music.set_volume(NORMAL_MUSIC_VOLUME)
 
 click_sound = pygame.mixer.Sound("assets/sound_effects/click.wav")
-click_sound.set_volume(0.2)
+click_sound.set_volume(NORMAL_SOUND_EFFECT_VOLUME)
 
 keyboard3 = pygame.mixer.Sound("assets/sound_effects/keyboard3.wav")
 keyboard2 = pygame.mixer.Sound("assets/sound_effects/keyboard2.wav")
 
-keyboard2.set_volume(0.2)
-keyboard3.set_volume(0.2)
+keyboard2.set_volume(NORMAL_SOUND_EFFECT_VOLUME)
+keyboard3.set_volume(NORMAL_SOUND_EFFECT_VOLUME)
 
 keyboard_sounds = [keyboard2, keyboard3]
 
@@ -147,14 +150,14 @@ while run:
     buttons.draw()
 
     if music_running:
-        pygame.mixer.music.set_volume(0.5)
+        pygame.mixer.music.set_volume(NORMAL_MUSIC_VOLUME)
     else:
         pygame.mixer.music.set_volume(0)
 
     if sound_effects_running:
-        keyboard2.set_volume(0.2)
-        keyboard3.set_volume(0.2)
-        click_sound.set_volume(0.2)
+        keyboard2.set_volume(NORMAL_SOUND_EFFECT_VOLUME)
+        keyboard3.set_volume(NORMAL_SOUND_EFFECT_VOLUME)
+        click_sound.set_volume(NORMAL_SOUND_EFFECT_VOLUME)
     else:
         keyboard2.set_volume(0)
         keyboard3.set_volume(0)
