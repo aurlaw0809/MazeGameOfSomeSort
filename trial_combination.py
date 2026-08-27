@@ -6,7 +6,7 @@ from button_class import ButtonList
 pygame.init()
 pygame.mixer.init()
 
-pygame.mixer.music.load("assets/music/elevator_music1.mp3")
+pygame.mixer.music.load("assets/music/steven_universe.mp3")
 pygame.mixer.music.set_volume(0.5)
 
 click_sound = pygame.mixer.Sound("assets/sound_effects/click.wav")
@@ -50,7 +50,8 @@ bg = DynamicBackground(screen, 'sky1')
 #B = branch, F = finish game, T = toggle, E = entry, L = level
 # page name: [button names, action: to which page or toggle a variable or store a text box value, page type]
 
-pages = {'SP': [['QUIT', 'NEXT', 'ENTER NAME'], [None, 'MM', None], ['F', 'B', 'E'], 4],
+pages = {'SP2': [['NEXT', 'QUIT', 'ENTER NAME'], ['MM', None, None], ['B', 'F', 'E'], 4],
+         'SP1': [['QUIT', 'ENTER NAME'], [None, None], ['F', 'E'], 3],
          'MM': [['START', 'SETTINGS', 'LEADERBOARD', 'QUIT'], ['MSS', 'MO', 'MRS', None], ['B', 'B', 'B', 'F'], 4],
          'MO': [['BACK', 'MUSIC', 'SOUND EFFECTS', 'NAME'], ['MM', True, True, None], ['B', 'T', 'T', 'E'], 5],
          'MRS': [['BACK', 'LVL. 1', 'LVL. 2', 'LVL. 3'], ['MM', None, None, None], ['B', 'L', 'L', 'L'], 4],
@@ -58,7 +59,7 @@ pages = {'SP': [['QUIT', 'NEXT', 'ENTER NAME'], [None, 'MM', None], ['F', 'B', '
          'MSS': [['BACK', 'LEVELS', 'TUTORIAL'], ['MM', 'MLS', None], ['B', 'B', 'L'], 3],
          'MLS': [['BACK', 'LVL. 1', 'LVL. 2', 'LVL. 3'], ['MSS', None, None, None], ['B', 'L', 'L', 'L'], 4],}
 
-current_page = 'SP'
+current_page = 'SP1'
 
 def update_page():
     BUTTON_NAMES = pages[current_page][0]
@@ -343,8 +344,12 @@ while run:
                         if validate_user_input(buttons, True):
                             buttons.get_list_buttons()[buttons.get_chosen_button()].unselected_text_box()
                             pages = update_user_input(buttons, current_page, pages)
+
                             initial_name_done = True
-                            pages['MO'][1][3] = pages['SP'][1][1]
+                            pages['SP2'][1][2] = pages['SP1'][1][1]
+                            pages['MO'][1][3] = pages['SP1'][1][1]
+                            current_page = 'SP2'
+                            buttons = update_page()
                             text_box_selected = False
 
     pygame.display.update()
