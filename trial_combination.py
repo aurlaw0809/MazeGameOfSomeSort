@@ -1,8 +1,24 @@
 import pygame
+import random
 from dynamic_bg_class import DynamicBackground
 from button_class import ButtonList
 
 pygame.init()
+pygame.mixer.init()
+
+pygame.mixer.music.load("assets/music/elevator_music1.mp3")
+pygame.mixer.music.set_volume(0.5)
+
+click_sound = pygame.mixer.Sound("assets/sound_effects/click.wav")
+click_sound.set_volume(0.2)
+
+keyboard3 = pygame.mixer.Sound("assets/sound_effects/keyboard3.wav")
+keyboard2 = pygame.mixer.Sound("assets/sound_effects/keyboard2.wav")
+
+keyboard2.set_volume(0.2)
+keyboard3.set_volume(0.2)
+
+keyboard_sounds = [keyboard2, keyboard3]
 
 clock = pygame.time.Clock()
 FPS = 60
@@ -36,7 +52,7 @@ bg = DynamicBackground(screen, 'sky1')
 # page name: [button names, action: to which page or toggle a variable or store a text box value, page type]
 
 pages = {'MM': [['START', 'SETTINGS', 'LEADERBOARD', 'QUIT'], ['MSS', 'MO', 'MRS', None], ['B', 'B', 'B', 'F']],
-         'MO': [['BACK', 'MUSIC', 'SOUND EFFECTS', 'NAME'], ['MM', False, False, None], ['B', 'T', 'T', 'E']],
+         'MO': [['BACK', 'MUSIC', 'SOUND EFFECTS', 'NAME'], ['MM', True, True, None], ['B', 'T', 'T', 'E']],
          'MRS': [['BACK', 'LVL. 1', 'LVL. 2', 'LVL. 3'], ['MM', None, None, None], ['B', 'L', 'L', 'L']],
          'MRD': [['BACK'], ['MRS'], ['B']],
          'MSS': [['BACK', 'LEVELS', 'TUTORIAL'], ['MM', 'MLS', None], ['B', 'B', 'L']],
@@ -87,10 +103,37 @@ def update_user_input(buttons, current_page, pages_list):
 
     return pages_list
 
+def update_sounds_running(buttons, current_page, sound_effects_running, music_running):
+    button_number = buttons.get_chosen_button()
+    toggle_value = buttons.get_list_buttons()[button_number].get_toggled()
+
+    if current_page == 'MO':
+        if button_number == 1:
+            if toggle_value:
+                music_running = True
+            else:
+                music_running = False
+
+        elif button_number == 2:
+            if toggle_value:
+                sound_effects_running = True
+            else:
+                sound_effects_running = False
+
+    return sound_effects_running, music_running
+
+def random_keyboard_sound():
+    index = random.randint(0, len(keyboard_sounds)-1)
+    return keyboard_sounds[index]
+
 
 run = True
 text_box_selected = False
+sound_effects_running = True
+music_running = True
 buttons = update_page()
+
+pygame.mixer.music.play(-1)
 
 while run:
 
@@ -98,6 +141,22 @@ while run:
 
     bg.draw()
     buttons.draw()
+
+    if music_running:
+        pygame.mixer.music.set_volume(0.5)
+    else:
+        pygame.mixer.music.set_volume(0)
+
+    if sound_effects_running:
+        keyboard2.set_volume(0.2)
+        keyboard3.set_volume(0.2)
+        click_sound.set_volume(0.2)
+    else:
+        keyboard2.set_volume(0)
+        keyboard3.set_volume(0)
+        click_sound.set_volume(0)
+
+
 
     if not text_box_selected:
 
@@ -119,12 +178,14 @@ while run:
                         if buttons.get_list_buttons()[i].is_active():
                             buttons.set_button_selected(True)
                             buttons.set_chosen_button(i)
+                            click_sound.play()
 
                             #check here
 
                             if buttons.get_chosen_button_type() == 'T':
                                 buttons.get_list_buttons()[i].switch_toggled()
                                 pages = update_toggle(buttons, current_page, pages)
+                                sound_effects_running, music_running = update_sounds_running(buttons, current_page, sound_effects_running, music_running)
 
                             if buttons.get_chosen_button_type() == 'E':
                                 buttons.get_list_buttons()[buttons.get_chosen_button()].selected_text_box()
@@ -137,14 +198,17 @@ while run:
 
 
             if event.type == pygame.KEYDOWN:
+                random_keyboard_sound().play()
                 if event.key == pygame.K_RETURN:
                     if buttons.get_active_button() != -1:
                         buttons.set_chosen_button(buttons.get_active_button())
                         buttons.set_button_selected(True)
+                        click_sound.play()
 
                         if buttons.get_chosen_button_type() == 'T':
                             buttons.get_list_buttons()[buttons.get_chosen_button()].switch_toggled()
                             pages = update_toggle(buttons, current_page, pages)
+                            sound_effects_running, music_running = update_sounds_running(buttons, current_page, sound_effects_running, music_running)
 
                         if buttons.get_chosen_button_type() == 'E':
                             buttons.get_list_buttons()[buttons.get_chosen_button()].selected_text_box()
@@ -177,6 +241,7 @@ while run:
                 run = False
 
             if event.type == pygame.KEYDOWN:
+                random_keyboard_sound().play()
                 if event.key == pygame.K_BACKSPACE:
                     buttons.get_list_buttons()[buttons.get_chosen_button()].backspace_user_text()
                 elif event.unicode.isprintable() and event.key != pygame.K_SPACE and buttons.get_list_buttons()[buttons.get_chosen_button()].get_len_user_text() < 30:
