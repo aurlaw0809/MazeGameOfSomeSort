@@ -23,14 +23,14 @@ BUTTON_WIDTH = 350
 BUTTON_HEIGHT = 40
 
 BUTTON_X = 30
-BUTTON_Y = 300
+BUTTON_Y = 320
 
 BUTTON_SPACING = 10
 
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SRCALPHA)
 pygame.display.set_caption("Trialing combo")
 
-bg = DynamicBackground(screen)
+bg = DynamicBackground(screen, 'sky1')
 
 #B = branch, F = finish game, T = toggle, E = entry, L = level
 # page name: [button names, action: to which page or toggle a variable or store a text box value, page type]
