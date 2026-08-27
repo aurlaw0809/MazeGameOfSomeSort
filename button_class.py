@@ -3,7 +3,7 @@ import pygame
 class ButtonList:
     def __init__(self, screen, x, y,
                  width, height, spacing,
-                 number_buttons, list_names, button_types,
+                 number_buttons, list_names, button_types, button_actions,
                  inactive_color, active_colour,
                  text_color, text_font, text_x, text_y):
 
@@ -22,6 +22,7 @@ class ButtonList:
         self.list_buttons = []
         self.list_names = list_names
         self.button_types = button_types
+        self.button_actions = button_actions
 
         self.inactive_color = inactive_color
         self.active_colour = active_colour
@@ -38,6 +39,11 @@ class ButtonList:
 
     def create_buttons(self):
         for i in range(0, self.number_buttons):
+            if self.button_types[i] == 'T':
+                toggled = self.button_actions[i]
+            else:
+                toggled = False
+
             self.list_buttons.append(Button(self.screen,
                                             self.x,
                                             self.y + (self.height + self.spacing) * i,
@@ -50,7 +56,8 @@ class ButtonList:
                                             self.text_font,
                                             self.text_x,
                                             self.text_y,
-                                            self.button_types[i]))
+                                            self.button_types[i],
+                                            toggled))
 
     def print_button_selected(self, i):
         text = self.text_font.render(f"SELECTED: {self.list_names[i]}", True, self.text_color)
@@ -102,7 +109,10 @@ class ButtonList:
         return self.list_buttons
 
     def get_chosen_button_type(self):
-        return self.button_types[self.chosen_button]
+        if self.button_selected:
+            return self.button_types[self.chosen_button]
+        else:
+            return None
 
 
 class Button(ButtonList):
@@ -111,11 +121,11 @@ class Button(ButtonList):
                  width, height,
                  inactive_color, active_colour,
                  text, text_color, text_font, text_x, text_y,
-                 button_type):
+                 button_type, toggled):
 
         super().__init__(screen, x, y,
                          width, height, None,
-                         0, None, None,
+                         0, None, None, None,
                          inactive_color, active_colour,
                          text_color, text_font, text_x, text_y)
 
@@ -124,8 +134,10 @@ class Button(ButtonList):
         self.text = text
         self.colour = self.inactive_color
 
+        self.toggled = toggled
+
     def update_colour(self):
-        if self.active:
+        if self.active or self.toggled:
             self.colour = self.active_colour
         else:
             self.colour = self.inactive_color
@@ -157,3 +169,10 @@ class Button(ButtonList):
 
     def is_active(self):
         return self.active
+
+    def switch_toggled(self):
+        self.toggled = not self.toggled
+        self.update_colour()
+
+    def get_toggled(self):
+        return self.toggled
