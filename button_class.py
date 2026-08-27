@@ -75,6 +75,8 @@ class ButtonList:
         self.screen.blit(text, (self.x, 50))
 
     def draw(self):
+
+        '''
         self.print_button_active(self.active_button)
 
         if self.button_selected:
@@ -82,6 +84,7 @@ class ButtonList:
         else:
             text = self.text_font.render(f"SELECTED: NONE", True, self.text_color)
             self.screen.blit(text, (self.x, 20))
+        '''
 
         for i in range(0, self.number_buttons):
             if self.active_button == i:
