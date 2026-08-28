@@ -53,7 +53,4 @@ def update_sounds_running(buttons, current_page, sound_effects_running, music_ru
 
 def validate_user_name_input(buttons, user_name):
 
-    if not name_entered(user_name):
-        pass
-
-    return True
+    return name_entered(user_name)
