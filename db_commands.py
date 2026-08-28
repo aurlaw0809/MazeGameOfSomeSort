@@ -121,6 +121,7 @@ def name_entered(user_name):
                          VALUES ('{user_name}', 0, 0, 0);"""
         with sqlite3.connect("game_data.db") as conn:
             execute_write_query(conn, write_new_name_query)
+        return True
 
 
 #is_name_taken('starchy')
