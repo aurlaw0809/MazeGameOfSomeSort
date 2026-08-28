@@ -183,109 +183,39 @@ while run:
 
  # -----------------------------------------------------------------------------------------------------------------------------------
 
-        for event in pygame.event.get():
+    for event in pygame.event.get():
 
-            if event.type == pygame.QUIT:
-                run = False
+        if event.type == pygame.QUIT:
+            run = False
 
- # -----------------------------------------------------------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------------------------------------------------------------
 
-            if event.type == pygame.MOUSEMOTION:
+        if event.type == pygame.MOUSEMOTION:
 
-                if not pop_up_selected and not text_box_selected:
+            if not pop_up_selected and not text_box_selected:
+                for i in range(0, buttons.get_number_buttons()):
+                    if buttons.get_list_buttons()[i].check_collision(event.pos) and not text_box_selected:
+                        buttons.set_active_button(i)
+
+            elif pop_up_selected:
+                for i in range(0, pop_up_buttons.get_number_buttons()):
+                    if pop_up_buttons.get_list_buttons()[i].check_collision(event.pos) and not text_box_selected:
+                        pop_up_buttons.set_active_button(i)
+
+# -----------------------------------------------------------------------------------------------------------------------------------
+
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if event.button == 1:
+
+                if not pop_up_selected and not text_box_selected and not start_page:
                     for i in range(0, buttons.get_number_buttons()):
-                        if buttons.get_list_buttons()[i].check_collision(event.pos) and not text_box_selected:
-                            buttons.set_active_button(i)
-
-                elif pop_up_selected:
-                    for i in range(0, pop_up_buttons.get_number_buttons()):
-                        if pop_up_buttons.get_list_buttons()[i].check_collision(event.pos) and not text_box_selected:
-                            pop_up_buttons.set_active_button(i)
-
- # -----------------------------------------------------------------------------------------------------------------------------------
-
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if event.button == 1:
-
-                    if not pop_up_selected and not text_box_selected and not start_page:
-                        for i in range(0, buttons.get_number_buttons()):
-                            if buttons.get_list_buttons()[i].is_active():
-                                buttons.set_button_selected(True)
-                                buttons.set_chosen_button(i)
-                                click_sound.play()
-
-                                if buttons.get_chosen_button_type() == 'T':
-                                    buttons.get_list_buttons()[i].switch_toggled()
-                                    pages = update_toggle(buttons, current_page, pages)
-                                    sound_effects_running, music_running = update_sounds_running(buttons, current_page, sound_effects_running, music_running)
-
-                                elif buttons.get_chosen_button_type() == 'E':
-                                    buttons.get_list_buttons()[buttons.get_chosen_button()].selected_text_box()
-                                    text_box_selected = True
-
-                                elif buttons.get_chosen_button_type() == 'B':
-                                    current_page = route_to_next_page(buttons, current_page, pages)
-                                    buttons = update_page(current_page)
-                                    break
-
-                                elif buttons.get_chosen_button_type() == 'F':
-                                    run = False
-
-                    elif pop_up_selected:
-                        for i in range(0, pop_up_buttons.get_number_buttons()):
-                            if pop_up_buttons.get_list_buttons()[i].is_active():
-                                pop_up_buttons.set_button_selected(True)
-                                pop_up_buttons.set_chosen_button(i)
-                                click_sound.play()
-
-                                if pop_up_buttons.get_chosen_button_type() == 'BC':
-
-                                    #TODO here
-
-                                    test_name = buttons.get_list_buttons()[buttons.get_chosen_button()].get_user_text()
-                                    buttons.get_list_buttons()[buttons.get_chosen_button()].unselected_text_box()
-
-                                    user_name = test_name
-                                    pages['SP1'][1][1] = test_name
-                                    pages['SP2'][1][2] = test_name
-                                    pages['MO'][1][3] = test_name
-
-                                    current_page = route_to_next_page(pop_up_buttons, current_pop_up, pop_ups)
-                                    buttons = update_page(current_page)
-                                    pop_up_selected = False
-                                    current_pop_up = ''
-                                    pop_up_buttons = update_pop_ups(current_pop_up)
-                                    break
-
-                    elif start_page:
-                        for i in range(0, buttons.get_number_buttons()):
-                            if buttons.get_list_buttons()[i].is_active():
-                                buttons.set_button_selected(True)
-                                buttons.set_chosen_button(i)
-                                click_sound.play()
-
-                                if buttons.get_chosen_button_type() == 'E':
-                                    buttons.get_list_buttons()[buttons.get_chosen_button()].selected_text_box()
-                                    text_box_selected = True
-
-                                elif buttons.get_chosen_button_type() == 'F':
-                                    run = False
-
- # -----------------------------------------------------------------------------------------------------------------------------------
-
-            if event.type == pygame.KEYDOWN:
-                random_keyboard_sound(keyboard_sounds).play()
-
-                if not pop_up_selected and not text_box_selected:
-                    if event.key == pygame.K_RETURN:
-                        if buttons.get_active_button() != -1:
-                            buttons.set_chosen_button(buttons.get_active_button())
+                        if buttons.get_list_buttons()[i].is_active():
                             buttons.set_button_selected(True)
+                            buttons.set_chosen_button(i)
                             click_sound.play()
 
                             if buttons.get_chosen_button_type() == 'T':
-                                user_name = buttons.get_list_buttons()[buttons.get_chosen_button()].get_user_text()
-                                buttons.get_list_buttons()[buttons.get_chosen_button()].switch_toggled()
+                                buttons.get_list_buttons()[i].switch_toggled()
                                 pages = update_toggle(buttons, current_page, pages)
                                 sound_effects_running, music_running = update_sounds_running(buttons, current_page, sound_effects_running, music_running)
 
@@ -293,7 +223,7 @@ while run:
                                 buttons.get_list_buttons()[buttons.get_chosen_button()].selected_text_box()
                                 text_box_selected = True
 
-                            elif buttons.get_chosen_button_type() == 'B' and not start_page:
+                            elif buttons.get_chosen_button_type() == 'B':
                                 current_page = route_to_next_page(buttons, current_page, pages)
                                 buttons = update_page(current_page)
                                 break
@@ -301,25 +231,23 @@ while run:
                             elif buttons.get_chosen_button_type() == 'F':
                                 run = False
 
-                    if event.key == pygame.K_SPACE:
-                        if buttons.get_active_button() != -1:
-                            buttons.set_active_button(buttons.get_active_button() + 1)
-                        else:
-                            buttons.set_active_button(0)
-
-                    if event.key == pygame.K_ESCAPE:
-                        buttons.set_chosen_button(0)
-                        current_page = route_to_next_page(buttons, current_page, pages)
-                        buttons = update_page(current_page)
-
                 elif pop_up_selected:
-                    if event.key == pygame.K_RETURN:
-                        if pop_up_buttons.get_active_button() != -1:
-                            pop_up_buttons.set_chosen_button(pop_up_buttons.get_active_button())
+                    for i in range(0, pop_up_buttons.get_number_buttons()):
+                        if pop_up_buttons.get_list_buttons()[i].is_active():
                             pop_up_buttons.set_button_selected(True)
+                            pop_up_buttons.set_chosen_button(i)
                             click_sound.play()
 
-                            if pop_up_buttons.get_chosen_button_type() == 'B':
+                            if pop_up_buttons.get_chosen_button_type() == 'BC':
+
+                                test_name = buttons.get_list_buttons()[buttons.get_chosen_button()].get_user_text()
+                                buttons.get_list_buttons()[buttons.get_chosen_button()].unselected_text_box()
+
+                                user_name = test_name
+                                pages['SP1'][1][1] = test_name
+                                pages['SP2'][1][2] = test_name
+                                pages['MO'][1][3] = test_name
+
                                 current_page = route_to_next_page(pop_up_buttons, current_pop_up, pop_ups)
                                 buttons = update_page(current_page)
                                 pop_up_selected = False
@@ -332,247 +260,147 @@ while run:
                                 current_pop_up = ''
                                 pop_up_buttons = update_pop_ups(current_pop_up)
 
-                    if event.key == pygame.K_SPACE:
-                        if pop_up_buttons.get_active_button() != -1:
-                            pop_up_buttons.set_active_button(pop_up_buttons.get_active_button() + 1)
-                        else:
-                            pop_up_buttons.set_active_button(0)
 
-                    if event.key == pygame.K_ESCAPE:
-                        pop_up_buttons.set_chosen_button(0)
-                        current_page = route_to_next_page(pop_up_buttons, current_pop_up, pop_ups)
-                        buttons = update_page(current_page)
-                        pop_up_selected = False
-                        current_pop_up = ''
-                        pop_up_buttons = update_pop_ups(current_pop_up)
-                        break
+                elif start_page:
+                    for i in range(0, buttons.get_number_buttons()):
+                        if buttons.get_list_buttons()[i].is_active():
+                            buttons.set_button_selected(True)
+                            buttons.set_chosen_button(i)
+                            click_sound.play()
 
-                elif text_box_selected:
-                    if event.key == pygame.K_BACKSPACE:
-                        buttons.get_list_buttons()[buttons.get_chosen_button()].backspace_user_text()
-                    elif event.unicode.isprintable() and event.key != pygame.K_SPACE and buttons.get_list_buttons()[
-                        buttons.get_chosen_button()].get_len_user_text() < 30:
-                        buttons.get_list_buttons()[buttons.get_chosen_button()].add_user_text(event.unicode)
-                    elif event.key == pygame.K_RETURN:
-                        test_name = buttons.get_list_buttons()[buttons.get_chosen_button()].get_user_text()
+                            if buttons.get_chosen_button_type() == 'E':
+                                buttons.get_list_buttons()[buttons.get_chosen_button()].selected_text_box()
+                                text_box_selected = True
 
-                        if len(test_name) == 0 and len(user_name) == 0:
-                            pop_up_selected = True
-                            text_box_selected = False
-                            current_pop_up = f'{current_page}X'
+                            elif buttons.get_chosen_button_type() == 'F':
+                                run = False
+
+# -----------------------------------------------------------------------------------------------------------------------------------
+
+        if event.type == pygame.KEYDOWN:
+            random_keyboard_sound(keyboard_sounds).play()
+
+            if not pop_up_selected and not text_box_selected:
+                if event.key == pygame.K_RETURN:
+                    if buttons.get_active_button() != -1:
+                        buttons.set_chosen_button(buttons.get_active_button())
+                        buttons.set_button_selected(True)
+                        click_sound.play()
+
+                        if buttons.get_chosen_button_type() == 'T':
+                            user_name = buttons.get_list_buttons()[buttons.get_chosen_button()].get_user_text()
+                            buttons.get_list_buttons()[buttons.get_chosen_button()].switch_toggled()
+                            pages = update_toggle(buttons, current_page, pages)
+                            sound_effects_running, music_running = update_sounds_running(buttons, current_page, sound_effects_running, music_running)
+
+                        elif buttons.get_chosen_button_type() == 'E':
+                            buttons.get_list_buttons()[buttons.get_chosen_button()].selected_text_box()
+                            text_box_selected = True
+
+                        elif buttons.get_chosen_button_type() == 'B' and not start_page:
+                            current_page = route_to_next_page(buttons, current_page, pages)
+                            buttons = update_page(current_page)
+                            break
+
+                        elif buttons.get_chosen_button_type() == 'F':
+                            run = False
+
+                if event.key == pygame.K_SPACE:
+                    if buttons.get_active_button() != -1:
+                        buttons.set_active_button(buttons.get_active_button() + 1)
+                    else:
+                        buttons.set_active_button(0)
+
+                if event.key == pygame.K_ESCAPE:
+                    buttons.set_chosen_button(0)
+                    current_page = route_to_next_page(buttons, current_page, pages)
+                    buttons = update_page(current_page)
+
+            elif pop_up_selected:
+                if event.key == pygame.K_RETURN:
+                    if pop_up_buttons.get_active_button() != -1:
+                        pop_up_buttons.set_chosen_button(pop_up_buttons.get_active_button())
+                        pop_up_buttons.set_button_selected(True)
+                        click_sound.play()
+
+                        if pop_up_buttons.get_chosen_button_type() == 'BC':
+
+                            test_name = buttons.get_list_buttons()[buttons.get_chosen_button()].get_user_text()
+                            buttons.get_list_buttons()[buttons.get_chosen_button()].unselected_text_box()
+
+                            user_name = test_name
+                            pages['SP1'][1][1] = test_name
+                            pages['SP2'][1][2] = test_name
+                            pages['MO'][1][3] = test_name
+
+                            current_page = route_to_next_page(pop_up_buttons, current_pop_up, pop_ups)
+                            buttons = update_page(current_page)
+                            pop_up_selected = False
+                            current_pop_up = ''
+                            pop_up_buttons = update_pop_ups(current_pop_up)
+                            break
+
+                        elif pop_up_buttons.get_chosen_button_type() == 'C':
+                            pop_up_selected = False
+                            current_pop_up = ''
                             pop_up_buttons = update_pop_ups(current_pop_up)
 
-                        elif len(test_name) == 0 or user_name == test_name:
-                            buttons.get_list_buttons()[buttons.get_chosen_button()].unselected_text_box()
-                            text_box_selected = False
+                if event.key == pygame.K_SPACE:
+                    if pop_up_buttons.get_active_button() != -1:
+                        pop_up_buttons.set_active_button(pop_up_buttons.get_active_button() + 1)
+                    else:
+                        pop_up_buttons.set_active_button(0)
 
-                        elif validate_user_name_input(buttons, test_name):
-                            '''
-                            user_name = test_name
-                            buttons.get_list_buttons()[buttons.get_chosen_button()].unselected_text_box()
-                            pages = update_user_input(buttons, current_page, pages)
-                            text_box_selected = False
-                            '''
+                if event.key == pygame.K_ESCAPE:
+                    pop_up_buttons.set_chosen_button(0)
+                    current_page = route_to_next_page(pop_up_buttons, current_pop_up, pop_ups)
+                    buttons = update_page(current_page)
+                    pop_up_selected = False
+                    current_pop_up = ''
+                    pop_up_buttons = update_pop_ups(current_pop_up)
+                    break
+
+            elif text_box_selected:
+                if event.key == pygame.K_BACKSPACE:
+                    buttons.get_list_buttons()[buttons.get_chosen_button()].backspace_user_text()
+                elif event.unicode.isprintable() and event.key != pygame.K_SPACE and buttons.get_list_buttons()[
+                    buttons.get_chosen_button()].get_len_user_text() < 30:
+                    buttons.get_list_buttons()[buttons.get_chosen_button()].add_user_text(event.unicode)
+                elif event.key == pygame.K_RETURN:
+                    test_name = buttons.get_list_buttons()[buttons.get_chosen_button()].get_user_text()
+
+                    if len(test_name) == 0 and len(user_name) == 0:
+                        pop_up_selected = True
+                        text_box_selected = False
+                        current_pop_up = f'{current_page}X'
+                        pop_up_buttons = update_pop_ups(current_pop_up)
+
+                    elif len(test_name) == 0 or user_name == test_name:
+                        buttons.get_list_buttons()[buttons.get_chosen_button()].unselected_text_box()
+                        text_box_selected = False
+
+                    elif validate_user_name_input(buttons, test_name):
+                        '''
+                        user_name = test_name
+                        buttons.get_list_buttons()[buttons.get_chosen_button()].unselected_text_box()
+                        pages = update_user_input(buttons, current_page, pages)
+                        text_box_selected = False
+                        '''
+                        text_box_selected = False
+                        if not start_page:
                             pop_up_selected = True
-                            text_box_selected = False
                             current_pop_up = f'{current_page}C'
                             pop_up_buttons = update_pop_ups(current_pop_up)
                         else:
-                            pop_up_selected = True
-                            buttons.get_list_buttons()[buttons.get_chosen_button()].unselected_text_box()
-                            text_box_selected = False
-                            current_pop_up = f'{current_page}E'
-                            pop_up_buttons = update_pop_ups(current_pop_up)
+                            current_page = 'SP2'
+                    else:
+                        pop_up_selected = True
+                        buttons.get_list_buttons()[buttons.get_chosen_button()].unselected_text_box()
+                        text_box_selected = False
+                        current_pop_up = f'{current_page}E'
+                        pop_up_buttons = update_pop_ups(current_pop_up)
 
-                            #need to add if making input user_name as global variable :)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            else:
-
-                for event in pygame.event.get():
-
-                    if event.type == pygame.QUIT:
-                        run = False
-
-                    if event.type == pygame.KEYDOWN:
-                        random_keyboard_sound(keyboard_sounds).play()
-                        if event.key == pygame.K_BACKSPACE:
-                            buttons.get_list_buttons()[buttons.get_chosen_button()].backspace_user_text()
-                        elif event.unicode.isprintable() and event.key != pygame.K_SPACE and buttons.get_list_buttons()[buttons.get_chosen_button()].get_len_user_text() < 30:
-                            buttons.get_list_buttons()[buttons.get_chosen_button()].add_user_text(event.unicode)
-                        elif event.key == pygame.K_RETURN:
-                            test_name = buttons.get_list_buttons()[buttons.get_chosen_button()].get_user_text()
-
-                            if validate_user_name_input(buttons, test_name) or user_name == test_name:
-                                '''
-                                user_name = test_name
-                                buttons.get_list_buttons()[buttons.get_chosen_button()].unselected_text_box()
-                                pages = update_user_input(buttons, current_page, pages)
-                                text_box_selected = False
-                                '''
-                                pop_up_selected = True
-                                text_box_selected = False
-                                current_pop_up = f'{current_page}C'
-                                pop_up_buttons = update_pop_ups(current_pop_up)
-                            else:
-                                pop_up_selected = True
-                                text_box_selected = False
-                                current_pop_up = f'{current_page}E'
-                                pop_up_buttons = update_pop_ups(current_pop_up)
-
-        if start_page:
-            if not text_box_selected:
-
-                for event in pygame.event.get():
-
-                    if event.type == pygame.QUIT:
-                        run = False
-
-                    if event.type == pygame.MOUSEMOTION:
-                        i = 0
-                        for i in range(0, buttons.get_number_buttons()):
-                            if buttons.get_list_buttons()[i].check_collision(event.pos):
-                                buttons.set_active_button(i)
-
-                    if event.type == pygame.MOUSEBUTTONDOWN:
-                        if event.button == 1:
-                            i = 0
-                            for i in range(0, buttons.get_number_buttons()):
-                                if buttons.get_list_buttons()[i].is_active():
-                                    buttons.set_button_selected(True)
-                                    buttons.set_chosen_button(i)
-                                    click_sound.play()
-
-                                    if buttons.get_chosen_button_type() == 'E':
-                                        buttons.get_list_buttons()[buttons.get_chosen_button()].selected_text_box()
-                                        text_box_selected = True
-
-                                    if buttons.get_chosen_button_type() == 'B' and initial_name_done:
-                                        current_page = route_to_next_page(buttons, current_page, pages)
-                                        buttons = update_page(current_page)
-                                        start_page = False
-                                        break
-
-                                    if buttons.get_chosen_button_type() == 'F':
-                                        run = False
-
-                    if event.type == pygame.KEYDOWN:
-                        random_keyboard_sound(keyboard_sounds).play()
-                        if event.key == pygame.K_RETURN:
-                            if buttons.get_active_button() != -1:
-                                buttons.set_chosen_button(buttons.get_active_button())
-                                buttons.set_button_selected(True)
-                                click_sound.play()
-
-                                if buttons.get_chosen_button_type() == 'E':
-                                    buttons.get_list_buttons()[buttons.get_chosen_button()].selected_text_box()
-                                    text_box_selected = True
-
-                                if buttons.get_chosen_button_type() == 'B' and initial_name_done:
-                                    current_page = route_to_next_page(buttons, current_page, pages)
-                                    buttons = update_page(current_page)
-                                    start_page = False
-                                    break
-
-                                if buttons.get_chosen_button_type() == 'F':
-                                    run = False
-
-                        if event.key == pygame.K_SPACE:
-                            if buttons.get_active_button() != -1:
-                                buttons.set_active_button(buttons.get_active_button() + 1)
-                            else:
-                                buttons.set_active_button(0)
-
-                        if event.key == pygame.K_ESCAPE:
-                            run = False
-
-            else:
-
-                for event in pygame.event.get():
-
-                    if event.type == pygame.QUIT:
-                        run = False
-
-                    if event.type == pygame.KEYDOWN:
-                        random_keyboard_sound(keyboard_sounds).play()
-                        if event.key == pygame.K_BACKSPACE:
-                            buttons.get_list_buttons()[buttons.get_chosen_button()].backspace_user_text()
-                        elif event.unicode.isprintable() and event.key != pygame.K_SPACE and buttons.get_list_buttons()[
-                            buttons.get_chosen_button()].get_len_user_text() < 30:
-                            buttons.get_list_buttons()[buttons.get_chosen_button()].add_user_text(event.unicode)
-                        elif event.key == pygame.K_RETURN:
-
-                            test_name = buttons.get_list_buttons()[buttons.get_chosen_button()].get_user_text()
-
-                            if validate_user_name_input(buttons, test_name):
-                                user_name = test_name
-                                buttons.get_list_buttons()[buttons.get_chosen_button()].unselected_text_box()
-                                pages = update_user_input(buttons, current_page, pages)
-
-                                initial_name_done = True
-                                pages['SP2'][1][2] = pages['SP1'][1][1]
-                                pages['MO'][1][3] = pages['SP1'][1][1]
-                                user_name = pages['SP1'][1][1]
-                                current_page = 'SP2'
-                                buttons = update_page(current_page)
-                                text_box_selected = False
-                            else:
-                                pop_up_selected = True
-                                text_box_selected = False
-                                current_pop_up = 'SP1E'
-                                pop_up_buttons = update_pop_ups(current_pop_up)
-
-    else:
-
-        draw_pop_ups(current_pop_up, pop_up_buttons)
-
-        for event in pygame.event.get():
-
-            if event.type == pygame.QUIT:
-                run = False
-
-            if event.type == pygame.MOUSEMOTION:
-                i = 0
-                for i in range(0, pop_up_buttons.get_number_buttons()):
-                    if pop_up_buttons.get_list_buttons()[i].check_collision(event.pos):
-                        pop_up_buttons.set_active_button(i)
-
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if event.button == 1:
-                    i = 0
-                    for i in range(0, pop_up_buttons.get_number_buttons()):
-                        if pop_up_buttons.get_list_buttons()[i].is_active():
-                            pop_up_buttons.set_button_selected(True)
-                            pop_up_buttons.set_chosen_button(i)
-                            click_sound.play()
-
-                            if pop_up_buttons.get_chosen_button_type() == 'B':
-                                current_page = route_to_next_page(pop_up_buttons, current_pop_up, pop_ups)
-                                if current_page != 'SP1':
-                                    start_page = False
-                                buttons = update_page(current_page)
-                                pop_up_selected = False
-                                text_box_selected = False
-                                current_pop_up = ''
-                                break
-
-            if event.type == pygame.KEYDOWN:
-                random_keyboard_sound(keyboard_sounds).play()
-
-
-        pass
+                        #need to add if making input user_name as global variable :)
 
     pygame.display.update()
 
