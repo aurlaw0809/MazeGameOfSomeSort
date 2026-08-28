@@ -59,7 +59,8 @@ pygame.display.set_caption("Trialing combo")
 
 bg = DynamicBackground(screen, 'sky1')
 
-#B = branch, F = finish game, T = toggle, E = entry, L = level, C = close pop up
+#B = branch, F = finish game, T = toggle, E = entry, L = level, C = close pop up, BC = branch and confirm name change
+#pop up codes: E = username exists, C = confirm change, X = box left empty
 # page name: [button names, action: to which page or toggle a variable or store a text box value, page type]
 
 pages = {'SP2': [['NEXT', 'QUIT', 'ENTER NAME'], ['MM', None, None], ['B', 'F', 'E'], 4],
@@ -71,13 +72,16 @@ pages = {'SP2': [['NEXT', 'QUIT', 'ENTER NAME'], ['MM', None, None], ['B', 'F', 
          'MSS': [['BACK', 'LEVELS', 'TUTORIAL'], ['MM', 'MLS', None], ['B', 'B', 'L'], 3],
          'MLS': [['BACK', 'LVL. 1', 'LVL. 2', 'LVL. 3'], ['MSS', None, None, None], ['B', 'L', 'L', 'L'], 4],}
 
-pop_ups = {'SP1E': [['BACK', 'YES'], ['SP1', 'SP2'], ['C', 'B'], 2, 'Username is already on record, is this you?'],
+pop_ups = {'SP1E': [['BACK', 'YES'], ['SP1', 'SP2'], ['C', 'BC'], 2, 'Username is already on record, is this you?'],
+           'SP1X': [['BACK'], ['SP1'], ['C'], 1, 'Username cannot be empty.'],
 
-           'SP2E': [['BACK', 'YES'], ['SP2', 'MM'], ['C', 'B'], 2, 'Username is already on record, is this you?'],
-           'SP2C': [['BACK', 'YES'], ['SP2', 'MM'], ['C', 'B'], 2, 'Confirm username change?'],
+           'SP2E': [['BACK', 'YES'], ['SP2', 'SP2'], ['C', 'BC'], 2, 'Username is already on record, is this you?'],
+           'SP2C': [['BACK', 'YES'], ['SP2', 'SP2'], ['C', 'BC'], 2, 'Confirm username change?'],
+           'SP2X': [['BACK'], ['SP2'], ['C'], 1, 'Username cannot be empty.'],
 
-           'MOE': [['BACK', 'YES'], ['MO', 'MO'], ['C', 'B'], 2, 'Username is already on record, is this you?'],
-           'MOC': [['BACK', 'YES'], ['MO', 'MO'], ['C', 'B'], 2, 'Confirm username change?']}
+           'MOE': [['BACK', 'YES'], ['MO', 'MO'], ['C', 'BC'], 2, 'Username is already on record, is this you?'],
+           'MOC': [['BACK', 'YES'], ['MO', 'MO'], ['C', 'BC'], 2, 'Confirm username change?'],
+           'MOX': [['BACK'], ['MO'], ['C'], 1, 'Username cannot be empty.'],}
 
 current_page = 'SP1'
 current_pop_up = ''
@@ -161,6 +165,7 @@ while run:
 
     bg.draw()
     buttons.draw()
+    draw_pop_ups(current_pop_up, pop_up_buttons)
 
     if music_running:
         pygame.mixer.music.set_volume(NORMAL_MUSIC_VOLUME)
@@ -214,16 +219,16 @@ while run:
                                     pages = update_toggle(buttons, current_page, pages)
                                     sound_effects_running, music_running = update_sounds_running(buttons, current_page, sound_effects_running, music_running)
 
-                                if buttons.get_chosen_button_type() == 'E':
+                                elif buttons.get_chosen_button_type() == 'E':
                                     buttons.get_list_buttons()[buttons.get_chosen_button()].selected_text_box()
                                     text_box_selected = True
 
-                                if buttons.get_chosen_button_type() == 'B':
+                                elif buttons.get_chosen_button_type() == 'B':
                                     current_page = route_to_next_page(buttons, current_page, pages)
                                     buttons = update_page(current_page)
                                     break
 
-                                if buttons.get_chosen_button_type() == 'F':
+                                elif buttons.get_chosen_button_type() == 'F':
                                     run = False
 
                     elif pop_up_selected:
@@ -233,7 +238,18 @@ while run:
                                 pop_up_buttons.set_chosen_button(i)
                                 click_sound.play()
 
-                                if pop_up_buttons.get_chosen_button_type() == 'B':
+                                if pop_up_buttons.get_chosen_button_type() == 'BC':
+
+                                    #TODO here
+
+                                    test_name = buttons.get_list_buttons()[buttons.get_chosen_button()].get_user_text()
+                                    buttons.get_list_buttons()[buttons.get_chosen_button()].unselected_text_box()
+
+                                    user_name = test_name
+                                    pages['SP1'][1][1] = test_name
+                                    pages['SP2'][1][2] = test_name
+                                    pages['MO'][1][3] = test_name
+
                                     current_page = route_to_next_page(pop_up_buttons, current_pop_up, pop_ups)
                                     buttons = update_page(current_page)
                                     pop_up_selected = False
@@ -252,7 +268,7 @@ while run:
                                     buttons.get_list_buttons()[buttons.get_chosen_button()].selected_text_box()
                                     text_box_selected = True
 
-                                if buttons.get_chosen_button_type() == 'F':
+                                elif buttons.get_chosen_button_type() == 'F':
                                     run = False
 
  # -----------------------------------------------------------------------------------------------------------------------------------
@@ -273,16 +289,16 @@ while run:
                                 pages = update_toggle(buttons, current_page, pages)
                                 sound_effects_running, music_running = update_sounds_running(buttons, current_page, sound_effects_running, music_running)
 
-                            if buttons.get_chosen_button_type() == 'E':
+                            elif buttons.get_chosen_button_type() == 'E':
                                 buttons.get_list_buttons()[buttons.get_chosen_button()].selected_text_box()
                                 text_box_selected = True
 
-                            if buttons.get_chosen_button_type() == 'B' and not start_page:
+                            elif buttons.get_chosen_button_type() == 'B' and not start_page:
                                 current_page = route_to_next_page(buttons, current_page, pages)
                                 buttons = update_page(current_page)
                                 break
 
-                            if buttons.get_chosen_button_type() == 'F':
+                            elif buttons.get_chosen_button_type() == 'F':
                                 run = False
 
                     if event.key == pygame.K_SPACE:
@@ -305,17 +321,13 @@ while run:
 
                             if pop_up_buttons.get_chosen_button_type() == 'B':
                                 current_page = route_to_next_page(pop_up_buttons, current_pop_up, pop_ups)
-
-                                if current_page != 'SP1':
-                                    start_page = False
-
                                 buttons = update_page(current_page)
                                 pop_up_selected = False
                                 current_pop_up = ''
                                 pop_up_buttons = update_pop_ups(current_pop_up)
                                 break
 
-                            if pop_up_buttons.get_chosen_button_type() == 'C':
+                            elif pop_up_buttons.get_chosen_button_type() == 'C':
                                 pop_up_selected = False
                                 current_pop_up = ''
                                 pop_up_buttons = update_pop_ups(current_pop_up)
@@ -329,8 +341,6 @@ while run:
                     if event.key == pygame.K_ESCAPE:
                         pop_up_buttons.set_chosen_button(0)
                         current_page = route_to_next_page(pop_up_buttons, current_pop_up, pop_ups)
-                        if current_page != 'SP1':
-                            start_page = False
                         buttons = update_page(current_page)
                         pop_up_selected = False
                         current_pop_up = ''
@@ -346,7 +356,17 @@ while run:
                     elif event.key == pygame.K_RETURN:
                         test_name = buttons.get_list_buttons()[buttons.get_chosen_button()].get_user_text()
 
-                        if validate_user_name_input(buttons, test_name) or user_name == test_name:
+                        if len(test_name) == 0 and len(user_name) == 0:
+                            pop_up_selected = True
+                            text_box_selected = False
+                            current_pop_up = f'{current_page}X'
+                            pop_up_buttons = update_pop_ups(current_pop_up)
+
+                        elif len(test_name) == 0 or user_name == test_name:
+                            buttons.get_list_buttons()[buttons.get_chosen_button()].unselected_text_box()
+                            text_box_selected = False
+
+                        elif validate_user_name_input(buttons, test_name):
                             '''
                             user_name = test_name
                             buttons.get_list_buttons()[buttons.get_chosen_button()].unselected_text_box()
@@ -359,6 +379,7 @@ while run:
                             pop_up_buttons = update_pop_ups(current_pop_up)
                         else:
                             pop_up_selected = True
+                            buttons.get_list_buttons()[buttons.get_chosen_button()].unselected_text_box()
                             text_box_selected = False
                             current_pop_up = f'{current_page}E'
                             pop_up_buttons = update_pop_ups(current_pop_up)
