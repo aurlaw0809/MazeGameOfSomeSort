@@ -182,9 +182,15 @@ while run:
 
     clock.tick(FPS)
 
+#-----------------------------------------------------------------------------------------------------------------------------------
+#DRAWING WINDOWS
+
     bg.draw()
     buttons.draw()
     draw_pop_ups(current_pop_up, pop_up_buttons)
+
+#-----------------------------------------------------------------------------------------------------------------------------------
+#MUSIC AND SOUND EFFECT JAZZ
 
     if music_running:
         pygame.mixer.music.set_volume(NORMAL_MUSIC_VOLUME)
