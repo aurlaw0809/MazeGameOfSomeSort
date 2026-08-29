@@ -1,31 +1,19 @@
+#-----------------------------------------------------------------------------------------------------------------------------------
+#LIBRARIES
+
 import pygame
 from dynamic_bg_class import DynamicBackground
 from button_class import ButtonList
-import sqlite3
-from db_commands import *
 from home_pages_functions import *
-
-#-----------------------------------------------------------------------------------------------------------------------------------
-
-NORMAL_MUSIC_VOLUME = 0.5
-NORMAL_SOUND_EFFECT_VOLUME = 0.2
 
 pygame.init()
 pygame.mixer.init()
 
-pygame.mixer.music.load("assets/music/steven_universe.mp3")
-pygame.mixer.music.set_volume(NORMAL_MUSIC_VOLUME)
+#-----------------------------------------------------------------------------------------------------------------------------------
+#CONSTANTS
 
-click_sound = pygame.mixer.Sound("assets/sound_effects/click.wav")
-click_sound.set_volume(NORMAL_SOUND_EFFECT_VOLUME)
-
-keyboard3 = pygame.mixer.Sound("assets/sound_effects/keyboard3.wav")
-keyboard2 = pygame.mixer.Sound("assets/sound_effects/keyboard2.wav")
-
-keyboard2.set_volume(NORMAL_SOUND_EFFECT_VOLUME)
-keyboard3.set_volume(NORMAL_SOUND_EFFECT_VOLUME)
-
-keyboard_sounds = [keyboard2, keyboard3]
+NORMAL_MUSIC_VOLUME = 0.5
+NORMAL_SOUND_EFFECT_VOLUME = 0.2
 
 clock = pygame.time.Clock()
 FPS = 60
@@ -57,10 +45,31 @@ BUTTON_HEIGHT = 40
 
 BUTTON_SPACING = 10
 
+#-----------------------------------------------------------------------------------------------------------------------------------
+#SOUND SET UP
+
+pygame.mixer.music.load("assets/music/steven_universe.mp3")
+pygame.mixer.music.set_volume(NORMAL_MUSIC_VOLUME)
+
+CLICK_SOUND = pygame.mixer.Sound("assets/sound_effects/click.wav")
+CLICK_SOUND.set_volume(NORMAL_SOUND_EFFECT_VOLUME)
+
+KEYBOARD1 = pygame.mixer.Sound("assets/sound_effects/keyboard3.wav")
+KEYBOARD2 = pygame.mixer.Sound("assets/sound_effects/keyboard2.wav")
+
+KEYBOARD2.set_volume(NORMAL_SOUND_EFFECT_VOLUME)
+KEYBOARD1.set_volume(NORMAL_SOUND_EFFECT_VOLUME)
+
+#-----------------------------------------------------------------------------------------------------------------------------------
+#OTHER SET UP
+
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SRCALPHA)
 pygame.display.set_caption("Trialing combo")
 
 bg = DynamicBackground(screen, 'sky1')
+
+#-----------------------------------------------------------------------------------------------------------------------------------
+#SOME DICTIONARIES AND LISTS
 
 #B = branch, F = finish game, T = toggle, E = entry, L = level, C = close pop up, BC = branch and confirm name change
 #pop up codes: E = username exists, C = confirm change, X = box left empty
@@ -87,10 +96,10 @@ pop_ups = {'SP1E': [['BACK', 'YES'], ['SP1', 'SP2'], ['C', 'BC'], 2, 'Username i
            'MOC': [['BACK', 'YES'], ['MO', 'MO'], ['C', 'BC'], 2, 'Confirm username?'],
            'MOX': [['BACK'], ['MO'], ['C'], 1, 'Username cannot be empty.'],}
 
-current_page = 'SP1'
-current_pop_up = ''
+keyboard_sounds = [KEYBOARD2, KEYBOARD1]
 
 #-----------------------------------------------------------------------------------------------------------------------------------
+#SOME FUNCTIONS THAT USE CONSTANTS SO ARE IN THIS FILE
 
 def update_page(current_page):
     BUTTON_NAMES = pages[current_page][0]
@@ -144,8 +153,12 @@ def draw_pop_ups(p_current_pop_up, pop_up_buttons):
         screen.blit(text, (POP_UP_CORNER_DISTANCE + BUTTON_SPACING + BUTTON_TEXT_X, POP_UP_CORNER_DISTANCE + BUTTON_SPACING + BUTTON_TEXT_Y))
 
 #-----------------------------------------------------------------------------------------------------------------------------------
+#VARIABLES
 
 run = True
+
+current_page = 'SP1'
+current_pop_up = ''
 
 text_box_selected = False
 pop_up_selected = False
@@ -162,6 +175,9 @@ user_name = ''
 
 pygame.mixer.music.play(-1)
 
+#-----------------------------------------------------------------------------------------------------------------------------------
+#MAIN LOOP
+
 while run:
 
     clock.tick(FPS)
@@ -176,15 +192,16 @@ while run:
         pygame.mixer.music.set_volume(0)
 
     if sound_effects_running:
-        keyboard2.set_volume(NORMAL_SOUND_EFFECT_VOLUME)
-        keyboard3.set_volume(NORMAL_SOUND_EFFECT_VOLUME)
-        click_sound.set_volume(NORMAL_SOUND_EFFECT_VOLUME)
+        KEYBOARD2.set_volume(NORMAL_SOUND_EFFECT_VOLUME)
+        KEYBOARD1.set_volume(NORMAL_SOUND_EFFECT_VOLUME)
+        CLICK_SOUND.set_volume(NORMAL_SOUND_EFFECT_VOLUME)
     else:
-        keyboard2.set_volume(0)
-        keyboard3.set_volume(0)
-        click_sound.set_volume(0)
+        KEYBOARD2.set_volume(0)
+        KEYBOARD1.set_volume(0)
+        CLICK_SOUND.set_volume(0)
 
- # -----------------------------------------------------------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------------------------------------------------------------
+#START PYGAME.GET
 
     for event in pygame.event.get():
 
@@ -192,6 +209,7 @@ while run:
             run = False
 
 # -----------------------------------------------------------------------------------------------------------------------------------
+#MOUSE MOTION
 
         if event.type == pygame.MOUSEMOTION:
 
@@ -206,6 +224,7 @@ while run:
                         pop_up_buttons.set_active_button(i)
 
 # -----------------------------------------------------------------------------------------------------------------------------------
+#MOUSE BUTTON DOWN
 
         if event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 1:
@@ -215,7 +234,7 @@ while run:
                         if buttons.get_list_buttons()[i].is_active():
                             buttons.set_button_selected(True)
                             buttons.set_chosen_button(i)
-                            click_sound.play()
+                            CLICK_SOUND.play()
 
                             if buttons.get_chosen_button_type() == 'T':
                                 buttons.get_list_buttons()[i].switch_toggled()
@@ -239,7 +258,7 @@ while run:
                         if pop_up_buttons.get_list_buttons()[i].is_active():
                             pop_up_buttons.set_button_selected(True)
                             pop_up_buttons.set_chosen_button(i)
-                            click_sound.play()
+                            CLICK_SOUND.play()
 
                             if pop_up_buttons.get_chosen_button_type() == 'BC':
 
@@ -278,7 +297,7 @@ while run:
                         if buttons.get_list_buttons()[i].is_active():
                             buttons.set_button_selected(True)
                             buttons.set_chosen_button(i)
-                            click_sound.play()
+                            CLICK_SOUND.play()
 
                             if buttons.get_chosen_button_type() == 'E':
                                 buttons.get_list_buttons()[buttons.get_chosen_button()].selected_text_box()
@@ -288,6 +307,7 @@ while run:
                                 run = False
 
 # -----------------------------------------------------------------------------------------------------------------------------------
+#KEYDOWN
 
         if event.type == pygame.KEYDOWN:
             random_keyboard_sound(keyboard_sounds).play()
@@ -297,7 +317,7 @@ while run:
                     if buttons.get_active_button() != -1:
                         buttons.set_chosen_button(buttons.get_active_button())
                         buttons.set_button_selected(True)
-                        click_sound.play()
+                        CLICK_SOUND.play()
 
                         if buttons.get_chosen_button_type() == 'T':
                             user_name = buttons.get_list_buttons()[buttons.get_chosen_button()].get_user_text()
@@ -337,7 +357,7 @@ while run:
                     if pop_up_buttons.get_active_button() != -1:
                         pop_up_buttons.set_chosen_button(pop_up_buttons.get_active_button())
                         pop_up_buttons.set_button_selected(True)
-                        click_sound.play()
+                        CLICK_SOUND.play()
 
                         if pop_up_buttons.get_chosen_button_type() == 'BC':
 
@@ -418,7 +438,8 @@ while run:
                         current_pop_up = f'{current_page}E'
                         pop_up_buttons = update_pop_ups(current_pop_up)
 
-                        #need to add if making input user_name as global variable :)
+# -----------------------------------------------------------------------------------------------------------------------------------
+#END OF CODE
 
     pygame.display.update()
 
