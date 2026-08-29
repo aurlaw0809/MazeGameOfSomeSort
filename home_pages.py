@@ -33,10 +33,13 @@ FPS = 60
 SCREEN_WIDTH = 1200
 SCREEN_HEIGHT = 600
 
-POP_UP_COLOUR = (255, 255, 255, 50)
+POP_UP_COLOUR = (249, 219, 207)
 POP_UP_CORNER_DISTANCE = 100
 POP_UP_WIDTH = SCREEN_WIDTH - POP_UP_CORNER_DISTANCE * 2
 POP_UP_HEIGHT = SCREEN_HEIGHT - POP_UP_CORNER_DISTANCE * 2
+POP_UP_TEXT_COLOUR = (183, 93, 100)
+POP_UP_BUTTON_INACTIVE_COLOUR = (244, 183, 149, 0)
+POP_UP_BUTTON_ACTIVE_COLOUR = (244, 183, 149, 50)
 
 CORNER_DISTANCE = 50
 
@@ -46,8 +49,8 @@ BUTTON_TEXT_FONT = pygame.font.Font('assets/fonts/pressstart2p.ttf', 20)
 BUTTON_TEXT_X = 10
 BUTTON_TEXT_Y = 10
 
-BUTTON_INACTIVE_COLOUR = (255, 255, 255, 0)
-BUTTON_ACTIVE_COLOUR = (255, 255, 255, 50)
+BUTTON_INACTIVE_COLOUR = (249, 219, 207, 0)
+BUTTON_ACTIVE_COLOUR = (249, 219, 207, 50)
 
 BUTTON_WIDTH = 350
 BUTTON_HEIGHT = 40
@@ -119,8 +122,8 @@ def update_pop_ups(p_current_pop_up):
         pop_up_buttons = ButtonList(screen, BUTTON_X, BUTTON_Y,
                              BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_SPACING,
                              NUMBER_OF_BUTTONS, BUTTON_NAMES, BUTTON_TYPES, BUTTON_ACTIONS,
-                             BUTTON_INACTIVE_COLOUR, BUTTON_ACTIVE_COLOUR,
-                             BUTTON_TEXT_COLOUR, BUTTON_TEXT_FONT, BUTTON_TEXT_X, BUTTON_TEXT_Y)
+                             POP_UP_BUTTON_INACTIVE_COLOUR, POP_UP_BUTTON_ACTIVE_COLOUR,
+                             POP_UP_TEXT_COLOUR, BUTTON_TEXT_FONT, BUTTON_TEXT_X, BUTTON_TEXT_Y)
 
     else:
         pop_up_buttons = None
@@ -137,8 +140,8 @@ def draw_pop_ups(p_current_pop_up, pop_up_buttons):
 
         pop_up_buttons.draw()
 
-        text = BUTTON_TEXT_FONT.render(f"{pop_ups[current_pop_up][4]}", True, BUTTON_TEXT_COLOUR)
-        screen.blit(text, (POP_UP_CORNER_DISTANCE + BUTTON_SPACING, POP_UP_CORNER_DISTANCE + BUTTON_SPACING))
+        text = BUTTON_TEXT_FONT.render(f"{pop_ups[current_pop_up][4]}", True, POP_UP_TEXT_COLOUR)
+        screen.blit(text, (POP_UP_CORNER_DISTANCE + BUTTON_SPACING + BUTTON_TEXT_X, POP_UP_CORNER_DISTANCE + BUTTON_SPACING + BUTTON_TEXT_Y))
 
 #-----------------------------------------------------------------------------------------------------------------------------------
 
@@ -154,7 +157,6 @@ buttons = update_page(current_page)
 pop_up_buttons = update_pop_ups(current_pop_up)
 
 start_page = True
-initial_name_done = False
 
 user_name = ''
 
@@ -244,6 +246,7 @@ while run:
                                 test_name = buttons.get_list_buttons()[buttons.get_chosen_button()].get_user_text()
                                 buttons.get_list_buttons()[buttons.get_chosen_button()].unselected_text_box()
 
+                                submit_new_user_name_input(test_name)
                                 user_name = test_name
                                 pages['SP1'][1][1] = test_name
                                 pages['SP2'][1][2] = test_name
@@ -341,6 +344,7 @@ while run:
                             test_name = buttons.get_list_buttons()[buttons.get_chosen_button()].get_user_text()
                             buttons.get_list_buttons()[buttons.get_chosen_button()].unselected_text_box()
 
+                            submit_new_user_name_input(test_name)
                             user_name = test_name
                             pages['SP1'][1][1] = test_name
                             pages['SP2'][1][2] = test_name

@@ -52,5 +52,7 @@ def update_sounds_running(buttons, current_page, sound_effects_running, music_ru
     return sound_effects_running, music_running
 
 def validate_user_name_input(user_name):
-
     return name_entered(user_name)
+
+def submit_new_user_name_input(user_name):
+    add_name_entered(user_name)

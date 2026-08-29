@@ -116,13 +116,16 @@ def name_entered(user_name):
     if is_name_taken(user_name):
         return False
     else:
+        return True
+
+def add_name_entered(user_name):
+
+    if not is_name_taken(user_name):
         write_new_name_query = f"""
                          INSERT INTO users_data (user_name, lvl_1, lvl_2, lvl_3)
                          VALUES ('{user_name}', 0, 0, 0);"""
         with sqlite3.connect("game_data.db") as conn:
             execute_write_query(conn, write_new_name_query)
-        return True
-
 
 #is_name_taken('starchy')
 #get_high_score('starchy', 1)
