@@ -48,7 +48,7 @@ BUTTON_SPACING = 10
 #-----------------------------------------------------------------------------------------------------------------------------------
 #SOUND SET UP
 
-bg_music = ["assets/music/lease_frutiger_aero.mp3", "assets/music/dont_stop_till_you_get_enough.mp3"]
+bg_music = ["assets/music/lease_frutiger_aero.mp3", "assets/music/dont_stop_till_you_get_enough.mp3", "assets/music/elevator_music.mp3"]
 bg_index = random.randint(0, len(bg_music) - 1)
 
 pygame.mixer.music.load(bg_music[bg_index])
