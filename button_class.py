@@ -212,6 +212,9 @@ class Button(ButtonList):
         self.user_text = self.user_text[:-1]
         return self.user_text
 
+    def set_user_text(self, text):
+        self.user_text = text
+
     def get_len_user_text(self):
         if self.user_text == '':
             return 0
