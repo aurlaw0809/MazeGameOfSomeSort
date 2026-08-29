@@ -10,7 +10,7 @@ def route_to_next_page(buttons, current_page, pages):
     options = pages[current_page][1]
     new_page = options[button_number]
 
-    if new_page == None:
+    if new_page is None:
         new_page = current_page
 
     return new_page

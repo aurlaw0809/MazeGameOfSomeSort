@@ -80,24 +80,20 @@ def check_valid_pos(pos):
 
 def pos_from_keys(adder, pos):
     if pos[0] > min_x:
-        new_pos = (pos[0], pos[1] + adder)
+        p_new_pos = (pos[0], pos[1] + adder)
     else:
-        new_pos = (pos[0], pos[1] - adder)
+        p_new_pos = (pos[0], pos[1] - adder)
 
-    if check_valid_pos(new_pos):
-        pos = new_pos
-    else:
-        new_pos = pos
+    if check_valid_pos(p_new_pos):
+        pos = p_new_pos
 
     if pos[1] > min_y:
-        new_pos = (pos[0] - adder, pos[1])
+        p_new_pos = (pos[0] - adder, pos[1])
     else:
-        new_pos = (pos[0] + adder, pos[1])
+        p_new_pos = (pos[0] + adder, pos[1])
 
-    if check_valid_pos(new_pos):
-        pos = new_pos
-    else:
-        new_pos = pos
+    if check_valid_pos(p_new_pos):
+        pos = p_new_pos
 
     return pos
 
@@ -106,20 +102,20 @@ def calculate_angle(pos):
     dx = pos[0] + SLIDER_WIDTH / 2 - TRACK_CENTER[0]
     dy = pos[1] + SLIDER_HEIGHT / 2 - TRACK_CENTER[1]
 
-    angle = math.degrees(math.atan2(dy, dx))
-    angle %= 360
-    angle = round(angle)
+    p_angle = math.degrees(math.atan2(dy, dx))
+    p_angle %= 360
+    p_angle = round(p_angle)
 
-    return angle
+    return p_angle
 
-def find_swap_pos(pos, angle):
-    angle += 180
-    angle %= 180
+def find_swap_pos(pos, p_angle):
+    p_angle += 180
+    p_angle %= 180
 
     new_x = max_x + min_x - pos[0]
     new_y = max_y + min_y - pos[1]
 
-    return (new_x, new_y), angle
+    return (new_x, new_y), p_angle
 
 clockwise = False
 anticlockwise = False
