@@ -1,4 +1,5 @@
-from objects import GameObject, Player, Key, Door
+from trials.objects_old2 import GameObject, Player
+
 
 class Game:
     def __init__(self):
