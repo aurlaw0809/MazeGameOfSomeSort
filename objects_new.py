@@ -41,14 +41,14 @@ class Player(GameObject):
         GameObject.__init__(self, controller, name, pos, size, solid = True, transparent = False, interactable = False)
 
         self.speed = speed
-        self.images = images
 
         self.images = images
         self.image = None
+        self.image_rect = None
         self.update_image()
         self.image_index = 0
 
-        #TODO stuff with image rects right on
+        self.collision_rect = pygame.Rect(self.pos[0], self.pos[1], self.size, self.size)
 
         self.direction = 'S'
         self.moving = False
@@ -111,8 +111,12 @@ class Player(GameObject):
     def set_moving(self, moving):
         self.moving = moving
 
-    def set_walking_slower_down(self, walking_slower_down):
-        self.walking_slower_down = walking_slower_down
+    def increment_walking_slower_down(self):
+        self.walking_slower_down += 1
+        self.walking_slower_down %= 7
+        if self.walking_slower_down == 0:
+            self.image_index += 1
+            self.image_index %= 7
 
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #finding position and moving player, setters with conditions
@@ -162,12 +166,14 @@ class Player(GameObject):
 #updating images
 
     def update_image(self):
-        self.image = self.images[self.direction][self.image_index]
-
+        self.image = pygame.image.load(self.images[self.direction][self.image_index]).convert_alpha()
+        ratio = self.size / self.image.get_width()
+        self.image = pygame.transform.scale(self.image, (self.size, self.image.get_height() * ratio))
+        self.image_rect = self.image.get_rect()
 
     def draw_player(self, screen):
-        screen.blit(self.image, self.pos)
-
+        self.update_image()
+        screen.blit(self.image, self.image_rect)
 
     def shadow_image(self):
 
@@ -204,7 +210,28 @@ class Player(GameObject):
         return result
 
     def draw_shadow(self, screen):
-        pass
+
+        move_vector = pygame.Vector2(self.s_length * self.image.get_height(), 0).rotate(self.s_angle % 360)
+        image = self.shadow_image()
+        image = pygame.transform.smoothscale(image, (self.size, abs(move_vector[1])))
+
+        image = self.shear_image(move_vector[0])
+
+        corner_x = 0
+        corner_y = 0
+
+        if 270 <= self.s_angle <= 360 or 0 <= self.s_angle <= 90:
+            corner_x = self.pos[0] - self.size / 2
+        else:
+            corner_x = self.pos[0] - self.size / 2 + move_vector[0]
+
+        if 0 <= self.s_angle <= 180:
+            corner_y = self.pos[1] + self.image.get_height() / 2
+            image = pygame.transform.flip(image, False, True)
+        else:
+            corner_y = self.pos[1] + self.image.get_height() / 2 + move_vector[1]
+
+        screen.blit(image, (corner_x, corner_y))
 
 
 
