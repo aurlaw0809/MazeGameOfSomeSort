@@ -54,11 +54,12 @@ class Player(GameObject):
         self.moving = False
         self.walking_slower_down = 0
 
-        self.speed = speed
-
+        self.shadow_image = None
+        self.shadow_pos = None
         self.s_direction = 0
         self.s_angle = 315
         self.s_length = 1
+        self.s_end_pos_rect = None
 
         self.rotating_c = False
         self.rotating_ac = False
@@ -92,11 +93,6 @@ class Player(GameObject):
         return self.moving
     def get_walking_slower_down(self):
         return self.walking_slower_down
-
-    def get_s_end_pos(self):
-        offset = pygame.Vector2(self.s_length * self.size, 0)
-        rotated_offset = offset.rotate(self.s_angle)
-        return pygame.Vector2(self.pos) + rotated_offset
 
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #setters
@@ -166,6 +162,10 @@ class Player(GameObject):
 #updating images
 
     def update_image(self):
+        if self.moving:
+            self.increment_walking_slower_down()
+        else:
+            self.image_index = 0
         self.image = pygame.image.load(self.images[self.direction][self.image_index]).convert_alpha()
         ratio = self.size / self.image.get_width()
         self.image = pygame.transform.scale(self.image, (self.size, self.image.get_height() * ratio))
@@ -173,10 +173,12 @@ class Player(GameObject):
 
     def draw_player(self, screen):
         self.update_image()
+        self.update_shadow_image()
+        self.update_s_end_pos()
         screen.blit(self.image, self.image_rect)
+        screen.blit(self.shadow_image, self.shadow_pos)
 
-    def shadow_image(self):
-
+    def make_shadow_image(self):
         width, height = self.image.get_size()
 
         new_image = pygame.Surface((width, height), pygame.SRCALPHA)
@@ -191,7 +193,6 @@ class Player(GameObject):
         return new_image
 
     def shear_image(self, offset):
-
         width, height = self.image.get_size()
 
         new_width = width + abs(offset)
@@ -209,16 +210,13 @@ class Player(GameObject):
 
         return result
 
-    def draw_shadow(self, screen):
+    def update_shadow_image(self):
 
         move_vector = pygame.Vector2(self.s_length * self.image.get_height(), 0).rotate(self.s_angle % 360)
-        image = self.shadow_image()
-        image = pygame.transform.smoothscale(image, (self.size, abs(move_vector[1])))
+        self.shadow_image = self.make_shadow_image()
+        self.shadow_image = pygame.transform.smoothscale(self.shadow_image, (self.size, abs(move_vector[1])))
 
-        image = self.shear_image(move_vector[0])
-
-        corner_x = 0
-        corner_y = 0
+        self.shadow_image = self.shear_image(move_vector[0])
 
         if 270 <= self.s_angle <= 360 or 0 <= self.s_angle <= 90:
             corner_x = self.pos[0] - self.size / 2
@@ -227,11 +225,17 @@ class Player(GameObject):
 
         if 0 <= self.s_angle <= 180:
             corner_y = self.pos[1] + self.image.get_height() / 2
-            image = pygame.transform.flip(image, False, True)
+            image = pygame.transform.flip(self.shadow_image, False, True)
         else:
             corner_y = self.pos[1] + self.image.get_height() / 2 + move_vector[1]
 
-        screen.blit(image, (corner_x, corner_y))
+        self.shadow_pos = (corner_x, corner_y)
+
+    def update_s_end_pos(self):
+        offset = pygame.Vector2(self.s_length * self.size, 0)
+        rotated_offset = offset.rotate(self.s_angle)
+        pos = pygame.Vector2(self.pos) + rotated_offset
+        self.s_end_pos_rect = pygame.Rect(pos[0], pos[1], self.size, self.size)
 
 
 
