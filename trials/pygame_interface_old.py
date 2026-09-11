@@ -1,17 +1,11 @@
 import pygame
-import math
-import numpy as np
-from controller import Game
+from trials.controller_old import Game
 
 from pygame.locals import (
     K_LEFT,
     K_RIGHT,
     K_UP,
     K_DOWN,
-    K_ESCAPE,
-    KEYDOWN,
-    QUIT,
-    KEYUP,
 )
 
 BACKGROUND_COLORS = {'W': (120, 176, 69),

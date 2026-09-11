@@ -10,6 +10,7 @@ class GameObject:
         self.transparent = transparent
         self.interactable = interactable
         self.interaction_radius = 50
+        self.collision_rect = pygame.Rect(self.pos[0], self.pos[1], self.size, self.size)
 
     def __repr__(self):
         return f'GameObject(name: {self.name}, pos: {self.pos}, size: {self.size}, solid: {self.solid}, transparent: {self.transparent})'
@@ -28,6 +29,8 @@ class GameObject:
         return self.interactable
     def get_interaction_radius(self):
         return self.interaction_radius
+    def get_collision_rect(self):
+        return self.collision_rect
 
 
 
@@ -71,6 +74,9 @@ class Player(GameObject):
 
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #getters
+
+    def get_s_end_pos_rect(self):
+        return self.s_end_pos_rect
 
     def get_speed(self):
         return self.speed

@@ -1,17 +1,11 @@
 import pygame
-import math
-import numpy as np
-from controller import Game
+from trials.controller_old import Game
 
 from pygame.locals import (
     K_LEFT,
     K_RIGHT,
     K_UP,
     K_DOWN,
-    K_ESCAPE,
-    KEYDOWN,
-    QUIT,
-    KEYUP,
 )
 
 BACKGROUND_COLORS = {'W': (120, 176, 69),
@@ -20,41 +14,6 @@ BACKGROUND_COLORS = {'W': (120, 176, 69),
                      'F': (219, 227, 127)
                      }
 PLAYER_COLOR = (173, 39, 36)
-
-
-def shear_image(image, offset):
-
-    width, height = image.get_size()
-
-    new_width = width + abs(offset)
-    result = pygame.Surface((new_width, height), pygame.SRCALPHA)
-
-    for y in range(height):
-        x_offset = int(offset * (height - y) / height)
-
-        if offset < 0:
-            x_offset += abs(offset)
-
-        for x in range(width):
-            pixel = image.get_at((x, y))
-            result.set_at((int(x + x_offset), int(y)), pixel)
-
-    return result
-
-
-def shadow_image(image, size, colour):
-
-    new_image = pygame.Surface((size, size), pygame.SRCALPHA)
-    for y in range(size):
-        for x in range(size):
-            pixel = image.get_at((x, y))
-            if pixel.a == 0:
-                continue
-
-            new_image.set_at((x, y), colour)
-
-    return new_image
-
 
 class GameGUI:
     key_moves = {K_UP: 'W',
@@ -192,40 +151,6 @@ class GameGUI:
         for character in self.game.characters:
             pass #update this when there's actually more than one character
 
-    def _draw_shadow(self, image, side):
-
-        size = self.player.get_size()
-        height = self.player.get_s_length()
-        colour = self.shadow_colour
-        angle = self.player.get_s_angle()
-
-        move_vector = pygame.Vector2(height * size, 0).rotate(angle%360)
-        image = shadow_image(image, size, colour)
-        image = pygame.transform.smoothscale(image, (size, abs(move_vector.y)))
-
-        offset = move_vector.x
-        image = shear_image(image, offset)
-
-        corner_x = 0
-        corner_y = 0
-
-        if not side:
-            if 270 <= angle <= 360 or 0 <= angle <= 90:
-                corner_x = self.player.pos[0] - self.player.get_size() / 2
-            else:
-                corner_x = self.player.pos[0] - self.player.get_size() / 2 + offset
-
-            if 0 <= angle <= 180:
-                corner_y = self.player.pos[1] + self.player.get_size() / 2
-                image = pygame.transform.flip(image, False, True)
-            else:
-                corner_y = self.player.pos[1] + self.player.get_size() / 2 + move_vector.y
-
-        self.screen.blit(image, (corner_x, corner_y))
-
-    def _draw_full_shadow(self):
-        front_shadow = self.player_image
-        self._draw_shadow(front_shadow, 0, 0, 0, False)
 
 
 if __name__ == "__main__":

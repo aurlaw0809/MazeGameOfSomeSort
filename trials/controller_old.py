@@ -1,35 +1,54 @@
-from objects_old import Object, Character
-import pygame
+from trials.objects_old2 import GameObject, Player
+
 
 class Game:
     def __init__(self):
         self.characters = []
         self.backgrounds = []
 
-    def check_collisions(self, pos):
+    def set_up(self):
+        self.characters.append(Player(self, 'fih', (0, 0), True, 50, False, 5))
+
+    def add_background_object(self, controller, name, pos, solid, size, transparent):
+        self.backgrounds.append(GameObject(controller, name, pos, solid, size, transparent))
+
+    def check_collisions(self, pos, size):
         for thing in self.backgrounds:
-            if thing.pos == pos:
-                if thing.solid:
+            if (thing.get_pos()[0] - pos[0])**2 + (thing.get_pos()[1] - pos[1])**2 <= (size + thing.get_size())**2:
+                if thing.get_solid():
                     return True
                 else:
                     return False
-        return True
-    #true = there IS a collision
+        return False
 
-    def move_character(self, character, key):
-        mv = False
+    def scan_radius(self, pos, size, interaction_radius):
+        possibilities = []
+        for thing in self.backgrounds:
+            if (thing.get_pos()[0] - pos[0])**2 + (thing.get_pos()[1] - pos[1])**2 <= (size + thing.get_size() + interaction_radius)**2:
+                if thing.get_interactable():
+                    possibilities.append(thing)
+        return possibilities
+
+    def move_character_by_key(self, character, key):
+        move = False
         new_pos = character.find_next_location(key)
-        if not self.check_collisions(new_pos):
+        size = character.get_size()
+        if not self.check_collisions(new_pos, size):
             character.move(key)
-            mv = True
-        return mv
+            move = True
+        return move
 
-    def switch_with_shadow(self, character):
-        if character.get_shadow_direction() % 45 == 0:
+    def move_character_by_pos(self, character, pos):
+        move = False
+        size = character.get_size()
+        if not self.check_collisions(pos, size):
+            character.move_to_pos(pos)
+            move = True
+        return move
 
-        move_vector = pygame.Vector2(1, 0).rotate(character.get_shadow_direction())
-        distance = character.get_size * (character.get_shadow_length - 1)
+    def make_swap(self, character):
+        if not self.check_collisions(character.get_s_end_pos(), character.get_size()):
+            move_to = character.get_s_end_pos()
 
-        character.move_by_vector(move_vector)
-
-        character.update_shadow_direction(180)
+            self.move_character_by_pos(character, move_to)
+            character.s_rotate_by(180)

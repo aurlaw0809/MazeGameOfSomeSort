@@ -1,20 +1,23 @@
-from trials.objects_old2 import GameObject, Player
+from game_objects_new import GameObject, Player
+import pygame
 
 
 class Game:
-    def __init__(self):
-        self.characters = []
+    def __init__(self, characters):
+        self.player = (Player(self, 'fih', (0, 0), True, 50, False, 5))
+        self.characters = characters
         self.backgrounds = []
 
     def set_up(self):
-        self.characters.append(Player(self, 'fih', (0, 0), True, 50, False, 5))
+        pass
 
     def add_background_object(self, controller, name, pos, solid, size, transparent):
         self.backgrounds.append(GameObject(controller, name, pos, solid, size, transparent))
 
-    def check_collisions(self, pos, size):
+    def check_collisions(self):
         for thing in self.backgrounds:
-            if (thing.get_pos()[0] - pos[0])**2 + (thing.get_pos()[1] - pos[1])**2 <= (size + thing.get_size())**2:
+            if pygame.(thing.get_collision_rect()).colliderect(self.player.get_collision_rect()):
+                #TODO HERE HERE HERE
                 if thing.get_solid():
                     return True
                 else:
