@@ -77,6 +77,8 @@ class Player(GameObject):
 
     def get_s_end_pos_rect(self):
         return self.s_end_pos_rect
+    def get_s_end_pos(self):
+        return self.s_end_pos_rect.x, self.s_end_pos_rect.y
 
     def get_speed(self):
         return self.speed

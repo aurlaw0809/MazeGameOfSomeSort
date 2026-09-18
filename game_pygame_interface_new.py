@@ -1,5 +1,5 @@
 import pygame
-from trials.controller_old import Game
+from game_controller_new import Game
 
 from pygame.locals import (
     K_LEFT,
@@ -29,7 +29,7 @@ class GameGUI:
         #set clock so that FPS can be limited
         self.clock = pygame.time.Clock()
 
-        self.game = Game()
+        self.game = Game(None) #TODO MESSED UP GAME SETUP PARAMETERS HERE
         self.game.set_up() #
         self.move_direction: str | None = None
 
@@ -38,7 +38,7 @@ class GameGUI:
 
         #player image
 
-        self.player = self.game.characters[0]
+        self.player = self.game.player
 
         self.player_direction = 'S'
         self.player_moving = False
