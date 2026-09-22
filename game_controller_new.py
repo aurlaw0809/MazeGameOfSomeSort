@@ -30,7 +30,10 @@ class Game:
             if (thing.get_pos()[0] + thing.get_size() - self.player.get_pos()[0] - self.player.get_size())**2 + (thing.get_pos()[1] + thing.get_size() - self.player.get_pos()[1] - self.player.get_size())**2 <= (self.player.get_interaction_radius())**2:
                 if thing.get_interactable():
                     possibilities.append(thing)
-        return possibilities
+        if len(possibilities) == 0:
+            return None
+        else:
+            return possibilities
 
     def move_character_by_key(self, key):
         move = False

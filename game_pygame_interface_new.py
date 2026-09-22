@@ -29,35 +29,22 @@ class GameGUI:
         #set clock so that FPS can be limited
         self.clock = pygame.time.Clock()
 
-        self.game = Game(None) #TODO MESSED UP GAME SETUP PARAMETERS HERE
-        self.game.set_up() #
-        self.move_direction: str | None = None
+        player_images = {
+            'S': ['assets/starchy/S0.png', 'assets/starchy/S1.png', 'assets/starchy/S2.png', 'assets/starchy/S3.png',
+                  'assets/starchy/S4.png', 'assets/starchy/S5.png', 'assets/starchy/S6.png'],
+            'A': ['assets/starchy/A0.png', 'assets/starchy/A1.png', 'assets/starchy/A2.png', 'assets/starchy/A3.png',
+                  'assets/starchy/A4.png', 'assets/starchy/A5.png', 'assets/starchy/A6.png'],
+            'D': ['assets/starchy/D0.png', 'assets/starchy/D1.png', 'assets/starchy/D2.png', 'assets/starchy/D3.png',
+                  'assets/starchy/D4.png', 'assets/starchy/D5.png', 'assets/starchy/D6.png'],
+            'W': ['assets/starchy/W0.png', 'assets/starchy/W1.png', 'assets/starchy/W2.png', 'assets/starchy/W3.png',
+                  'assets/starchy/W4.png', 'assets/starchy/W5.png', 'assets/starchy/W6.png']}
 
+        self.game = Game(None, None, player_images)
+        self.game.set_up()
         self.screen = pygame.display.set_mode((500, 500))
         self.running = True
 
-        #player image
-
         self.player = self.game.player
-
-        self.player_direction = 'S'
-        self.player_moving = False
-        self.player_moving_frame = 0
-        self.player_images = {'S': ['assets/starchy/S0.png', 'assets/starchy/S1.png', 'assets/starchy/S2.png', 'assets/starchy/S3.png', 'assets/starchy/S4.png', 'assets/starchy/S5.png', 'assets/starchy/S6.png'],
-                              'A': ['assets/starchy/A0.png', 'assets/starchy/A1.png', 'assets/starchy/A2.png', 'assets/starchy/A3.png', 'assets/starchy/A4.png', 'assets/starchy/A5.png', 'assets/starchy/A6.png'],
-                              'D': ['assets/starchy/D0.png', 'assets/starchy/D1.png', 'assets/starchy/D2.png', 'assets/starchy/D3.png', 'assets/starchy/D4.png', 'assets/starchy/D5.png', 'assets/starchy/D6.png'],
-                              'W': ['assets/starchy/W0.png', 'assets/starchy/W1.png', 'assets/starchy/W2.png', 'assets/starchy/W3.png', 'assets/starchy/W4.png', 'assets/starchy/W5.png', 'assets/starchy/W6.png']}
-        self.direction_order = ['S', 'A', 'W', 'D']
-        self.walking_slower = 0
-
-        self.player_image = pygame.image.load(self.player_images[self.player_direction][self.player_moving_frame]).convert_alpha()
-        self.player_image = pygame.transform.scale(self.player_image, (self.player.get_size(), self.player.get_size()))
-        self.player_rect = self.player_image.get_rect()
-
-        self.shadow_colour = (30, 30, 30, 100)
-
-        self.rotating_c = False
-        self.rotating_ac = False
 
     def main_loop(self):
         while self.running:
@@ -76,29 +63,25 @@ class GameGUI:
             if event.type == pygame.KEYDOWN and self.running:
 
                 if event.key == pygame.K_o:
-                    self.rotating_ac = True
+                    self.player.set_rotating_ac(True)
                 if event.key == pygame.K_p:
-                    self.rotating_c = True
+                    self.player.set_rotating_c(True)
 
                 if event.key == pygame.K_SPACE:
-                    self.game.make_swap(self.player)
+                    self.game.make_swap()
 
                 if event.key == pygame.K_w:
-                    self.move_direction = 'W'
-                    self.player_direction = 'W'
-                    self.player_moving = True
+                    self.player.set_direction('W')
+                    self.player.set_moving(True)
                 if event.key == pygame.K_s:
-                    self.move_direction = 'S'
-                    self.player_direction = 'S'
-                    self.player_moving = True
+                    self.player.set_direction('S')
+                    self.player.set_moving(True)
                 if event.key == pygame.K_a:
-                    self.move_direction = 'A'
-                    self.player_direction = 'A'
-                    self.player_moving = True
+                    self.player.set_direction('A')
+                    self.player.set_moving(True)
                 if event.key == pygame.K_d:
-                    self.move_direction = 'D'
-                    self.player_direction = 'D'
-                    self.player_moving = True
+                    self.player.set_direction('D')
+                    self.player.set_moving(True)
 
                 if event.key == pygame.K_k:
                     self.player.s_lengthen('K')
@@ -106,50 +89,37 @@ class GameGUI:
                     self.player.s_lengthen('L')
 
                 if event.key == pygame.K_e:
-                    self.game.scan_radius(self.player.get_pos(), self.player.get_size(), self.player.get_interaction_radius())
+                    possibilities = self.game.scan_radius()
+                    if possibilities is None:
+                        pass
+                    else:
+                        pass
 
             if event.type == pygame.KEYUP:
 
                 if event.key == pygame.K_o or event.key == pygame.K_p:
-                    self.rotating_c = False
-                    self.rotating_ac = False
-                    #self.player.s_snap_angle()
+                    self.player.set_rotating_c(False)
+                    self.player.set_rotating_ac(False)
 
                 if event.key == pygame.K_w or event.key == pygame.K_s or event.key == pygame.K_a or event.key == pygame.K_d:
-                    self.move_direction = None
-                    self.player_moving = False
+                    self.player.set_moving(False)
 
     def _process_game_logic(self):
-        if self.running and self.move_direction is not None:
-            self.game.move_character_by_key(self.player, self.move_direction)
-        if self.running and self.rotating_c:
+        if self.running and self.player.get_moving() is not None:
+            self.game.move_character_by_key(self.player.get_direction())
+        if self.running and self.player.get_rotating_c():
             self.player.s_rotate('P')
-        if self.running and self.rotating_ac:
+        if self.running and self.player.get_rotating_ac():
             self.player.s_rotate('O')
 
     def _draw(self):
         self.screen.fill((120, 176, 69))
-        self._draw_full_shadow()
+        self.player.draw_player(self.screen)
         self._draw_characters()
         pygame.display.flip()
 
     def _draw_characters(self):
-
-        if self.player_moving:
-            self.walking_slower += 1
-            self.walking_slower %= 8
-            if self.walking_slower == 0:
-                self.player_moving_frame += 1
-                self.player_moving_frame %= 7
-        else:
-            self.player_moving_frame = 0
-
-        self.player_rect.center = (self.player.pos[0], self.player.pos[1])
-        self.player_image = pygame.image.load(self.player_images[self.player_direction][self.player_moving_frame]).convert_alpha()
-        self.player_image = pygame.transform.scale(self.player_image, (self.player.get_size(), self.player.get_size()))
-        self.screen.blit(self.player_image, self.player_rect)
-        for character in self.game.characters:
-            pass #update this when there's actually more than one character
+        pass
 
 
 

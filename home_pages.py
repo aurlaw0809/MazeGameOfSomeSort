@@ -96,7 +96,7 @@ pop_ups = {'SP1E': [['BACK', 'YES'], ['SP1', 'SP2'], ['C', 'BC'], 2, 'Username i
            'SP2X': [['BACK'], ['SP2'], ['C'], 1, 'Username cannot be empty.'],
 
            'MOE': [['BACK', 'YES'], ['MO', 'MO'], ['C', 'BC'], 2, 'Username is already on record, is this you?'],
-           'MOC': [['BACK', 'YES'], ['MO', 'MO'], ['C', 'BC'], 2, 'Confirm username?'],
+           'MOC': [['BACK', 'YES'], ['MO', 'MO'], ['C', 'BC'], 2, f'Confirm username? \n\nAccount data is tied to old username!'],
            'MOX': [['BACK'], ['MO'], ['C'], 1, 'Username cannot be empty.'],}
 
 keyboard_sounds = [KEYBOARD2, KEYBOARD1]
