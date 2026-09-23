@@ -3,10 +3,11 @@ import pygame
 
 class Game:
     def __init__(self, objects, images, player_images):
-        self.player = (Player(self, 'starchy', (0, 0), 50, 50, player_images))
+        self.player = (Player(self, 'starchy', (0, 0), 50, 10, player_images))
         self.backgrounds = []
-        for obj in objects:
-            self.backgrounds.append(obj)
+        if objects is not None:
+            for obj in objects:
+                self.backgrounds.append(obj)
 
     def set_up(self):
         pass

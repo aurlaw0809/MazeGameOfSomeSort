@@ -39,9 +39,9 @@ class GameGUI:
             'W': ['assets/starchy/W0.png', 'assets/starchy/W1.png', 'assets/starchy/W2.png', 'assets/starchy/W3.png',
                   'assets/starchy/W4.png', 'assets/starchy/W5.png', 'assets/starchy/W6.png']}
 
+        self.screen = pygame.display.set_mode((500, 500))
         self.game = Game(None, None, player_images)
         self.game.set_up()
-        self.screen = pygame.display.set_mode((500, 500))
         self.running = True
 
         self.player = self.game.player
@@ -105,7 +105,7 @@ class GameGUI:
                     self.player.set_moving(False)
 
     def _process_game_logic(self):
-        if self.running and self.player.get_moving() is not None:
+        if self.running and self.player.get_moving():
             self.game.move_character_by_key(self.player.get_direction())
         if self.running and self.player.get_rotating_c():
             self.player.s_rotate('P')

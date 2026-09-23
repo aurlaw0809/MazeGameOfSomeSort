@@ -45,17 +45,17 @@ class Player(GameObject):
 
         self.speed = speed
 
+        self.collision_rect = pygame.Rect(self.pos[0], self.pos[1] - self.size, self.size, self.size)
+
+        self.direction = 'S'
+        self.moving = False
+        self.walking_slower_down = 0
+
         self.images = images
         self.image = None
         self.image_rect = None
         self.update_image()
         self.image_index = 0
-
-        self.collision_rect = pygame.Rect(self.pos[0], self.pos[1], self.size, self.size)
-
-        self.direction = 'S'
-        self.moving = False
-        self.walking_slower_down = 0
 
         self.shadow_image = None
         self.shadow_pos = None
@@ -117,7 +117,7 @@ class Player(GameObject):
 
     def increment_walking_slower_down(self):
         self.walking_slower_down += 1
-        self.walking_slower_down %= 7
+        self.walking_slower_down %= 5
         if self.walking_slower_down == 0:
             self.image_index += 1
             self.image_index %= 7
@@ -137,10 +137,15 @@ class Player(GameObject):
         return None
 
     def move(self, key):
+        pos_offset = ((self.find_next_location(key)[0] - self.pos[0]), (self.find_next_location(key)[1] - self.pos[1]))
         self.pos = self.find_next_location(key)
+        self.collision_rect = pygame.Rect(self.pos[0], self.pos[1] - self.size, self.size, self.size)
+        self.image_rect.move(pos_offset)
 
     def move_to_pos(self, pos):
         self.pos = pos
+        self.collision_rect = pygame.Rect(self.pos[0], self.pos[1] - self.size, self.size, self.size)
+        self.image_rect.move(self.pos[0], self.pos[0] - self.image.get_height())
 
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #changing shape of shadow, setters with keys
@@ -177,14 +182,24 @@ class Player(GameObject):
         self.image = pygame.image.load(self.images[self.direction][self.image_index]).convert_alpha()
         ratio = self.size / self.image.get_width()
         self.image = pygame.transform.scale(self.image, (self.size, self.image.get_height() * ratio))
-        self.image_rect = self.image.get_rect()
+        self.image_rect = pygame.Rect(self.pos[0], self.pos[1] - self.image.get_height() , self.image.get_width(), self.image.get_height())
 
     def draw_player(self, screen):
         self.update_image()
         self.update_shadow_image()
-        self.update_s_end_pos()
+        if self.s_length != 0:
+            screen.blit(self.shadow_image, self.shadow_pos)
         screen.blit(self.image, self.image_rect)
-        screen.blit(self.shadow_image, self.shadow_pos)
+
+        print(f'pos: {self.pos}')
+        print(f'image_rect: {self.image_rect}')
+        print(f'collision_rect: {self.collision_rect}')
+        print(f'shadow_image: {self.shadow_image}')
+        print(f'shadow_pos: {self.shadow_pos}')
+
+        pygame.draw.rect(screen, 'red', self.image_rect)
+        pygame.draw.rect(screen, 'blue', self.collision_rect)
+        pygame.draw.rect(screen, 'green', self.s_end_pos_rect)
 
     def make_shadow_image(self):
         width, height = self.image.get_size()
@@ -193,15 +208,12 @@ class Player(GameObject):
         for y in range(height):
             for x in range(width):
                 pixel = self.image.get_at((x, y))
-                if pixel.a == 0:
-                    continue
-
-                new_image.set_at((x, y), self.s_colour)
-
+                if pixel.a != 0:
+                    new_image.set_at((x, y), self.s_colour)
         return new_image
 
     def shear_image(self, offset):
-        width, height = self.image.get_size()
+        width, height = self.shadow_image.get_size()
 
         new_width = width + abs(offset)
         result = pygame.Surface((new_width, height), pygame.SRCALPHA)
@@ -213,37 +225,36 @@ class Player(GameObject):
                 x_offset += abs(offset)
 
             for x in range(width):
-                pixel = self.image.get_at((x, y))
+                pixel = self.shadow_image.get_at((x, y))
                 result.set_at((int(x + x_offset), int(y)), pixel)
 
         return result
 
     def update_shadow_image(self):
 
-        move_vector = pygame.Vector2(self.s_length * self.image.get_height(), 0).rotate(self.s_angle % 360)
+        move_vector = pygame.Vector2(self.s_length * self.image.get_height(), 0).rotate(self.s_angle)
         self.shadow_image = self.make_shadow_image()
-        self.shadow_image = pygame.transform.smoothscale(self.shadow_image, (self.size, abs(move_vector[1])))
+        self.shadow_image = pygame.transform.smoothscale(self.shadow_image, (self.size, abs(move_vector.y)))
 
         self.shadow_image = self.shear_image(move_vector[0])
 
         if 270 <= self.s_angle <= 360 or 0 <= self.s_angle <= 90:
-            corner_x = self.pos[0] - self.size / 2
+            corner_x = self.pos[0]
+            r_corner_x = corner_x + self.shadow_image.get_width() - self.size
         else:
-            corner_x = self.pos[0] - self.size / 2 + move_vector[0]
+            corner_x = self.pos[0] - self.shadow_image.get_width() + self.image.get_width()
+            r_corner_x = corner_x
 
         if 0 <= self.s_angle <= 180:
-            corner_y = self.pos[1] + self.image.get_height() / 2
-            image = pygame.transform.flip(self.shadow_image, False, True)
+            corner_y = self.pos[1]
+            r_corner_y = self.pos[1] + self.shadow_image.get_height() - self.size
+            self.shadow_image = pygame.transform.flip(self.shadow_image, False, True)
         else:
-            corner_y = self.pos[1] + self.image.get_height() / 2 + move_vector[1]
+            corner_y = self.pos[1] - self.shadow_image.get_height()
+            r_corner_y = corner_y - self.size
 
         self.shadow_pos = (corner_x, corner_y)
-
-    def update_s_end_pos(self):
-        offset = pygame.Vector2(self.s_length * self.size, 0)
-        rotated_offset = offset.rotate(self.s_angle)
-        pos = pygame.Vector2(self.pos) + rotated_offset
-        self.s_end_pos_rect = pygame.Rect(pos[0], pos[1], self.size, self.size)
+        self.s_end_pos_rect = pygame.Rect(r_corner_x, r_corner_y, self.size, self.size)
 
 
 
