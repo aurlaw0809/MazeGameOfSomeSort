@@ -191,6 +191,7 @@ class Player(GameObject):
             screen.blit(self.shadow_image, self.shadow_pos)
         screen.blit(self.image, self.image_rect)
 
+        """
         print(f'pos: {self.pos}')
         print(f'image_rect: {self.image_rect}')
         print(f'collision_rect: {self.collision_rect}')
@@ -200,6 +201,7 @@ class Player(GameObject):
         pygame.draw.rect(screen, 'red', self.image_rect)
         pygame.draw.rect(screen, 'blue', self.collision_rect)
         pygame.draw.rect(screen, 'green', self.s_end_pos_rect)
+        """
 
     def make_shadow_image(self):
         width, height = self.image.get_size()

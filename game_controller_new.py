@@ -53,5 +53,5 @@ class Game:
 
     def make_swap(self):
         if not self.check_collisions(self.player.get_s_end_pos()):
-            self.move_character_by_pos(self.player.get_s_end_pos())
+            self.move_character_by_pos((self.player.get_s_end_pos()[0], self.player.get_s_end_pos()[1] + self.player.get_size()))
             self.player.s_rotate_by(180)
