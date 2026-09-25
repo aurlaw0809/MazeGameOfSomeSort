@@ -1,7 +1,7 @@
 import pygame
 
 class GameObject:
-    def __init__(self, controller, name, pos, size, solid, transparent, interactable):
+    def __init__(self, controller, name, pos, size, solid, transparent, interactable, image, colour):
         self.controller = controller
         self.name = name
         self.pos = pos
@@ -10,7 +10,11 @@ class GameObject:
         self.transparent = transparent
         self.interactable = interactable
         self.interaction_radius = 50
-        self.collision_rect = pygame.Rect(self.pos[0], self.pos[1], self.size, self.size)
+        self.image = image
+        self.colour = colour
+        if colour is None:
+            self.colour = pygame.Color('red')
+        self.collision_rect = pygame.Rect(self.pos[0], self.pos[1] - self.size, self.size, self.size)
 
     def __repr__(self):
         return f'GameObject(name: {self.name}, pos: {self.pos}, size: {self.size}, solid: {self.solid}, transparent: {self.transparent})'
@@ -32,6 +36,9 @@ class GameObject:
     def get_collision_rect(self):
         return self.collision_rect
 
+    def draw_collision_rect(self, screen):
+        pygame.draw.rect(screen, self.colour, self.collision_rect)
+
 
 
 
@@ -41,7 +48,7 @@ class GameObject:
 
 class Player(GameObject):
     def __init__(self, controller, name, pos, size, speed, images):
-        GameObject.__init__(self, controller, name, pos, size, solid = True, transparent = False, interactable = False)
+        GameObject.__init__(self, controller, name, pos, size, solid = True, transparent = False, interactable = False, image = None, colour = None)
 
         self.speed = speed
 
@@ -191,13 +198,8 @@ class Player(GameObject):
             screen.blit(self.shadow_image, self.shadow_pos)
         screen.blit(self.image, self.image_rect)
 
-        """
-        print(f'pos: {self.pos}')
-        print(f'image_rect: {self.image_rect}')
-        print(f'collision_rect: {self.collision_rect}')
-        print(f'shadow_image: {self.shadow_image}')
-        print(f'shadow_pos: {self.shadow_pos}')
 
+        """
         pygame.draw.rect(screen, 'red', self.image_rect)
         pygame.draw.rect(screen, 'blue', self.collision_rect)
         pygame.draw.rect(screen, 'green', self.s_end_pos_rect)

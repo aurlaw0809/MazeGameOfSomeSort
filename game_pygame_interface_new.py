@@ -39,8 +39,14 @@ class GameGUI:
             'W': ['assets/starchy/W0.png', 'assets/starchy/W1.png', 'assets/starchy/W2.png', 'assets/starchy/W3.png',
                   'assets/starchy/W4.png', 'assets/starchy/W5.png', 'assets/starchy/W6.png']}
 
+        objects = [['test_block', (100, 100), 50, True, False, False, None, None]]
+
+        self.bg = pygame.image.load("assets/test_bg/img.png")
+        self.bg = pygame.transform.scale(self.bg, (1000, 1000))
+        self.bg_rect = pygame.Rect(-100, -100, self.bg.get_width(), self.bg.get_height())
+
         self.screen = pygame.display.set_mode((500, 500))
-        self.game = Game(None, None, player_images)
+        self.game = Game(objects, None, player_images)
         self.game.set_up()
         self.running = True
 
@@ -114,12 +120,16 @@ class GameGUI:
 
     def _draw(self):
         self.screen.fill((120, 176, 69))
+        self.screen.blit(self.bg, self.bg_rect)
+        self._draw_objects()
         self.player.draw_player(self.screen)
-        self._draw_characters()
         pygame.display.flip()
 
-    def _draw_characters(self):
-        pass
+    def _draw_objects(self):
+        for thing in self.game.get_background_objects():
+            thing.draw_collision_rect(self.screen)
+
+    #TODO work out camera jazz
 
 
 

@@ -7,16 +7,20 @@ class Game:
         self.backgrounds = []
         if objects is not None:
             for obj in objects:
-                self.backgrounds.append(obj)
+                self.add_background_object(obj)
 
     def set_up(self):
         pass
 
-    def add_background_object(self, controller, name, pos, solid, size, transparent, interactable):
-        self.backgrounds.append(GameObject(controller, name, pos, size, solid, transparent, interactable))
+    def add_background_object(self, obj):
+        self.backgrounds.append(GameObject(self, obj[0], obj[1], obj[2], obj[3], obj[4], obj[5], obj[6], obj[7]))
+        #controller, name, pos, size, solid, transparent, interactable, image, colour
+
+    def get_background_objects(self):
+        return self.backgrounds
 
     def check_collisions(self, new_pos):
-        new_rect = pygame.Rect(new_pos[0], new_pos[1], self.player.get_size(), self.player.get_size())
+        new_rect = pygame.Rect(new_pos[0], new_pos[1] - self.player.get_size(), self.player.get_size(), self.player.get_size())
         for thing in self.backgrounds:
             if pygame.Rect.colliderect(new_rect, thing.get_collision_rect()):
                 if thing.get_solid():
@@ -52,6 +56,6 @@ class Game:
         return move
 
     def make_swap(self):
-        if not self.check_collisions(self.player.get_s_end_pos()):
+        if not self.check_collisions((self.player.get_s_end_pos()[0], self.player.get_s_end_pos()[1] + self.player.get_size())):
             self.move_character_by_pos((self.player.get_s_end_pos()[0], self.player.get_s_end_pos()[1] + self.player.get_size()))
             self.player.s_rotate_by(180)
