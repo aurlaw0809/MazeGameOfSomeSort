@@ -1,13 +1,6 @@
 import pygame
 from game_controller_new import Game
 
-from pygame.locals import (
-    K_LEFT,
-    K_RIGHT,
-    K_UP,
-    K_DOWN,
-)
-
 BACKGROUND_COLORS = {'W': (120, 176, 69),
                      'S': (204, 111, 61),
                      'E': (224, 176, 92),
@@ -15,12 +8,9 @@ BACKGROUND_COLORS = {'W': (120, 176, 69),
                      }
 PLAYER_COLOR = (173, 39, 36)
 
+SCREEN_SIZE = (640, 480)
+
 class GameGUI:
-    key_moves = {K_UP: 'W',
-                 K_DOWN: 'S',
-                 K_RIGHT: 'A',
-                 K_LEFT: 'D',
-                 }
 
     def __init__(self):
         pygame.init()
@@ -39,22 +29,21 @@ class GameGUI:
             'W': ['assets/starchy/W0.png', 'assets/starchy/W1.png', 'assets/starchy/W2.png', 'assets/starchy/W3.png',
                   'assets/starchy/W4.png', 'assets/starchy/W5.png', 'assets/starchy/W6.png']}
 
-        self.starting_player_pos = (200, 250)
+        self.starting_player_pos = (SCREEN_SIZE[0] // 2 - 50, SCREEN_SIZE[1] // 2)
 
         objects = [['test_block', (100, 100), 50, True, False, False, None, None]]
         player = ['starchy', self.starting_player_pos, 50, 10, player_images]
 
         self.bg = pygame.image.load("assets/test_bg/img.png")
-        self.bg = pygame.transform.scale(self.bg, (1000, 1000))
+        self.bg = pygame.transform.scale(self.bg, (800, 800))
         self.bg_rect = pygame.Rect(-100, -100, self.bg.get_width(), self.bg.get_height())
 
-        self.screen = pygame.display.set_mode((500, 500))
+        self.screen = pygame.display.set_mode(SCREEN_SIZE)
         self.game = Game(objects, None, player)
         self.game.set_up()
         self.running = True
         self.offset = (0, 0)
-        self.dragging_offset = False
-        self.dragging_offset_distance = (0, 0)
+        self.offset_speed = 10
 
         self.player = self.game.player
 
@@ -68,16 +57,29 @@ class GameGUI:
         pygame.quit()
 
     def _update_offset(self):
-        if not self.dragging_offset:
-            self.offset = (int(self.player.get_pos()[0] - self.starting_player_pos[0]), int(self.player.get_pos()[1] - self.starting_player_pos[1]))
+        aim_offset = (self.player.get_pos()[0] - self.starting_player_pos[0], self.player.get_pos()[1] - self.starting_player_pos[1])
+
+        x_change = self.offset[0] - aim_offset[0]
+        if abs(x_change) < self.offset_speed:
+            x_change = -x_change
+        elif x_change < 0:
+            x_change = self.offset_speed
+        elif x_change > 0:
+            x_change = -self.offset_speed
         else:
-            if self.offset[0] != int(self.player.get_pos()[0] - self.starting_player_pos[0]):
-                self.offset = (int(self.offset[0] + self.dragging_offset_distance[0]), self.offset[1])
-            if self.offset[1] != int(self.player.get_pos()[1] - self.starting_player_pos[1]):
-                self.offset = (self.offset[0], int(self.offset[1] + self.dragging_offset_distance[1]))
-            if self.offset == (int(self.player.get_pos()[0] - self.starting_player_pos[0]), int(self.player.get_pos()[1] - self.starting_player_pos[1])):
-                self.dragging_offset = False
-                self.dragging_offset_distance = (0, 0)
+            x_change = 0
+
+        y_change = self.offset[1] - aim_offset[1]
+        if abs(y_change) < self.offset_speed:
+            y_change = -y_change
+        elif y_change < 0:
+            y_change = self.offset_speed
+        elif y_change > 0:
+            y_change = -self.offset_speed
+        else:
+            y_change = 0
+
+        self.offset = (self.offset[0] + x_change, self.offset[1] + y_change)
 
     def _handle_input(self):
         for event in pygame.event.get():
@@ -94,21 +96,7 @@ class GameGUI:
 
                 if event.key == pygame.K_SPACE:
                     self.old_pos = self.player.get_pos()
-                    if self.game.make_swap():
-                        self.dragging_offset = True
-                        if int(self.player.get_pos()[0] - self.old_pos[0]) > 0:
-                            x = 1
-                        elif int(self.player.get_pos()[0] - self.old_pos[0]) == 0:
-                            x = 0
-                        else:
-                            x = -1
-                        if int(self.player.get_pos()[1] - self.old_pos[1]) > 0:
-                            y = 1
-                        elif int(self.player.get_pos()[1] - self.old_pos[1]) == 0:
-                            y = 0
-                        else:
-                            y = -1
-                        self.dragging_offset_distance = (x, y)
+                    self.game.make_swap()
 
                 if event.key == pygame.K_w:
                     self.player.set_direction('W')
