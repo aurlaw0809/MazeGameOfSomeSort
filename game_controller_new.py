@@ -2,8 +2,8 @@ from game_objects_new import GameObject, Player
 import pygame
 
 class Game:
-    def __init__(self, objects, images, player_images):
-        self.player = (Player(self, 'starchy', (0, 0), 50, 10, player_images))
+    def __init__(self, objects, images, player):
+        self.player = (Player(self, player[0], player[1], player[2], player[3], player[4]))
         self.backgrounds = []
         if objects is not None:
             for obj in objects:
@@ -59,3 +59,6 @@ class Game:
         if not self.check_collisions((self.player.get_s_end_pos()[0], self.player.get_s_end_pos()[1] + self.player.get_size())):
             self.move_character_by_pos((self.player.get_s_end_pos()[0], self.player.get_s_end_pos()[1] + self.player.get_size()))
             self.player.s_rotate_by(180)
+            return True
+        else:
+            return False

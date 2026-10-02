@@ -36,8 +36,9 @@ class GameObject:
     def get_collision_rect(self):
         return self.collision_rect
 
-    def draw_collision_rect(self, screen):
-        pygame.draw.rect(screen, self.colour, self.collision_rect)
+    def draw_collision_rect(self, screen, offset):
+        drawn_collision_rect = pygame.Rect(self.pos[0] - offset[0], self.pos[1] - self.size - offset[1], self.size, self.size)
+        pygame.draw.rect(screen, self.colour, drawn_collision_rect)
 
 
 
@@ -61,7 +62,7 @@ class Player(GameObject):
         self.images = images
         self.image = None
         self.image_rect = None
-        self.update_image()
+        self.update_image((0, 0))
         self.image_index = 0
 
         self.shadow_image = None
@@ -181,7 +182,7 @@ class Player(GameObject):
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #updating images
 
-    def update_image(self):
+    def update_image(self, offset):
         if self.moving:
             self.increment_walking_slower_down()
         else:
@@ -189,13 +190,13 @@ class Player(GameObject):
         self.image = pygame.image.load(self.images[self.direction][self.image_index]).convert_alpha()
         ratio = self.size / self.image.get_width()
         self.image = pygame.transform.scale(self.image, (self.size, self.image.get_height() * ratio))
-        self.image_rect = pygame.Rect(self.pos[0], self.pos[1] - self.image.get_height() , self.image.get_width(), self.image.get_height())
+        self.image_rect = pygame.Rect(self.pos[0] - offset[0], self.pos[1] - self.image.get_height() - offset[1] , self.image.get_width(), self.image.get_height())
 
-    def draw_player(self, screen):
-        self.update_image()
+    def draw_player(self, screen, offset):
+        self.update_image(offset)
         self.update_shadow_image()
         if self.s_length != 0:
-            screen.blit(self.shadow_image, self.shadow_pos)
+            screen.blit(self.shadow_image, (self.shadow_pos[0] - offset[0], self.shadow_pos[1] - offset[1]))
         screen.blit(self.image, self.image_rect)
 
 
