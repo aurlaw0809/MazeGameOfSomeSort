@@ -277,26 +277,54 @@ class Player(GameObject):
 
 
 class Key(GameObject):
-    def __init__(self, controller, name, pos, solid, size, transparent, colour):
-        GameObject.__init__(self, controller, name, pos, solid, size, transparent)
-        self.solid = False
-        self.transparent = True
-        self.colour = colour
+    def __init__(self, controller, name, pos, size, image, colour, door_pos, door_size, door_images):
+        GameObject.__init__(self, controller, name, pos, size, solid=False, transparent=True, interactable=True, image=None, colour=None)
+        #TODO fix parameters
         self.key_found = False
-        self.interactable = True
+        self.door = Door(controller, f'{name}_door', door_pos, door_size, door_images, colour)
 
     def get_key_found(self):
         return self.key_found
     def get_colour(self):
         return self.colour
 
-class Door(Key):
-    def __init__(self, controller, name, pos, solid, size, transparent, colour):
-        Key.__init__(self, controller, name, pos, solid, size, transparent, colour)
-        self.solid = True
-        self.transparent = False
-        self.interactable = True
+    def set_key_found(self):
+        self.key_found = True
 
-    def open_door(self):
+    def draw_key(self, screen, offset):
+        self.image = pygame.image.load(self.image).convert_alpha()
+        ratio = self.size / self.image.get_width()
+        self.image = pygame.transform.scale(self.image, (self.size, self.image.get_height() * ratio))
+        self.image_rect = pygame.Rect(self.pos[0] - offset[0], self.pos[1] - self.image.get_height() - offset[1], self.image.get_width(), self.image.get_height())
+
+        screen.blit(self.image, self.image_rect)
+
+class Door(Key):
+    def __init__(self, controller, name, pos, size, image, colour):
+        GameObject.__init__(self, controller, name, pos, size, solid = True, transparent = False, interactable = True, image=None, colour=colour)
+        self.door_open = False
+
+        self.images = []
+        if image is not None:
+            for img in image:
+                self.images.append(img)
+
+    def get_door_open(self):
+        return self.door_open
+
+    def set_door_open(self):
+        self.door_open = True
         self.solid = False
         self.transparent = True
+
+    def draw_door(self, screen, offset):
+        if self.door_open:
+            image = self.images[len(self.images) - 1]
+        else:
+            image = self.images[0]
+        self.image = pygame.image.load(image).convert_alpha()
+        ratio = self.size / self.image.get_width()
+        self.image = pygame.transform.scale(self.image, (self.size, self.image.get_height() * ratio))
+        self.image_rect = pygame.Rect(self.pos[0] - offset[0], self.pos[1] - self.image.get_height() - offset[1], self.image.get_width(), self.image.get_height())
+
+        screen.blit(self.image, self.image_rect)

@@ -1,13 +1,17 @@
-from game_objects_new import GameObject, Player
+from game_objects_new import GameObject, Player, Key
 import pygame
 
 class Game:
-    def __init__(self, objects, images, player):
+    def __init__(self, objects, keys, player):
         self.player = (Player(self, player[0], player[1], player[2], player[3], player[4]))
         self.backgrounds = []
+        self.keys = []
         if objects is not None:
             for obj in objects:
                 self.add_background_object(obj)
+        if keys is not None:
+            for key in keys:
+                self.add_key(key)
 
     def set_up(self):
         pass
@@ -16,8 +20,15 @@ class Game:
         self.backgrounds.append(GameObject(self, obj[0], obj[1], obj[2], obj[3], obj[4], obj[5], obj[6], obj[7]))
         #controller, name, pos, size, solid, transparent, interactable, image, colour
 
+    def add_key(self, key):
+        self.keys.append(Key(self, key[0], key[1], key[2], key[3], key[4], key[5], key[6], key[7]))
+        #self, controller, name, pos, size, image, colour, door_pos, door_size, door_images'
+
     def get_background_objects(self):
         return self.backgrounds
+
+    def get_keys(self):
+        return self.keys
 
     def check_collisions(self, new_pos):
         new_rect = pygame.Rect(new_pos[0], new_pos[1] - self.player.get_size(), self.player.get_size(), self.player.get_size())

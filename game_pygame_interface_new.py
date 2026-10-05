@@ -13,6 +13,7 @@ SCREEN_SIZE = (640, 480)
 class GameGUI:
 
     def __init__(self):
+
         pygame.init()
         pygame.display.set_caption('Maze testing')
 
@@ -33,13 +34,14 @@ class GameGUI:
 
         objects = [['test_block', (100, 100), 50, True, False, False, None, None]]
         player = ['starchy', self.starting_player_pos, 50, 10, player_images]
+        keys = [['test_key', (50, 50), 25, 'assets/placeholder_door/key.png', 'red', (200, 200), 75, ['assets/placeholder_door/open_door.png', 'assets/placeholder_door/closed_door.png']]]
 
         self.bg = pygame.image.load("assets/test_bg/img.png")
         self.bg = pygame.transform.scale(self.bg, (800, 800))
         self.bg_rect = pygame.Rect(-100, -100, self.bg.get_width(), self.bg.get_height())
 
         self.screen = pygame.display.set_mode(SCREEN_SIZE)
-        self.game = Game(objects, None, player)
+        self.game = Game(objects, keys, player)
         self.game.set_up()
         self.running = True
         self.offset = (0, 0)
@@ -144,12 +146,19 @@ class GameGUI:
         self.screen.fill((120, 176, 69))
         self.screen.blit(self.bg, pygame.Rect(-100 - self.offset[0], -100 - self.offset[1], self.bg.get_width(), self.bg.get_height()))
         self._draw_objects()
+        self._draw_keys()
         self.player.draw_player(self.screen, self.offset)
         pygame.display.flip()
 
     def _draw_objects(self):
         for thing in self.game.get_background_objects():
             thing.draw_collision_rect(self.screen, self.offset)
+
+    def _draw_keys(self):
+        for thing in self.game.get_keys():
+            thing.draw_key(self.screen, self.offset)
+            thing.door.draw_door(self.screen, self.offset)
+
 
 
 
