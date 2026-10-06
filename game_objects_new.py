@@ -40,6 +40,9 @@ class GameObject:
         drawn_collision_rect = pygame.Rect(self.pos[0] - offset[0], self.pos[1] - self.size - offset[1], self.size, self.size)
         pygame.draw.rect(screen, self.colour, drawn_collision_rect)
 
+    def interact(self):
+        pass
+
 
 
 
@@ -278,8 +281,9 @@ class Player(GameObject):
 
 class Key(GameObject):
     def __init__(self, controller, name, pos, size, image, colour, door_pos, door_size, door_images):
-        GameObject.__init__(self, controller, name, pos, size, solid=False, transparent=True, interactable=True, image=None, colour=None)
+        GameObject.__init__(self, controller, name, pos, size, False, True, True, image, colour)
         #TODO fix parameters
+        self.image = pygame.image.load(self.image).convert_alpha()
         self.key_found = False
         self.door = Door(controller, f'{name}_door', door_pos, door_size, door_images, colour)
 
@@ -292,26 +296,46 @@ class Key(GameObject):
         self.key_found = True
 
     def draw_key(self, screen, offset):
-        self.image = pygame.image.load(self.image).convert_alpha()
-        ratio = self.size / self.image.get_width()
-        self.image = pygame.transform.scale(self.image, (self.size, self.image.get_height() * ratio))
-        self.image_rect = pygame.Rect(self.pos[0] - offset[0], self.pos[1] - self.image.get_height() - offset[1], self.image.get_width(), self.image.get_height())
+        if not self.key_found:
+            ratio = self.size / self.image.get_width()
+            self.image = pygame.transform.scale(self.image, (self.size, self.image.get_height() * ratio))
+            self.image_rect = pygame.Rect(self.pos[0] - offset[0], self.pos[1] - self.image.get_height() - offset[1], self.image.get_width(), self.image.get_height())
 
-        screen.blit(self.image, self.image_rect)
+            screen.blit(self.image, self.image_rect)
+
+    def interact(self):
+        self.key_found = True
+        self.door.set_key_found()
 
 class Door(Key):
     def __init__(self, controller, name, pos, size, image, colour):
-        GameObject.__init__(self, controller, name, pos, size, solid = True, transparent = False, interactable = True, image=None, colour=colour)
+        GameObject.__init__(self, controller, name, pos, size, True, False, True, image, colour)
         self.door_open = False
+        self.key_found = False
+        self.interaction_radius = 200
 
         self.images = []
         if image is not None:
             for img in image:
                 self.images.append(img)
 
+        self.image = pygame.image.load(self.images[0]).convert_alpha()
+        self.door_width = self.size
+        self.door_height = self.image.get_height() * self.size / self.image.get_width()
+
+        self.collision_rect = pygame.Rect(self.pos[0], self.pos[1] - self.door_height, self.door_width, self.door_height)
+
+    def get_key_found(self):
+        return self.key_found
     def get_door_open(self):
         return self.door_open
+    def get_door_width(self):
+        return self.door_width
+    def get_door_height(self):
+        return self.door_height
 
+    def set_key_found(self):
+        self.key_found = True
     def set_door_open(self):
         self.door_open = True
         self.solid = False
@@ -328,3 +352,11 @@ class Door(Key):
         self.image_rect = pygame.Rect(self.pos[0] - offset[0], self.pos[1] - self.image.get_height() - offset[1], self.image.get_width(), self.image.get_height())
 
         screen.blit(self.image, self.image_rect)
+
+    def draw_collision_rect(self, screen, offset):
+        drawn_collision_rect = pygame.Rect(self.pos[0] - offset[0], self.pos[1] - self.door_height - offset[1], self.door_width, self.door_height)
+        pygame.draw.rect(screen, self.colour, drawn_collision_rect)
+
+    def interact(self):
+        if self.key_found:
+            self.set_door_open()

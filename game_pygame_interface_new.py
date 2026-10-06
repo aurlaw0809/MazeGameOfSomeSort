@@ -34,7 +34,7 @@ class GameGUI:
 
         objects = [['test_block', (100, 100), 50, True, False, False, None, None]]
         player = ['starchy', self.starting_player_pos, 50, 10, player_images]
-        keys = [['test_key', (50, 50), 25, 'assets/placeholder_door/key.png', 'red', (200, 200), 75, ['assets/placeholder_door/open_door.png', 'assets/placeholder_door/closed_door.png']]]
+        keys = [['test_key', (50, 50), 25, 'assets/placeholder_door/key.png', 'red', (1000, 1000), 200, ['assets/placeholder_door/closed_door.png', 'assets/placeholder_door/open_door.png']]]
 
         self.bg = pygame.image.load("assets/test_bg/img.png")
         self.bg = pygame.transform.scale(self.bg, (800, 800))
@@ -123,7 +123,8 @@ class GameGUI:
                     if possibilities is None:
                         pass
                     else:
-                        pass
+                        for object in possibilities:
+                            object.interact()
 
             if event.type == pygame.KEYUP:
 
@@ -158,6 +159,7 @@ class GameGUI:
         for thing in self.game.get_keys():
             thing.draw_key(self.screen, self.offset)
             thing.door.draw_door(self.screen, self.offset)
+            #thing.door.draw_collision_rect(self.screen, self.offset)
 
 
 

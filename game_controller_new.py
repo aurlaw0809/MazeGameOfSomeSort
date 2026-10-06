@@ -36,19 +36,32 @@ class Game:
             if pygame.Rect.colliderect(new_rect, thing.get_collision_rect()):
                 if thing.get_solid():
                     return True
-                else:
-                    return False
+        for door in self.keys:
+            if pygame.Rect.colliderect(new_rect, door.door.get_collision_rect()):
+                if door.door.get_solid():
+                    return True
         return False
 
     def scan_radius(self):
         possibilities = []
         for thing in self.backgrounds:
-            if (thing.get_pos()[0] + thing.get_size() - self.player.get_pos()[0] - self.player.get_size())**2 + (thing.get_pos()[1] + thing.get_size() - self.player.get_pos()[1] - self.player.get_size())**2 <= (self.player.get_interaction_radius())**2:
+            if (((thing.get_pos()[0] + thing.get_size() / 2) - (self.player.get_pos()[0] + self.player.get_size() / 2))**2 +
+                    ((thing.get_pos()[1] + thing.get_size() / 2) - (self.player.get_pos()[1] + self.player.get_size() / 2))**2 <= (thing.get_interaction_radius())**2):
+                possibilities.append(thing)
                 if thing.get_interactable():
                     possibilities.append(thing)
+        for key in self.keys:
+            if (((key.get_pos()[0] + key.get_size() / 2) - (self.player.get_pos()[0] + self.player.get_size() / 2)) ** 2 +
+                    ((key.get_pos()[1] + key.get_size() / 2) - (self.player.get_pos()[1] + self.player.get_size() / 2)) ** 2 <= (key.get_interaction_radius()) ** 2):
+                possibilities.append(key)
+            if (((key.door.get_pos()[0] + key.door.get_size() / 2) - (self.player.get_pos()[0] + self.player.get_size() / 2)) ** 2 +
+                    ((key.door.get_pos()[1] + key.door.get_size() / 2) - (self.player.get_pos()[1] + self.player.get_size() / 2)) ** 2 <= (key.door.get_interaction_radius()) ** 2):
+                possibilities.append(key.door)
+
         if len(possibilities) == 0:
             return None
         else:
+            print(possibilities)
             return possibilities
 
     def move_character_by_key(self, key):
