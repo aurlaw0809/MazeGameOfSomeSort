@@ -1,3 +1,6 @@
+#TODO get images from home for doors and walls
+#TODO door doesnt work with diff size so fix this
+
 import pygame
 from game_controller_new import Game
 
@@ -34,7 +37,7 @@ class GameGUI:
 
         objects = [['test_block', (100, 100), 50, True, False, False, None, None]]
         player = ['starchy', self.starting_player_pos, 50, 10, player_images]
-        keys = [['test_key', (50, 50), 25, 'assets/placeholder_door/key.png', 'red', (1000, 1000), 200, ['assets/placeholder_door/closed_door.png', 'assets/placeholder_door/open_door.png']]]
+        keys = [['test_key', (200, 200), 25, 'assets/placeholder_door/key.png', 'red', (600, 600), 100, ['assets/placeholder_door/closed_door.png', 'assets/placeholder_door/open_door.png']]]
 
         self.bg = pygame.image.load("assets/test_bg/img.png")
         self.bg = pygame.transform.scale(self.bg, (800, 800))
@@ -90,6 +93,9 @@ class GameGUI:
                 self.running = False
 
             if event.type == pygame.KEYDOWN and self.running:
+
+                # key_options = {'pygame O': self.player.rotate, }
+                # key_options[event.key]()
 
                 if event.key == pygame.K_o:
                     self.player.set_rotating_ac(True)
@@ -157,9 +163,10 @@ class GameGUI:
 
     def _draw_keys(self):
         for thing in self.game.get_keys():
+            thing.door.draw_collision_rect(self.screen, self.offset)
+            thing.door.draw_interaction_circle(self.screen, self.offset)
             thing.draw_key(self.screen, self.offset)
             thing.door.draw_door(self.screen, self.offset)
-            #thing.door.draw_collision_rect(self.screen, self.offset)
 
 
 

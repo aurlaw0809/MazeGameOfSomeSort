@@ -53,10 +53,12 @@ class Game:
         for key in self.keys:
             if (((key.get_pos()[0] + key.get_size() / 2) - (self.player.get_pos()[0] + self.player.get_size() / 2)) ** 2 +
                     ((key.get_pos()[1] + key.get_size() / 2) - (self.player.get_pos()[1] + self.player.get_size() / 2)) ** 2 <= (key.get_interaction_radius()) ** 2):
-                possibilities.append(key)
+                if not key.get_key_found():
+                    possibilities.append(key)
             if (((key.door.get_pos()[0] + key.door.get_size() / 2) - (self.player.get_pos()[0] + self.player.get_size() / 2)) ** 2 +
-                    ((key.door.get_pos()[1] + key.door.get_size() / 2) - (self.player.get_pos()[1] + self.player.get_size() / 2)) ** 2 <= (key.door.get_interaction_radius()) ** 2):
-                possibilities.append(key.door)
+                    ((key.door.get_pos()[1]) - (self.player.get_pos()[1] + self.player.get_size() / 2)) ** 2 <= (key.door.get_interaction_radius()) ** 2):
+                if not key.door.get_door_open():
+                    possibilities.append(key.door)
 
         if len(possibilities) == 0:
             return None
