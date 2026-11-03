@@ -37,8 +37,8 @@ class GameGUI:
 
         objects = [['wall_1', (500, 600), 100, True, False, False, None, None],
                    ['wall_2', (700, 600), 100, True, False, False, None, None],
-                   ['wall_3', (500, 550), 100, True, False, False, None, None],
-                   ['wall_4', (700, 550), 100, True, False, False, None, None]
+                   ['wall_3', (500, 500), 100, True, False, False, None, None],
+                   ['wall_4', (700, 500), 100, True, False, False, None, None]
                    ]
         player = ['starchy', self.starting_player_pos, 50, 10, player_images]
         keys = [['test_key', (200, 200), 25, 'assets/placeholder_door/key.png', 'red', (600, 600), 100, ['assets/placeholder_door/closed_door.png', 'assets/placeholder_door/open_door.png']]]
