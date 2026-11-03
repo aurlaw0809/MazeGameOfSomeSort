@@ -35,7 +35,11 @@ class GameGUI:
 
         self.starting_player_pos = (SCREEN_SIZE[0] // 2 - 50, SCREEN_SIZE[1] // 2)
 
-        objects = [['test_block', (100, 100), 50, True, False, False, None, None]]
+        objects = [['wall_1', (500, 600), 100, True, False, False, None, None],
+                   ['wall_2', (700, 600), 100, True, False, False, None, None],
+                   ['wall_3', (500, 550), 100, True, False, False, None, None],
+                   ['wall_4', (700, 550), 100, True, False, False, None, None]
+                   ]
         player = ['starchy', self.starting_player_pos, 50, 10, player_images]
         keys = [['test_key', (200, 200), 25, 'assets/placeholder_door/key.png', 'red', (600, 600), 100, ['assets/placeholder_door/closed_door.png', 'assets/placeholder_door/open_door.png']]]
 
@@ -163,8 +167,9 @@ class GameGUI:
 
     def _draw_keys(self):
         for thing in self.game.get_keys():
-            thing.door.draw_collision_rect(self.screen, self.offset)
             thing.door.draw_interaction_circle(self.screen, self.offset)
+            thing.door.draw_collision_rect(self.screen, self.offset)
+            thing.draw_interaction_circle(self.screen, self.offset)
             thing.draw_key(self.screen, self.offset)
             thing.door.draw_door(self.screen, self.offset)
 
