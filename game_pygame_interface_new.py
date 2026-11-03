@@ -1,5 +1,5 @@
 #TODO get images from home for doors and walls
-#TODO door doesnt work with diff size so fix this
+#TODO I MESSED UP THE DOOR
 
 import pygame
 from game_controller_new import Game
