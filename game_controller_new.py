@@ -6,6 +6,7 @@ class Game:
         self.player = (Player(self, player[0], player[1], player[2], player[3], player[4]))
         self.backgrounds = []
         self.keys = []
+        self.everything = []
         if objects is not None:
             for obj in objects:
                 self.add_background_object(obj)
@@ -13,22 +14,43 @@ class Game:
             for key in keys:
                 self.add_key(key)
 
+
+
     def set_up(self):
         pass
 
     def add_background_object(self, obj):
         self.backgrounds.append(GameObject(self, obj[0], obj[1], obj[2], obj[3], obj[4], obj[5], obj[6], obj[7]))
         #controller, name, pos, size, solid, transparent, interactable, image, colour
+        self.add_into_everything(self.backgrounds[-1])
 
     def add_key(self, key):
         self.keys.append(Key(self, key[0], key[1], key[2], key[3], key[4], key[5], key[6], key[7]))
-        #self, controller, name, pos, size, image, colour, door_pos, door_size, door_images'
+        #controller, name, pos, size, image, colour, door_pos, door_size, door_images'
+        self.add_into_everything(self.keys[-1])
+        self.add_into_everything((self.keys[-1]).door)
+
+    def add_into_everything(self, object):
+        inserted = False
+        if len(self.everything) > 0:
+            for i in range(len(self.everything)):
+                if object.get_pos()[1] <= self.everything[i].get_pos()[1] and not inserted:
+                    self.everything.insert(i, object)
+                    inserted = True
+                if not inserted:
+                    self.everything.append(object)
+        else:
+            self.everything.append(object)
+        print(self.everything)
 
     def get_background_objects(self):
         return self.backgrounds
 
     def get_keys(self):
         return self.keys
+
+    def get_everything(self):
+        return self.everything
 
     def check_collisions(self, new_pos):
         new_rect = pygame.Rect(new_pos[0], new_pos[1] - self.player.get_size(), self.player.get_size(), self.player.get_size())
@@ -55,15 +77,18 @@ class Game:
                     ((key.get_pos()[1] + key.get_size() / 2) - (self.player.get_pos()[1] - self.player.get_size() / 2)) ** 2 <= (key.get_interaction_radius()) ** 2):
                 if not key.get_key_found():
                     possibilities.append(key)
+
             front_entry = False
             back_entry = False
+
             if (((key.door.get_pos()[0] + key.door.get_size() / 2) - (self.player.get_pos()[0] + self.player.get_size() / 2)) ** 2 +
                 ((key.door.get_pos()[1]) - (self.player.get_pos()[1] - self.player.get_size() / 2)) ** 2 <= (key.door.get_interaction_radius()) ** 2):
                 front_entry = True
             if (((key.door.get_pos()[0] + key.door.get_size() / 2) - (self.player.get_pos()[0] + self.player.get_size() / 2)) ** 2 +
-                ((key.door.get_pos()[1] - key.door.get_size() - (self.player.get_pos()[1] - self.player.get_size() / 2)) ** 2 <= (key.door.get_interaction_radius()) ** 2)):
+                ((key.door.get_pos()[1] - key.door.get_size()) - (self.player.get_pos()[1] - self.player.get_size() / 2)) ** 2 <= (key.door.get_interaction_radius()) ** 2):
                 back_entry = True
-            if front_entry or back_entry:
+
+            if back_entry or front_entry:
                 if not key.door.get_door_open():
                     possibilities.append(key.door)
 

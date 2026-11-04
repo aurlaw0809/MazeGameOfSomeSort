@@ -36,6 +36,9 @@ class GameObject:
     def get_collision_rect(self):
         return self.collision_rect
 
+    def draw(self, screen, offset):
+        self.draw_collision_rect(screen, offset)
+
     def draw_collision_rect(self, screen, offset):
         drawn_collision_rect = pygame.Rect(self.pos[0] - offset[0], self.pos[1] - self.size - offset[1], self.size, self.size)
         pygame.draw.rect(screen, self.colour, drawn_collision_rect)
@@ -298,7 +301,7 @@ class Key(GameObject):
     def set_key_found(self):
         self.key_found = True
 
-    def draw_key(self, screen, offset):
+    def draw(self, screen, offset):
         if not self.key_found:
             ratio = self.size / self.image.get_width()
             self.image = pygame.transform.scale(self.image, (self.size, self.image.get_height() * ratio))
@@ -348,7 +351,7 @@ class Door(Key):
         self.solid = False
         self.transparent = True
 
-    def draw_door(self, screen, offset):
+    def draw(self, screen, offset):
         if self.door_open:
             image = self.images[len(self.images) - 1]
         else:

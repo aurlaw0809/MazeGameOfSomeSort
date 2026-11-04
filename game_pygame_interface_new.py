@@ -41,7 +41,7 @@ class GameGUI:
                    ['wall_4', (700, 500), 100, True, False, False, None, None]
                    ]
         player = ['starchy', self.starting_player_pos, 50, 10, player_images]
-        keys = [['test_key', (200, 200), 25, 'assets/placeholder_door/key.png', 'red', (600, 600), 100, ['assets/placeholder_door/closed_door.png', 'assets/placeholder_door/open_door.png']]]
+        keys = [['test_key', (100, 100), 25, 'assets/placeholder_door/key.png', 'red', (600, 600), 100, ['assets/placeholder_door/closed_door.png', 'assets/placeholder_door/open_door.png']]]
 
         self.bg = pygame.image.load("assets/test_bg/img.png")
         self.bg = pygame.transform.scale(self.bg, (800, 800))
@@ -156,22 +156,38 @@ class GameGUI:
     def _draw(self):
         self.screen.fill((120, 176, 69))
         self.screen.blit(self.bg, pygame.Rect(-100 - self.offset[0], -100 - self.offset[1], self.bg.get_width(), self.bg.get_height()))
+        '''
         self._draw_objects()
         self._draw_keys()
         self.player.draw_player(self.screen, self.offset)
+        '''
+        self._draw_layering_properly()
         pygame.display.flip()
-
+    '''
     def _draw_objects(self):
         for thing in self.game.get_background_objects():
             thing.draw_collision_rect(self.screen, self.offset)
 
     def _draw_keys(self):
         for thing in self.game.get_keys():
+            
             thing.door.draw_interaction_circle(self.screen, self.offset)
             thing.door.draw_collision_rect(self.screen, self.offset)
             thing.draw_interaction_circle(self.screen, self.offset)
+            
             thing.draw_key(self.screen, self.offset)
             thing.door.draw_door(self.screen, self.offset)
+    '''
+
+    def _draw_layering_properly(self):
+        player_drawn = False
+        for thing in self.game.get_everything():
+            if self.player.get_pos()[1] <= thing.get_pos()[1] and not player_drawn:
+                self.player.draw_player(self.screen, self.offset)
+                player_drawn = True
+            thing.draw(self.screen, self.offset)
+        if not player_drawn:
+            self.player.draw_player(self.screen, self.offset)
 
 
 
