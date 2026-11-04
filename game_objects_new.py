@@ -12,8 +12,8 @@ class GameObject:
         self.interaction_radius = 50
         self.image = image
         if self.image is not None:
-            self.image_rect = pass
-        #TODO image rect jazz super quick
+            self.image = pygame.image.load(self.image).convert_alpha()
+            self.image_rect = pygame.Rect(self.pos[0], self.pos[1], self.size, self.image.get_height() / self.image.get_width() * self.size)
         self.colour = colour
         if colour is None:
             self.colour = pygame.Color('red')
@@ -42,6 +42,9 @@ class GameObject:
     def draw(self, screen, offset):
         if self.image is None:
             self.draw_collision_rect(screen, offset)
+        else:
+            drawn_image_rect = pygame.Rect(self.pos[0] - offset[0], self.pos[1] - self.size - offset[1], self.size, self.image.get_height() / self.image.get_width() * self.size)
+            screen.blit(self.image, drawn_image_rect)
 
     def draw_collision_rect(self, screen, offset):
         drawn_collision_rect = pygame.Rect(self.pos[0] - offset[0], self.pos[1] - self.size - offset[1], self.size, self.size)
@@ -52,10 +55,6 @@ class GameObject:
 
     def interact(self):
         pass
-
-
-
-
 
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #__init__
@@ -89,6 +88,8 @@ class Player(GameObject):
         self.rotating_ac = False
 
         self.s_colour = (30, 30, 30, 100)
+
+        self.update_shadow_image()
 
     def __repr__(self):
         return f'Player(name: {self.name}, pos: {self.pos}, size: {self.size}, solid: {self.solid}, transparent: {self.transparent}, speed: {self.speed}, s_angle: {self.s_angle}, s_length: {self.s_length})'
@@ -212,12 +213,20 @@ class Player(GameObject):
             screen.blit(self.shadow_image, (self.shadow_pos[0] - offset[0], self.shadow_pos[1] - offset[1]))
         screen.blit(self.image, self.image_rect)
 
-
         """
         pygame.draw.rect(screen, 'red', self.image_rect)
         pygame.draw.rect(screen, 'blue', self.collision_rect)
         pygame.draw.rect(screen, 'green', self.s_end_pos_rect)
         """
+
+    def draw_player_separate(self, screen, offset):
+        self.update_image(offset)
+        screen.blit(self.image, self.image_rect)
+
+    def draw_shadow_separate(self, screen, offset):
+        self.update_shadow_image()
+        if self.s_length != 0:
+            screen.blit(self.shadow_image, (self.shadow_pos[0] - offset[0], self.shadow_pos[1] - offset[1]))
 
     def make_shadow_image(self):
         width, height = self.image.get_size()
@@ -292,7 +301,7 @@ class Player(GameObject):
 class Key(GameObject):
     def __init__(self, controller, name, pos, size, image, colour, door_pos, door_size, door_images):
         GameObject.__init__(self, controller, name, pos, size, False, True, True, image, colour)
-        self.image = pygame.image.load(self.image).convert_alpha()
+        self.image = pygame.image.load(image).convert_alpha()
         self.key_found = False
         self.door = Door(controller, f'{name}_door', door_pos, door_size, door_images, colour)
         self.interaction_radius = 100
@@ -323,7 +332,7 @@ class Key(GameObject):
 
 class Door(Key):
     def __init__(self, controller, name, pos, size, image, colour):
-        GameObject.__init__(self, controller, name, pos, size, True, False, True, image, colour)
+        GameObject.__init__(self, controller, name, pos, size, True, False, True, None, colour)
         self.door_open = False
         self.key_found = False
         self.interaction_radius = self.size

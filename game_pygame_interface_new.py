@@ -1,5 +1,4 @@
 #TODO get images from home for doors and walls
-#TODO I MESSED UP THE DOOR
 
 import pygame
 from game_controller_new import Game
@@ -161,17 +160,23 @@ class GameGUI:
 
     def _draw_layering_properly(self):
         player_drawn = False
+        shadow_drawn = False
         for thing in self.game.get_everything():
-            if self.player.get_pos()[1] <= thing.get_pos()[1] and not player_drawn:
-                self.player.draw_player(self.screen, self.offset)
+            if self.player.get_s_end_pos()[1] <= thing.get_pos()[1] and not shadow_drawn:
+                self.player.draw_shadow_separate(self.screen, self.offset)
+                shadow_drawn = True
+            if self.player.get_pos()[1] <= thing.get_pos()[1] and not player_drawn and shadow_drawn:
+                self.player.draw_player_separate(self.screen, self.offset)
                 player_drawn = True
             '''
             if thing.get_interactable():
                 thing.draw_interaction_circle(self.screen, self.offset)
             '''
             thing.draw(self.screen, self.offset)
+        if not shadow_drawn:
+            self.player.draw_shadow_separate(self.screen, self.offset)
         if not player_drawn:
-            self.player.draw_player(self.screen, self.offset)
+            self.player.draw_player_separate(self.screen, self.offset)
 
 
 
