@@ -158,6 +158,7 @@ class GameGUI:
         self._draw_layering_properly()
         pygame.display.flip()
 
+
     def _draw_layering_properly(self):
         player_drawn = False
         shadow_drawn = False

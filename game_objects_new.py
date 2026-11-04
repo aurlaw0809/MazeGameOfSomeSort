@@ -375,6 +375,7 @@ class Door(Key):
 
         screen.blit(self.image, self.image_rect)
 
+
     def draw_collision_rect(self, screen, offset):
         if not self.door_open:
             drawn_collision_rect = pygame.Rect(self.pos[0] - offset[0], self.pos[1] - self.size - offset[1], self.size, self.size)
