@@ -11,6 +11,9 @@ class GameObject:
         self.interactable = interactable
         self.interaction_radius = 50
         self.image = image
+        if self.image is not None:
+            self.image_rect = pass
+        #TODO image rect jazz super quick
         self.colour = colour
         if colour is None:
             self.colour = pygame.Color('red')
@@ -37,7 +40,8 @@ class GameObject:
         return self.collision_rect
 
     def draw(self, screen, offset):
-        self.draw_collision_rect(screen, offset)
+        if self.image is None:
+            self.draw_collision_rect(screen, offset)
 
     def draw_collision_rect(self, screen, offset):
         drawn_collision_rect = pygame.Rect(self.pos[0] - offset[0], self.pos[1] - self.size - offset[1], self.size, self.size)
