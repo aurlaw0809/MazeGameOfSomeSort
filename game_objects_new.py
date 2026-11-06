@@ -15,6 +15,7 @@ class GameObject:
         self.image = image
         if self.image is not None:
             self.image = pygame.image.load(self.image).convert_alpha()
+            self.image = pygame.transform.scale(self.image, (self.size, self.image.get_height() * self.size / self.image.get_width()))
             self.image_rect = pygame.Rect(self.pos[0], self.pos[1], self.size, self.image.get_height() / self.image.get_width() * self.size)
         self.colour = colour
         if colour is None:
@@ -45,8 +46,8 @@ class GameObject:
         if self.image is None:
             self.draw_collision_rect(screen, offset)
         else:
-            drawn_image_rect = pygame.Rect(self.pos[0] - offset[0], self.pos[1] - self.size - offset[1], self.size, self.image.get_height() / self.image.get_width() * self.size)
-            screen.blit(self.image, drawn_image_rect)
+            self.image_rect = pygame.Rect(self.pos[0] - offset[0], self.pos[1] - self.size - offset[1], self.size, self.image.get_height() / self.image.get_width() * self.size)
+            screen.blit(self.image, self.image_rect)
 
     def draw_collision_rect(self, screen, offset):
         drawn_collision_rect = pygame.Rect(self.pos[0] - offset[0], self.pos[1] - self.size - offset[1], self.size, self.size)

@@ -36,13 +36,13 @@ class GameGUI:
 
         self.starting_player_pos = (SCREEN_SIZE[0] // 2 - 50, SCREEN_SIZE[1] // 2)
 
-        objects = [['wall_1', (500, 600), 16*pixel_scaler, True, False, False, 'assets/walls/top_wall.png', None],
-                   ['wall_2', (700, 600), 16*pixel_scaler, True, False, False, 'assets/walls/top_wall.png', None],
+        objects = [['wall_1', (500, 500 - 16*pixel_scaler), 16*pixel_scaler, True, False, False, 'assets/walls/top_wall.png', None],
+                   ['wall_2', (500 + 33*pixel_scaler, 500  - 16*pixel_scaler), 16*pixel_scaler, True, False, False, 'assets/walls/top_wall.png', None],
                    ['wall_3', (500, 500), 16*pixel_scaler, True, False, False, 'assets/walls/bottom_wall.png', None],
-                   ['wall_4', (700, 500), 16*pixel_scaler, True, False, False, 'assets/walls/bottom_wall.png', None]
+                   ['wall_4', (500 + 33*pixel_scaler, 500), 16*pixel_scaler, True, False, False, 'assets/walls/bottom_wall.png', None]
                    ]
         player = ['starchy', self.starting_player_pos, 16*pixel_scaler, 10, player_images]
-        keys = [['test_key', (100, 100), 11*pixel_scaler, 'assets/doors/exit_door_key.png', 'red', (600, 600), 17*pixel_scaler, ['assets/doors/exit_door_closed.png', 'assets/doors/exit_door_open.png']]]
+        keys = [['test_key', (100, 100), 11*pixel_scaler, 'assets/doors/exit_door_key.png', 'red', (500 + 16*pixel_scaler, 500), 17*pixel_scaler, ['assets/doors/exit_door_closed.png', 'assets/doors/exit_door_open.png']]]
 
         self.bg = pygame.image.load("assets/test_bg/img.png")
         self.bg = pygame.transform.scale(self.bg, (800, 800))
@@ -168,12 +168,16 @@ class GameGUI:
             if self.player.get_s_end_pos()[1] <= thing.get_pos()[1] and not shadow_drawn:
                 self.player.draw_shadow_separate(self.screen, self.offset)
                 shadow_drawn = True
-            if self.player.get_pos()[1] <= thing.get_pos()[1] and not player_drawn and shadow_drawn:
+            if self.player.get_pos()[1] <= thing.get_pos()[1] and not player_drawn:
+                if not shadow_drawn:
+                    self.player.draw_shadow_separate(self.screen, self.offset)
+                    shadow_drawn = True
                 self.player.draw_player_separate(self.screen, self.offset)
                 player_drawn = True
-
+            '''
             if thing.get_interactable():
                 thing.draw_interaction_circle(self.screen, self.offset)
+            '''
 
             thing.draw(self.screen, self.offset)
         if not shadow_drawn:
