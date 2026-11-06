@@ -42,7 +42,6 @@ class Game:
                     self.everything.append(object)
         else:
             self.everything.append(object)
-        print(self.everything)
 
     def get_background_objects(self):
         return self.backgrounds
@@ -68,14 +67,14 @@ class Game:
     def scan_radius(self):
         possibilities = []
         for thing in self.backgrounds:
-            if (((thing.get_pos()[0] + thing.get_size() / 2) - (self.player.get_pos()[0] + self.player.get_size() / 2))**2 +
-                    ((thing.get_pos()[1] + thing.get_size() / 2) - (self.player.get_pos()[1] - self.player.get_size() / 2))**2 <= (thing.get_interaction_radius())**2):
-                possibilities.append(thing)
-                if thing.get_interactable():
+            if thing.get_interactable():
+                if (((thing.get_pos()[0] + thing.get_size() / 2) - (self.player.get_pos()[0] + self.player.get_size() / 2))**2 +
+                        ((thing.get_pos()[1] + thing.get_size() / 2) - (self.player.get_pos()[1] - self.player.get_size() / 2))**2 <= (thing.get_interaction_radius())**2):
                     possibilities.append(thing)
+
         for key in self.keys:
             if (((key.get_pos()[0] + key.get_size() / 2) - (self.player.get_pos()[0] + self.player.get_size() / 2)) ** 2 +
-                    ((key.get_pos()[1] + key.get_size() / 2) - (self.player.get_pos()[1] - self.player.get_size() / 2)) ** 2 <= (key.get_interaction_radius()) ** 2):
+                    ((key.get_pos()[1] - key.get_size() / 2) - (self.player.get_pos()[1] - self.player.get_size() / 2)) ** 2 <= (key.get_interaction_radius()) ** 2):
                 if not key.get_key_found():
                     possibilities.append(key)
 

@@ -1,3 +1,5 @@
+#TODO fix wall images
+
 import pygame
 
 class GameObject:
@@ -343,8 +345,6 @@ class Door(Key):
                 self.images.append(img)
 
         self.image = pygame.image.load(self.images[0]).convert_alpha()
-        self.door_width = self.size
-        self.door_height = self.image.get_height() * self.size / self.image.get_width()
 
         self.collision_rect = pygame.Rect(self.pos[0], self.pos[1] - self.size, self.size, self.size)
 
@@ -353,9 +353,9 @@ class Door(Key):
     def get_door_open(self):
         return self.door_open
     def get_door_width(self):
-        return self.door_width
+        return self.size
     def get_door_height(self):
-        return self.door_height
+        return self.image.get_height() * self.size / self.image.get_width()
 
     def set_key_found(self):
         self.key_found = True
@@ -370,8 +370,8 @@ class Door(Key):
         else:
             image = self.images[0]
         self.image = pygame.image.load(image).convert_alpha()
-        self.image = pygame.transform.scale(self.image, (self.door_width, self.door_height))
-        self.image_rect = pygame.Rect(self.pos[0] - offset[0], self.pos[1] - self.image.get_height() - offset[1], self.door_width, self.door_height)
+        self.image = pygame.transform.scale(self.image, (self.size, self.image.get_height() * self.size / self.image.get_width()))
+        self.image_rect = pygame.Rect(self.pos[0] - offset[0], self.pos[1] - self.image.get_height() - offset[1], self.size, self.image.get_height() * self.size / self.image.get_width())
 
         screen.blit(self.image, self.image_rect)
 
