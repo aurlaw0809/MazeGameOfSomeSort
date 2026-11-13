@@ -1,4 +1,5 @@
 #TODO get images from home for doors and walls
+#TODO making walls classes
 
 import pygame
 from game_controller_new import Game
@@ -36,13 +37,20 @@ class GameGUI:
 
         self.starting_player_pos = (SCREEN_SIZE[0] // 2 - 50, SCREEN_SIZE[1] // 2)
 
-        objects = [['wall_1', (500, 500 - 16*pixel_scaler), 16*pixel_scaler, True, False, False, 'assets/walls/top_wall.png', None],
-                   ['wall_2', (500 + 33*pixel_scaler, 500  - 16*pixel_scaler), 16*pixel_scaler, True, False, False, 'assets/walls/top_wall.png', None],
-                   ['wall_3', (500, 500), 16*pixel_scaler, True, False, False, 'assets/walls/bottom_wall.png', None],
-                   ['wall_4', (500 + 33*pixel_scaler, 500), 16*pixel_scaler, True, False, False, 'assets/walls/bottom_wall.png', None]
+        objects = [['wall_1', (500, 500 - 16*pixel_scaler), 16*pixel_scaler, True, False, False, 'assets/walls/green_flowers/T2.png', None],
+                   ['wall_2', (500 + 33*pixel_scaler, 500  - 16*pixel_scaler), 16*pixel_scaler, True, False, False, 'assets/walls/green_flowers/T2.png', None],
+                   ['wall_3', (500, 500), 16*pixel_scaler, True, False, False, 'assets/walls/green_flowers/B2.png', None],
+                   ['wall_4', (500 + 33*pixel_scaler, 500), 16*pixel_scaler, True, False, False, 'assets/walls/green_flowers/B2.png', None],
+                   ['wall_5', (500 - 33 * pixel_scaler, 500 - 16 * pixel_scaler), 16 * pixel_scaler, True, False, False, 'assets/walls/green_flowers/T2.png', None],
+                   ['wall_6', (500 - 33 * pixel_scaler, 500), 16 * pixel_scaler, True, False, False, 'assets/walls/green_flowers/B2.png', None],
                    ]
+        walls = [['wall_1', (500, 500 - 16*pixel_scaler), 16*pixel_scaler, ['assets/walls/green_flowers/B2.png', 'assets/walls/green_flowers/T2.png']],
+                 ['']]
         player = ['starchy', self.starting_player_pos, 16*pixel_scaler, 10, player_images]
-        keys = [['test_key', (100, 100), 11*pixel_scaler, 'assets/doors/exit_door_key.png', 'red', (500 + 16*pixel_scaler, 500), 17*pixel_scaler, ['assets/doors/exit_door_closed.png', 'assets/doors/exit_door_open.png']]]
+        keys = [['test_key', (100, 100), 11*pixel_scaler, 'assets/doors/exit_door_key.png', 'red', (500 + 16*pixel_scaler, 500),
+                 17*pixel_scaler, ['assets/doors/exit_door_closed.png', 'assets/doors/exit_door_open.png']],
+                ['test_key2', (0, 0), 11 * pixel_scaler, 'assets/doors/exit_door_key.png', 'red', (500 - 17 * pixel_scaler, 500),
+                 17 * pixel_scaler, ['assets/doors/exit_door_closed.png', 'assets/doors/exit_door_open.png']]]
 
         self.bg = pygame.image.load("assets/test_bg/img.png")
         self.bg = pygame.transform.scale(self.bg, (800, 800))
@@ -148,7 +156,8 @@ class GameGUI:
 
     def _process_game_logic(self):
         if self.running and self.player.get_moving():
-            self.game.move_character_by_key(self.player.get_direction())
+            for i in range(self.player.get_speed()):
+                self.game.move_character_by_key(self.player.get_direction())
         if self.running and self.player.get_rotating_c():
             self.player.s_rotate('P')
         if self.running and self.player.get_rotating_ac():
@@ -175,9 +184,12 @@ class GameGUI:
                 self.player.draw_player_separate(self.screen, self.offset)
                 player_drawn = True
             '''
+            thing.draw_collision_rect(self.screen, self.offset)
             if thing.get_interactable():
                 thing.draw_interaction_circle(self.screen, self.offset)
             '''
+
+
 
             thing.draw(self.screen, self.offset)
         if not shadow_drawn:

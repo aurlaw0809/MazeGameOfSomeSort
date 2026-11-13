@@ -1,10 +1,11 @@
-from game_objects_new import GameObject, Player, Key
+from game_objects_new import GameObject, Player, Key, Wall
 import pygame
 
 class Game:
     def __init__(self, objects, keys, player):
         self.player = (Player(self, player[0], player[1], player[2], player[3], player[4]))
         self.backgrounds = []
+        self.walls = []
         self.keys = []
         self.everything = []
         if objects is not None:
@@ -31,6 +32,10 @@ class Game:
         self.add_into_everything(self.keys[-1])
         self.add_into_everything((self.keys[-1]).door)
 
+    def add_wall(self, wall):
+        self.walls.append(Wall(self, wall[0], wall[1], wall[2], wall[3], wall[4]))
+        self.add_into_everything(self.walls[-1])
+
     def add_into_everything(self, object):
         inserted = False
         if len(self.everything) > 0:
@@ -53,7 +58,7 @@ class Game:
         return self.everything
 
     def check_collisions(self, new_pos):
-        new_rect = pygame.Rect(new_pos[0], new_pos[1] - self.player.get_size(), self.player.get_size(), self.player.get_size())
+        new_rect = pygame.Rect(new_pos[0] + self.player.get_size() / 4, new_pos[1] - self.player.get_size() / 2, self.player.get_size() / 2, self.player.get_size() / 2)
         for thing in self.backgrounds:
             if pygame.Rect.colliderect(new_rect, thing.get_collision_rect()):
                 if thing.get_solid():

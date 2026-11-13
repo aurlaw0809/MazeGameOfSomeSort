@@ -59,6 +59,27 @@ class GameObject:
     def interact(self):
         pass
 
+class Wall(GameObject):
+    def __init__(self, controller, name, pos, size, images, solid=True, transparent=False, interactable=False, image=None, colour=None):
+        GameObject.__init__(self, controller, name, pos, size, solid, transparent, interactable, image, colour)
+
+        self.collision_rect = pygame.Rect(self.pos[0], self.pos[1] - self.size / 2, self.size, self.size / 2)
+        self.images = images
+        self.lower_image = pygame.image.load(images[0]).convert_alpha()
+        self.lower_image = pygame.transform.scale(self.lower_image, (self.size, self.size))
+        self.upper_image = pygame.image.load(images[1]).convert_alpha()
+        self.upper_image = pygame.transform.scale(self.upper_image, (self.size, self.size))
+
+    def draw(self, screen, offset):
+        lower_rect = pygame.Rect(self.pos[0] - offset[0], self.pos[1] - self.size - offset[1], self.size, self.size)
+        upper_rect = pygame.Rect(self.pos[0] - offset[0], self.pos[1] - offset[1], self.size, self.size)
+        screen.blit(self.lower_image, lower_rect)
+        screen.blit(self.upper_image, upper_rect)
+
+    def draw_collision_rect(self, screen, offset):
+        drawn_collision_rect = pygame.Rect(self.pos[0] - offset[0], self.pos[1] - self.size / 2 - offset[1], self.size, self.size / 2)
+        pygame.draw.rect(screen, self.colour, drawn_collision_rect)
+
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #__init__
 
@@ -68,7 +89,7 @@ class Player(GameObject):
 
         self.speed = speed
 
-        self.collision_rect = pygame.Rect(self.pos[0], self.pos[1] - self.size, self.size, self.size)
+        self.collision_rect = pygame.Rect(self.pos[0] + self.size / 4, self.pos[1] - self.size /2, self.size / 2, self.size / 2)
 
         self.direction = 'S'
         self.moving = False
@@ -152,24 +173,24 @@ class Player(GameObject):
 
     def find_next_location(self, key):
         if key == 'W':
-            return self.pos[0], self.pos[1] - self.speed
+            return self.pos[0], self.pos[1] - 1
         elif key == 'A':
-            return self.pos[0] - self.speed, self.pos[1]
+            return self.pos[0] - 1, self.pos[1]
         elif key == 'S':
-            return self.pos[0], self.pos[1] + self.speed
+            return self.pos[0], self.pos[1] + 1
         elif key == 'D':
-            return self.pos[0] + self.speed, self.pos[1]
+            return self.pos[0] + 1, self.pos[1]
         return None
 
     def move(self, key):
         pos_offset = ((self.find_next_location(key)[0] - self.pos[0]), (self.find_next_location(key)[1] - self.pos[1]))
         self.pos = self.find_next_location(key)
-        self.collision_rect = pygame.Rect(self.pos[0], self.pos[1] - self.size, self.size, self.size)
+        self.collision_rect = pygame.Rect(self.pos[0] + self.size / 4, self.pos[1] - self.size /2, self.size / 2, self.size / 2)
         self.image_rect.move(pos_offset)
 
     def move_to_pos(self, pos):
         self.pos = pos
-        self.collision_rect = pygame.Rect(self.pos[0], self.pos[1] - self.size, self.size, self.size)
+        self.collision_rect = pygame.Rect(self.pos[0] + self.size / 4, self.pos[1] - self.size /2, self.size / 2, self.size / 2)
         self.image_rect.move(self.pos[0], self.pos[0] - self.image.get_height())
 
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -225,6 +246,11 @@ class Player(GameObject):
     def draw_player_separate(self, screen, offset):
         self.update_image(offset)
         screen.blit(self.image, self.image_rect)
+
+        '''
+        self.drawn_collision_rect = pygame.Rect(self.collision_rect.x - offset[0], self.collision_rect.y - offset[1], self.size // 2, self.size // 2)
+        pygame.draw.rect(screen, 'blue', self.drawn_collision_rect)
+        '''
 
     def draw_shadow_separate(self, screen, offset):
         self.update_shadow_image()
@@ -347,7 +373,7 @@ class Door(Key):
 
         self.image = pygame.image.load(self.images[0]).convert_alpha()
 
-        self.collision_rect = pygame.Rect(self.pos[0], self.pos[1] - self.size, self.size, self.size)
+        self.collision_rect = pygame.Rect(self.pos[0], self.pos[1] - self.size / 2, self.size, self.size / 2)
 
     def get_key_found(self):
         return self.key_found
@@ -379,13 +405,13 @@ class Door(Key):
 
     def draw_collision_rect(self, screen, offset):
         if not self.door_open:
-            drawn_collision_rect = pygame.Rect(self.pos[0] - offset[0], self.pos[1] - self.size - offset[1], self.size, self.size)
+            drawn_collision_rect = pygame.Rect(self.pos[0] - offset[0], self.pos[1] - self.size / 2 - offset[1], self.size, self.size / 2)
             pygame.draw.rect(screen, self.colour, drawn_collision_rect)
 
     def draw_interaction_circle(self, screen, offset):
         if not self.door_open:
-            pygame.draw.circle(screen, 'blue', (self.pos[0] + self.size//2 - offset[0], self.pos[1] - offset[1]), self.interaction_radius)
-            pygame.draw.circle(screen, 'blue', (self.pos[0] + self.size // 2 - offset[0], self.pos[1] - self.size - offset[1]), self.interaction_radius)
+            pygame.draw.circle(screen, 'blue', (self.pos[0] + self.size // 2 - offset[0], self.pos[1] - offset[1]), self.interaction_radius)
+            pygame.draw.circle(screen, 'blue', (self.pos[0] + self.size // 2 - offset[0], self.pos[1] - self.size / 2 - offset[1]), self.interaction_radius)
 
     def interact(self):
         if self.key_found:
