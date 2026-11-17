@@ -2,7 +2,7 @@ from game_objects_new import GameObject, Player, Key, Wall
 import pygame
 
 class Game:
-    def __init__(self, objects, keys, player):
+    def __init__(self, objects, keys, player, walls):
         self.player = (Player(self, player[0], player[1], player[2], player[3], player[4]))
         self.backgrounds = []
         self.walls = []
@@ -14,6 +14,9 @@ class Game:
         if keys is not None:
             for key in keys:
                 self.add_key(key)
+        if walls is not None:
+            for wall in walls:
+                self.add_wall(wall)
 
 
 
@@ -33,7 +36,7 @@ class Game:
         self.add_into_everything((self.keys[-1]).door)
 
     def add_wall(self, wall):
-        self.walls.append(Wall(self, wall[0], wall[1], wall[2], wall[3], wall[4]))
+        self.walls.append(Wall(self, wall[0], wall[1], wall[2], wall[3]))
         self.add_into_everything(self.walls[-1])
 
     def add_into_everything(self, object):
@@ -66,6 +69,10 @@ class Game:
         for door in self.keys:
             if pygame.Rect.colliderect(new_rect, door.door.get_collision_rect()):
                 if door.door.get_solid():
+                    return True
+        for wall in self.walls:
+            if pygame.Rect.colliderect(new_rect, wall.get_collision_rect()):
+                if wall.get_solid():
                     return True
         return False
 

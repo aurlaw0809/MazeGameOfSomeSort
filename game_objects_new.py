@@ -1,6 +1,7 @@
 #TODO fix wall images
 
 import pygame
+import random
 
 class GameObject:
     def __init__(self, controller, name, pos, size, solid, transparent, interactable, image, colour):
@@ -63,7 +64,7 @@ class Wall(GameObject):
     def __init__(self, controller, name, pos, size, images, solid=True, transparent=False, interactable=False, image=None, colour=None):
         GameObject.__init__(self, controller, name, pos, size, solid, transparent, interactable, image, colour)
 
-        self.collision_rect = pygame.Rect(self.pos[0], self.pos[1] - self.size / 2, self.size, self.size / 2)
+        self.collision_rect = pygame.Rect(self.pos[0], self.pos[1] + self.size / 2, self.size, self.size / 2)
         self.images = images
         self.lower_image = pygame.image.load(images[0]).convert_alpha()
         self.lower_image = pygame.transform.scale(self.lower_image, (self.size, self.size))
@@ -71,13 +72,13 @@ class Wall(GameObject):
         self.upper_image = pygame.transform.scale(self.upper_image, (self.size, self.size))
 
     def draw(self, screen, offset):
-        lower_rect = pygame.Rect(self.pos[0] - offset[0], self.pos[1] - self.size - offset[1], self.size, self.size)
-        upper_rect = pygame.Rect(self.pos[0] - offset[0], self.pos[1] - offset[1], self.size, self.size)
+        lower_rect = pygame.Rect(self.pos[0] - offset[0], self.pos[1] - offset[1], self.size, self.size)
+        upper_rect = pygame.Rect(self.pos[0] - offset[0], self.pos[1] - self.size - offset[1], self.size, self.size)
         screen.blit(self.lower_image, lower_rect)
         screen.blit(self.upper_image, upper_rect)
 
     def draw_collision_rect(self, screen, offset):
-        drawn_collision_rect = pygame.Rect(self.pos[0] - offset[0], self.pos[1] - self.size / 2 - offset[1], self.size, self.size / 2)
+        drawn_collision_rect = pygame.Rect(self.pos[0] - offset[0], self.pos[1] + self.size / 2 - offset[1], self.size, self.size / 2)
         pygame.draw.rect(screen, self.colour, drawn_collision_rect)
 
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -328,9 +329,13 @@ class Player(GameObject):
 
 
 class Key(GameObject):
-    def __init__(self, controller, name, pos, size, image, colour, door_pos, door_size, door_images):
-        GameObject.__init__(self, controller, name, pos, size, False, True, True, image, colour)
-        self.image = pygame.image.load(image).convert_alpha()
+    def __init__(self, controller, name, pos, size, key_images, colour, door_pos, door_size, door_images):
+        GameObject.__init__(self, controller, name, pos, size, False, True, True, None, colour)
+        self.image = pygame.image.load(key_images[0]).convert_alpha()
+        self.key_images = key_images
+        self.animate = 0
+        self.index = 0
+        self.slower_down = 0
         self.key_found = False
         self.door = Door(controller, f'{name}_door', door_pos, door_size, door_images, colour)
         self.interaction_radius = 100
@@ -344,6 +349,15 @@ class Key(GameObject):
         self.key_found = True
 
     def draw(self, screen, offset):
+        self.slower_down += 1
+        self.slower_down %= 10
+        if self.slower_down == 0:
+            if self.index == 0:
+                self.animate = random.randint(0, 10)
+            if self.animate == 0:
+                self.index += 1
+                self.index %= len(self.key_images)
+                self.image = pygame.image.load(self.key_images[self.index]).convert_alpha()
         if not self.key_found:
             ratio = self.size / self.image.get_width()
             self.image = pygame.transform.scale(self.image, (self.size, self.image.get_height() * ratio))

@@ -13,19 +13,14 @@ PLAYER_COLOR = (173, 39, 36)
 
 SCREEN_SIZE = (640, 480)
 
-class GameGUI:
+GREEN_FROG_KEY = ['assets/doors/green_frog/1.png', 'assets/doors/green_frog/2.png', 'assets/doors/green_frog/3.png', 'assets/doors/green_frog/4.png', 'assets/doors/green_frog/5.png', 'assets/doors/green_frog/6.png']
+BLUE_FROG_KEY = ['assets/doors/blue_frog/1.png', 'assets/doors/blue_frog/2.png', 'assets/doors/blue_frog/3.png', 'assets/doors/blue_frog/4.png', 'assets/doors/blue_frog/5.png', 'assets/doors/blue_frog/6.png']
+BROWN_FROG_KEY = ['assets/doors/brown_frog/1.png', 'assets/doors/brown_frog/2.png', 'assets/doors/brown_frog/3.png', 'assets/doors/brown_frog/4.png', 'assets/doors/brown_frog/5.png', 'assets/doors/brown_frog/6.png']
+YELLOW_FROG_KEY = ['assets/doors/yellow_frog/1.png', 'assets/doors/yellow_frog/2.png', 'assets/doors/yellow_frog/3.png', 'assets/doors/yellow_frog/4.png', 'assets/doors/yellow_frog/5.png', 'assets/doors/yellow_frog/6.png']
 
-    def __init__(self):
-
-        pixel_scaler = 3
-
-        pygame.init()
-        pygame.display.set_caption('Maze testing')
-
-        #set clock so that FPS can be limited
-        self.clock = pygame.time.Clock()
-
-        player_images = {
+EXIT_DOOR = ['assets/doors/exit_door_closed.png', 'assets/doors/exit_door_open.png']
+GREEN_WALL_2 = ['assets/walls/green_flowers/B2.png', 'assets/walls/green_flowers/T2.png']
+STARCHY = {
             'S': ['assets/starchy/S0.png', 'assets/starchy/S1.png', 'assets/starchy/S2.png', 'assets/starchy/S3.png',
                   'assets/starchy/S4.png', 'assets/starchy/S5.png', 'assets/starchy/S6.png'],
             'A': ['assets/starchy/A0.png', 'assets/starchy/A1.png', 'assets/starchy/A2.png', 'assets/starchy/A3.png',
@@ -35,29 +30,43 @@ class GameGUI:
             'W': ['assets/starchy/W0.png', 'assets/starchy/W1.png', 'assets/starchy/W2.png', 'assets/starchy/W3.png',
                   'assets/starchy/W4.png', 'assets/starchy/W5.png', 'assets/starchy/W6.png']}
 
+
+class GameGUI:
+
+    def __init__(self):
+
+        pixel_scaler = 2
+
+        pygame.init()
+        pygame.display.set_caption('Maze testing')
+
+        #set clock so that FPS can be limited
+        self.clock = pygame.time.Clock()
+
+        player_images = STARCHY
+
         self.starting_player_pos = (SCREEN_SIZE[0] // 2 - 50, SCREEN_SIZE[1] // 2)
 
-        objects = [['wall_1', (500, 500 - 16*pixel_scaler), 16*pixel_scaler, True, False, False, 'assets/walls/green_flowers/T2.png', None],
-                   ['wall_2', (500 + 33*pixel_scaler, 500  - 16*pixel_scaler), 16*pixel_scaler, True, False, False, 'assets/walls/green_flowers/T2.png', None],
-                   ['wall_3', (500, 500), 16*pixel_scaler, True, False, False, 'assets/walls/green_flowers/B2.png', None],
-                   ['wall_4', (500 + 33*pixel_scaler, 500), 16*pixel_scaler, True, False, False, 'assets/walls/green_flowers/B2.png', None],
-                   ['wall_5', (500 - 33 * pixel_scaler, 500 - 16 * pixel_scaler), 16 * pixel_scaler, True, False, False, 'assets/walls/green_flowers/T2.png', None],
-                   ['wall_6', (500 - 33 * pixel_scaler, 500), 16 * pixel_scaler, True, False, False, 'assets/walls/green_flowers/B2.png', None],
-                   ]
-        walls = [['wall_1', (500, 500 - 16*pixel_scaler), 16*pixel_scaler, ['assets/walls/green_flowers/B2.png', 'assets/walls/green_flowers/T2.png']],
-                 ['']]
+        objects = []
+
+        walls = [['wall_1', (500, 500 - 16*pixel_scaler), 16*pixel_scaler, GREEN_WALL_2],
+                 ['wall_2', (500 + 33 * pixel_scaler, 500 - 16 * pixel_scaler), 16 * pixel_scaler, GREEN_WALL_2],
+                 ['wall_3', (500 - 33 * pixel_scaler, 500 - 16 * pixel_scaler), 16 * pixel_scaler, GREEN_WALL_2]
+                 ]
+
         player = ['starchy', self.starting_player_pos, 16*pixel_scaler, 10, player_images]
-        keys = [['test_key', (100, 100), 11*pixel_scaler, 'assets/doors/exit_door_key.png', 'red', (500 + 16*pixel_scaler, 500),
-                 17*pixel_scaler, ['assets/doors/exit_door_closed.png', 'assets/doors/exit_door_open.png']],
-                ['test_key2', (0, 0), 11 * pixel_scaler, 'assets/doors/exit_door_key.png', 'red', (500 - 17 * pixel_scaler, 500),
-                 17 * pixel_scaler, ['assets/doors/exit_door_closed.png', 'assets/doors/exit_door_open.png']]]
+
+        keys = [['test_key', (100, 100), 11*pixel_scaler, GREEN_FROG_KEY, 'red', (500 + 16*pixel_scaler, 500),
+                 17*pixel_scaler, EXIT_DOOR],
+                ['test_key2', (0, 0), 11 * pixel_scaler, BLUE_FROG_KEY, 'red', (500 - 17 * pixel_scaler, 500),
+                 17 * pixel_scaler, EXIT_DOOR],]
 
         self.bg = pygame.image.load("assets/test_bg/img.png")
         self.bg = pygame.transform.scale(self.bg, (800, 800))
         self.bg_rect = pygame.Rect(-100, -100, self.bg.get_width(), self.bg.get_height())
 
         self.screen = pygame.display.set_mode(SCREEN_SIZE)
-        self.game = Game(objects, keys, player)
+        self.game = Game(objects, keys, player, walls)
         self.game.set_up()
         self.running = True
         self.offset = (0, 0)
