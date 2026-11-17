@@ -5,14 +5,17 @@ import pygame
 #TODO BUTTONS
 
 class Game:
-    def __init__(self, objects, keys, player, walls, buttons):
+    def __init__(self, objects, keys, player, walls, buttons, e_buttons):
         self.player = (Player(self, player[0], player[1], player[2], player[3], player[4]))
         self.backgrounds = []
         self.walls = []
         self.keys = []
         self.everything = []
 
+        self.e_buttons = []
+
         self.buttons = []
+        self.ui = []
 
         if objects is not None:
             for obj in objects:
@@ -27,6 +30,9 @@ class Game:
         if buttons is not None:
             for button in buttons:
                 self.add_button(button)
+        if e_buttons is not None:
+            for button in e_buttons:
+                self.add_e_buttons(button)
 
 
 
@@ -53,8 +59,11 @@ class Game:
         self.buttons.append(Button(button[0], button[1], button[2], button[3], button[4], button[5], button[6], button[7], button[8], button[9], button[10], button[11], button[12], button[13], button[14], button[15], button[16]))
         self.add_into_ui(self.buttons[-1])
 
-    def add_into_ui(self, objects):
-        pass
+    def add_e_buttons(self, button):
+        self.e_buttons.append(Button(button[0], button[1], button[2], button[3], button[4], button[5], button[6], button[7], button[8], button[9], button[10], button[11], button[12], button[13], button[14], button[15], button[16]))
+
+    def add_into_ui(self, object):
+        self.ui.append(object)
 
     def add_into_everything(self, object):
         inserted = False
@@ -74,8 +83,16 @@ class Game:
     def get_keys(self):
         return self.keys
 
+    def get_buttons(self):
+        return self.buttons
+    def get_e_buttons(self):
+        return self.e_buttons
+
     def get_everything(self):
         return self.everything
+
+    def get_ui(self):
+        return self.ui
 
     def check_collisions(self, new_pos):
         new_rect = pygame.Rect(new_pos[0] + self.player.get_size() / 4, new_pos[1] - self.player.get_size() / 2, self.player.get_size() / 2, self.player.get_size() / 2)

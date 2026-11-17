@@ -1,6 +1,3 @@
-#TODO get images from home for doors and walls
-#TODO making walls classes
-
 import pygame
 from game_controller_new import Game
 
@@ -43,6 +40,12 @@ class GameGUI:
         #set clock so that FPS can be limited
         self.clock = pygame.time.Clock()
 
+        self.moving_by_click = False
+        self.moving_by_key = False
+
+        self.rotating_by_click = False
+        self.rotating_by_key = False
+
         player_images = STARCHY
 
         self.starting_player_pos = (SCREEN_SIZE[0] // 2 - 50, SCREEN_SIZE[1] // 2)
@@ -70,15 +73,26 @@ class GameGUI:
         self.offset = (0, 0)
         self.offset_speed = 10
 
-        #order = A, D, S, W
-        buttons = [[self.screen, 100, 100, 16 * pixel_scaler, 16 * pixel_scaler, 0, None, None, None, None, None, None, None, 'P', False, None, ['assets/buttons/a_key/1.png', 'assets/buttons/a_key/2.png']],
-                   [self.screen, 100 + 32 * pixel_scaler, 100, 16 * pixel_scaler, 16 * pixel_scaler, 0, None, None, None, None, None, None, None, 'P', False, None, ['assets/buttons/d_key/1.png', 'assets/buttons/d_key/2.png']],
-                   [self.screen, 100 + 16 * pixel_scaler, 100, 16 * pixel_scaler, 16 * pixel_scaler, 0, None, None, None, None, None, None, None, 'P', False, None, ['assets/buttons/s_key/1.png', 'assets/buttons/s_key/2.png']],
-                   [self.screen, 100 + 16 * pixel_scaler, 100 - 16 * pixel_scaler, 16 * pixel_scaler, 16 * pixel_scaler, 0, None, None, None, None, None, None, None, 'P', False, None, ['assets/buttons/w_key/1.png', 'assets/buttons/w_key/2.png']],
+        #order = A, D, S, W, O, P
+        buttons = [[self.screen, 20, 430, 16 * pixel_scaler, 16 * pixel_scaler, 0, None, None, None, None, None, None, None, 'P', False, None, ['assets/buttons/a_key/1.png', 'assets/buttons/a_key/2.png']],
+                   [self.screen, 20 + 16 * 2 * pixel_scaler, 430, 16 * pixel_scaler, 16 * pixel_scaler, 0, None, None, None, None, None, None, None, 'P', False, None, ['assets/buttons/d_key/1.png', 'assets/buttons/d_key/2.png']],
+                   [self.screen, 20 + 16 * pixel_scaler, 430, 16 * pixel_scaler, 16 * pixel_scaler, 0, None, None, None, None, None, None, None, 'P', False, None, ['assets/buttons/s_key/1.png', 'assets/buttons/s_key/2.png']],
+                   [self.screen, 20 + 16 * pixel_scaler, 430 - 16 * pixel_scaler, 16 * pixel_scaler, 16 * pixel_scaler, 0, None, None, None, None, None, None, None, 'P', False, None, ['assets/buttons/w_key/1.png', 'assets/buttons/w_key/2.png']],
+                   [self.screen, 20 + 16 * 4 * pixel_scaler, 430, 16 * pixel_scaler, 16 * pixel_scaler, 0, None, None, None, None, None, None, None, 'P', False, None, ['assets/buttons/o_key/1.png', 'assets/buttons/o_key/2.png']],
+                   [self.screen, 20 + 16 * 5 * pixel_scaler, 430, 16 * pixel_scaler, 16 * pixel_scaler, 0, None, None, None, None, None, None, None, 'P', False, None, ['assets/buttons/p_key/1.png', 'assets/buttons/p_key/2.png']],
+                   [self.screen, 20 + 16 * 4 * pixel_scaler, 430 - 16 * pixel_scaler, 16 * pixel_scaler, 16 * pixel_scaler, 0, None, None, None, None, None, None, None, 'P', False, None, ['assets/buttons/k_key/1.png', 'assets/buttons/k_key/2.png']],
+                   [self.screen, 20 + 16 * 5 * pixel_scaler, 430 - 16 * pixel_scaler, 16 * pixel_scaler, 16 * pixel_scaler, 0, None, None, None, None, None, None, None, 'P', False, None, ['assets/buttons/l_key/1.png', 'assets/buttons/l_key/2.png']],
+
                    ]
 
-        self.game = Game(objects, keys, player, walls, buttons)
+        e_buttons = [[self.screen, 20 + 16 * 7 * pixel_scaler, 430, 16 * pixel_scaler, 16 * pixel_scaler, 0, None, None, None, None, None, None, None, 'P', False, None, ['assets/buttons/e_key/1.png', 'assets/buttons/e_key/2.png']],
+                    [self.screen, 20 + 16 * 7 * pixel_scaler, 430, 16 * pixel_scaler, 16 * pixel_scaler, 0, None, None, None, None, None, None, None, 'P', False, None, ['assets/buttons/e_key_active/1.png', 'assets/buttons/e_key_active/2.png']]
+                    ]
+
+        self.game = Game(objects, keys, player, walls, buttons, e_buttons)
         self.game.set_up()
+
+        self.current_e_button = self.game.get_e_buttons()[0]
 
         self.player = self.game.player
 
@@ -131,8 +145,10 @@ class GameGUI:
 
                 if event.key == pygame.K_o:
                     self.player.set_rotating_ac(True)
+                    self.rotating_by_key = True
                 if event.key == pygame.K_p:
                     self.player.set_rotating_c(True)
+                    self.rotating_by_key = True
 
                 if event.key == pygame.K_SPACE:
                     self.old_pos = self.player.get_pos()
@@ -141,15 +157,19 @@ class GameGUI:
                 if event.key == pygame.K_w:
                     self.player.set_direction('W')
                     self.player.set_moving(True)
+                    self.moving_by_key = True
                 if event.key == pygame.K_s:
                     self.player.set_direction('S')
                     self.player.set_moving(True)
+                    self.moving_by_key = True
                 if event.key == pygame.K_a:
                     self.player.set_direction('A')
                     self.player.set_moving(True)
+                    self.moving_by_key = True
                 if event.key == pygame.K_d:
                     self.player.set_direction('D')
                     self.player.set_moving(True)
+                    self.moving_by_key = True
 
                 if event.key == pygame.K_k:
                     self.player.s_lengthen('K')
@@ -164,14 +184,86 @@ class GameGUI:
                         for object in possibilities:
                             object.interact()
 
-            if event.type == pygame.KEYUP:
+            if event.type == pygame.KEYUP and self.running:
 
                 if event.key == pygame.K_o or event.key == pygame.K_p:
                     self.player.set_rotating_c(False)
                     self.player.set_rotating_ac(False)
+                    self.rotating_by_key = False
 
                 if event.key == pygame.K_w or event.key == pygame.K_s or event.key == pygame.K_a or event.key == pygame.K_d:
                     self.player.set_moving(False)
+                    self.moving_by_key = False
+
+            if event.type == pygame.MOUSEMOTION and self.running:
+
+                for button in self.game.get_buttons():
+                    if button.check_collision(event.pos):
+                        button.make_active()
+                    else:
+                        button.make_inactive()
+
+                if self.current_e_button.check_collision(event.pos):
+                    self.current_e_button.make_active()
+                else:
+                    self.current_e_button.make_inactive()
+
+            if event.type == pygame.MOUSEBUTTONDOWN and self.running:
+
+                for i in range(len(self.game.get_buttons())):
+                    button = self.game.buttons[i]
+                    if button.check_collision(event.pos):
+                        button.make_active()
+
+                        #A, D, S, W, O, P, K, L
+                        if i == 0:
+                            self.player.set_direction('A')
+                            self.player.set_moving(True)
+                            self.moving_by_click = True
+                        elif i == 1:
+                            self.player.set_direction('D')
+                            self.player.set_moving(True)
+                            self.moving_by_click = True
+                        elif i == 2:
+                            self.player.set_direction('S')
+                            self.player.set_moving(True)
+                            self.moving_by_click = True
+                        elif i == 3:
+                            self.player.set_direction('W')
+                            self.player.set_moving(True)
+                            self.moving_by_click = True
+                        elif i == 4:
+                            self.player.set_rotating_ac(True)
+                            self.rotating_by_click = True
+                        elif i == 5:
+                            self.player.set_rotating_c(True)
+                            self.rotating_by_click = True
+                        elif i == 6:
+                            self.player.s_lengthen('K')
+                        elif i == 7:
+                            self.player.s_lengthen('L')
+
+                if self.current_e_button.check_collision(event.pos):
+                    self.current_e_button.make_active()
+                    possibilities = self.game.scan_radius()
+                    if possibilities is None:
+                        pass
+                    else:
+                        for object in possibilities:
+                            object.interact()
+                else:
+                    self.current_e_button.make_inactive()
+
+            if event.type == pygame.MOUSEBUTTONUP and self.running:
+
+                if self.moving_by_click and not self.moving_by_key:
+                    self.player.set_moving(False)
+
+                if self.rotating_by_click and not self.rotating_by_key:
+                    self.player.set_rotating_c(False)
+                    self.player.set_rotating_ac(False)
+
+
 
     def _process_game_logic(self):
         if self.running and self.player.get_moving():
@@ -181,6 +273,11 @@ class GameGUI:
             self.player.s_rotate('P')
         if self.running and self.player.get_rotating_ac():
             self.player.s_rotate('O')
+
+        if self.game.scan_radius() is not None:
+            self.current_e_button = self.game.get_e_buttons()[1]
+        else:
+            self.current_e_button = self.game.get_e_buttons()[0]
 
     def _draw(self):
         self.screen.fill((120, 176, 69))
@@ -213,6 +310,11 @@ class GameGUI:
             self.player.draw_shadow_separate(self.screen, self.offset)
         if not player_drawn:
             self.player.draw_player_separate(self.screen, self.offset)
+
+        for thing in self.game.get_ui():
+            thing.draw()
+
+        self.current_e_button.draw()
 
 
 

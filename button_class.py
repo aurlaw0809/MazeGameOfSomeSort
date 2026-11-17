@@ -150,7 +150,8 @@ class Button(ButtonList):
 
         if images is not None:
             self.images = images
-            self.image = images[0]
+            self.image = pygame.image.load(images[0]).convert_alpha()
+            self.image = pygame.transform.scale(self.image, (self.width, self.height))
 
         self.toggled = toggled
 
@@ -163,11 +164,13 @@ class Button(ButtonList):
         if self.active or self.toggled:
             self.colour = self.active_colour
             if self.images is not None:
-                self.image = self.images[1]
+                self.image = pygame.image.load(self.images[1]).convert_alpha()
+                self.image = pygame.transform.scale(self.image, (self.width, self.height))
         else:
             self.colour = self.inactive_color
             if self.images is not None:
-                self.image = self.images[0]
+                self.image = pygame.image.load(self.images[0]).convert_alpha()
+                self.image = pygame.transform.scale(self.image, (self.width, self.height))
 
     def draw(self):
 
