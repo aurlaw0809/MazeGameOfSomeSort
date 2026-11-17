@@ -66,13 +66,9 @@ class GameGUI:
         self.bg_rect = pygame.Rect(-100, -100, self.bg.get_width(), self.bg.get_height())
 
         self.screen = pygame.display.set_mode(SCREEN_SIZE)
-        self.game = Game(objects, keys, player, walls)
-        self.game.set_up()
         self.running = True
         self.offset = (0, 0)
         self.offset_speed = 10
-
-        self.player = self.game.player
 
         #order = A, D, S, W
         buttons = [[self.screen, 100, 100, 16 * pixel_scaler, 16 * pixel_scaler, 0, None, None, None, None, None, None, None, 'P', False, None, ['assets/buttons/a_key/1.png', 'assets/buttons/a_key/2.png']],
@@ -80,6 +76,11 @@ class GameGUI:
                    [self.screen, 100 + 16 * pixel_scaler, 100, 16 * pixel_scaler, 16 * pixel_scaler, 0, None, None, None, None, None, None, None, 'P', False, None, ['assets/buttons/s_key/1.png', 'assets/buttons/s_key/2.png']],
                    [self.screen, 100 + 16 * pixel_scaler, 100 - 16 * pixel_scaler, 16 * pixel_scaler, 16 * pixel_scaler, 0, None, None, None, None, None, None, None, 'P', False, None, ['assets/buttons/w_key/1.png', 'assets/buttons/w_key/2.png']],
                    ]
+
+        self.game = Game(objects, keys, player, walls, buttons)
+        self.game.set_up()
+
+        self.player = self.game.player
 
         # self, screen, x, y,width, height, spacing,inactive_color, active_colour,text, text_color, text_font, text_x, text_y,button_type, toggled, user_text, images
 

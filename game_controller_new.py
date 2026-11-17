@@ -5,7 +5,7 @@ import pygame
 #TODO BUTTONS
 
 class Game:
-    def __init__(self, objects, keys, player, walls):
+    def __init__(self, objects, keys, player, walls, buttons):
         self.player = (Player(self, player[0], player[1], player[2], player[3], player[4]))
         self.backgrounds = []
         self.walls = []
