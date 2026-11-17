@@ -82,11 +82,12 @@ class GameGUI:
                    [self.screen, 20 + 16 * 5 * pixel_scaler, 430, 16 * pixel_scaler, 16 * pixel_scaler, 0, None, None, None, None, None, None, None, 'P', False, None, ['assets/buttons/p_key/1.png', 'assets/buttons/p_key/2.png']],
                    [self.screen, 20 + 16 * 4 * pixel_scaler, 430 - 16 * pixel_scaler, 16 * pixel_scaler, 16 * pixel_scaler, 0, None, None, None, None, None, None, None, 'P', False, None, ['assets/buttons/k_key/1.png', 'assets/buttons/k_key/2.png']],
                    [self.screen, 20 + 16 * 5 * pixel_scaler, 430 - 16 * pixel_scaler, 16 * pixel_scaler, 16 * pixel_scaler, 0, None, None, None, None, None, None, None, 'P', False, None, ['assets/buttons/l_key/1.png', 'assets/buttons/l_key/2.png']],
+                   [self.screen, 20 + 16 * 6 * pixel_scaler, 430 - 16 * pixel_scaler, 16 * pixel_scaler, 16 * pixel_scaler, 0, None, None, None, None, None, None, None, 'P', False, None, ['assets/buttons/space_key/1.png', 'assets/buttons/space_key/2.png']],
 
                    ]
 
-        e_buttons = [[self.screen, 20 + 16 * 7 * pixel_scaler, 430, 16 * pixel_scaler, 16 * pixel_scaler, 0, None, None, None, None, None, None, None, 'P', False, None, ['assets/buttons/e_key/1.png', 'assets/buttons/e_key/2.png']],
-                    [self.screen, 20 + 16 * 7 * pixel_scaler, 430, 16 * pixel_scaler, 16 * pixel_scaler, 0, None, None, None, None, None, None, None, 'P', False, None, ['assets/buttons/e_key_active/1.png', 'assets/buttons/e_key_active/2.png']]
+        e_buttons = [[self.screen, 20 + 16 * 6 * pixel_scaler, 430, 16 * pixel_scaler, 16 * pixel_scaler, 0, None, None, None, None, None, None, None, 'P', False, None, ['assets/buttons/e_key/1.png', 'assets/buttons/e_key/2.png']],
+                    [self.screen, 20 + 16 * 6 * pixel_scaler, 430, 16 * pixel_scaler, 16 * pixel_scaler, 0, None, None, None, None, None, None, None, 'P', False, None, ['assets/buttons/e_key_active/1.png', 'assets/buttons/e_key_active/2.png']]
                     ]
 
         self.game = Game(objects, keys, player, walls, buttons, e_buttons)
@@ -242,6 +243,9 @@ class GameGUI:
                             self.player.s_lengthen('K')
                         elif i == 7:
                             self.player.s_lengthen('L')
+                        elif i == 8:
+                            self.old_pos = self.player.get_pos()
+                            self.game.make_swap()
 
                 if self.current_e_button.check_collision(event.pos):
                     self.current_e_button.make_active()

@@ -135,13 +135,12 @@ class Game:
                 back_entry = True
 
             if back_entry or front_entry:
-                if not key.door.get_door_open():
+                if not key.door.get_door_open() and key.get_key_found():
                     possibilities.append(key.door)
 
         if len(possibilities) == 0:
             return None
         else:
-            print(possibilities)
             return possibilities
 
     def move_character_by_key(self, key):
