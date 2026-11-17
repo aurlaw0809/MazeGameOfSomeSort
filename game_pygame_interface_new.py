@@ -74,6 +74,15 @@ class GameGUI:
 
         self.player = self.game.player
 
+        #order = A, D, S, W
+        buttons = [[self.screen, 100, 100, 16 * pixel_scaler, 16 * pixel_scaler, 0, None, None, None, None, None, None, None, 'P', False, None, ['assets/buttons/a_key/1.png', 'assets/buttons/a_key/2.png']],
+                   [self.screen, 100 + 32 * pixel_scaler, 100, 16 * pixel_scaler, 16 * pixel_scaler, 0, None, None, None, None, None, None, None, 'P', False, None, ['assets/buttons/d_key/1.png', 'assets/buttons/d_key/2.png']],
+                   [self.screen, 100 + 16 * pixel_scaler, 100, 16 * pixel_scaler, 16 * pixel_scaler, 0, None, None, None, None, None, None, None, 'P', False, None, ['assets/buttons/s_key/1.png', 'assets/buttons/s_key/2.png']],
+                   [self.screen, 100 + 16 * pixel_scaler, 100 - 16 * pixel_scaler, 16 * pixel_scaler, 16 * pixel_scaler, 0, None, None, None, None, None, None, None, 'P', False, None, ['assets/buttons/w_key/1.png', 'assets/buttons/w_key/2.png']],
+                   ]
+
+        # self, screen, x, y,width, height, spacing,inactive_color, active_colour,text, text_color, text_font, text_x, text_y,button_type, toggled, user_text, images
+
     def main_loop(self):
         while self.running:
             self._update_offset()
@@ -197,8 +206,6 @@ class GameGUI:
             if thing.get_interactable():
                 thing.draw_interaction_circle(self.screen, self.offset)
             '''
-
-
 
             thing.draw(self.screen, self.offset)
         if not shadow_drawn:

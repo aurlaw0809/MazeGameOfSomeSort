@@ -1,5 +1,8 @@
 from game_objects_new import GameObject, Player, Key, Wall
+from button_class import Button
 import pygame
+
+#TODO BUTTONS
 
 class Game:
     def __init__(self, objects, keys, player, walls):
@@ -8,6 +11,9 @@ class Game:
         self.walls = []
         self.keys = []
         self.everything = []
+
+        self.buttons = []
+
         if objects is not None:
             for obj in objects:
                 self.add_background_object(obj)
@@ -17,6 +23,10 @@ class Game:
         if walls is not None:
             for wall in walls:
                 self.add_wall(wall)
+
+        if buttons is not None:
+            for button in buttons:
+                self.add_button(button)
 
 
 
@@ -38,6 +48,13 @@ class Game:
     def add_wall(self, wall):
         self.walls.append(Wall(self, wall[0], wall[1], wall[2], wall[3]))
         self.add_into_everything(self.walls[-1])
+
+    def add_button(self, button):
+        self.buttons.append(Button(button[0], button[1], button[2], button[3], button[4], button[5], button[6], button[7], button[8], button[9], button[10], button[11], button[12], button[13], button[14], button[15], button[16]))
+        self.add_into_ui(self.buttons[-1])
+
+    def add_into_ui(self, objects):
+        pass
 
     def add_into_everything(self, object):
         inserted = False

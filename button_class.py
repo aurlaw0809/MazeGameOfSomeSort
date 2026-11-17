@@ -64,7 +64,8 @@ class ButtonList:
                                             self.text_y,
                                             self.button_types[i],
                                             toggled,
-                                            user_text))
+                                            user_text,
+                                            None))
 
     def print_button_selected(self, i):
         text = self.text_font.render(f"SELECTED: {self.list_names[i]}", True, self.text_color)
@@ -133,7 +134,7 @@ class Button(ButtonList):
                  width, height, spacing,
                  inactive_color, active_colour,
                  text, text_color, text_font, text_x, text_y,
-                 button_type, toggled, user_text):
+                 button_type, toggled, user_text, images):
 
         super().__init__(screen, x, y,
                          width, height, spacing,
@@ -147,6 +148,10 @@ class Button(ButtonList):
         self.colour = self.inactive_color
         self.text_box_colour = self.inactive_color
 
+        if images is not None:
+            self.images = images
+            self.image = images[0]
+
         self.toggled = toggled
 
         if user_text is None:
@@ -157,17 +162,27 @@ class Button(ButtonList):
     def update_colour(self):
         if self.active or self.toggled:
             self.colour = self.active_colour
+            if self.images is not None:
+                self.image = self.images[1]
         else:
             self.colour = self.inactive_color
+            if self.images is not None:
+                self.image = self.images[0]
 
     def draw(self):
 
-        surface = pygame.Surface((self.width, self.height), pygame.SRCALPHA)
-        surface.fill(self.colour)
-        self.screen.blit(surface, (self.x, self.y))
+        if self.images is None:
 
-        text = self.text_font.render(f"{self.text}", True, self.text_color)
-        self.screen.blit(text, (self.x + self.text_x, self.y + self.text_y))
+            surface = pygame.Surface((self.width, self.height), pygame.SRCALPHA)
+            surface.fill(self.colour)
+            self.screen.blit(surface, (self.x, self.y))
+
+            text = self.text_font.render(f"{self.text}", True, self.text_color)
+            self.screen.blit(text, (self.x + self.text_x, self.y + self.text_y))
+
+        else:
+            image_rect = pygame.Rect(self.x, self.y, self.width, self.height)
+            self.screen.blit(self.image, image_rect)
 
     def make_active(self):
         self.active = True
@@ -225,7 +240,13 @@ class Button(ButtonList):
         return self.user_text
 
     def selected_text_box(self):
-        self.text_box_colour = self.active_colour
+        if self.images is None:
+            self.text_box_colour = self.active_colour
+        else:
+            self.image = self.images[1]
 
     def unselected_text_box(self):
-        self.text_box_colour = self.inactive_color
+        if self.images is None:
+            self.text_box_colour = self.inactive_color
+        else:
+            self.image = self.images[0]
