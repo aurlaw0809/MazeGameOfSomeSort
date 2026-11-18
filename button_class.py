@@ -147,6 +147,7 @@ class Button(ButtonList):
         self.text = text
         self.colour = self.inactive_color
         self.text_box_colour = self.inactive_color
+        self.used = False
 
         if images is not None:
             self.images = images
@@ -164,7 +165,10 @@ class Button(ButtonList):
         if self.active or self.toggled:
             self.colour = self.active_colour
             if self.images is not None:
-                self.image = pygame.image.load(self.images[1]).convert_alpha()
+                if not self.used:
+                    self.image = pygame.image.load(self.images[1]).convert_alpha()
+                else:
+                    self.image = pygame.image.load(self.images[2]).convert_alpha()
                 self.image = pygame.transform.scale(self.image, (self.width, self.height))
         else:
             self.colour = self.inactive_color
@@ -193,6 +197,10 @@ class Button(ButtonList):
 
     def make_inactive(self):
         self.active = False
+        self.update_colour()
+
+    def make_used(self):
+        self.used = True
         self.update_colour()
 
     def check_collision(self, pos):

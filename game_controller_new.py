@@ -5,7 +5,7 @@ import pygame
 #TODO BUTTONS
 
 class Game:
-    def __init__(self, objects, keys, player, walls, buttons, e_buttons):
+    def __init__(self, objects, keys, player, walls, buttons, e_buttons, scavenger):
         self.player = (Player(self, player[0], player[1], player[2], player[3], player[4]))
         self.backgrounds = []
         self.walls = []
@@ -13,6 +13,7 @@ class Game:
         self.everything = []
 
         self.e_buttons = []
+        self.scavenger = []
 
         self.buttons = []
         self.ui = []
@@ -33,6 +34,9 @@ class Game:
         if e_buttons is not None:
             for button in e_buttons:
                 self.add_e_buttons(button)
+        if scavenger is not None:
+            for scavenger in scavenger:
+                self.add_scavenger(scavenger)
 
 
 
@@ -62,6 +66,10 @@ class Game:
     def add_e_buttons(self, button):
         self.e_buttons.append(Button(button[0], button[1], button[2], button[3], button[4], button[5], button[6], button[7], button[8], button[9], button[10], button[11], button[12], button[13], button[14], button[15], button[16]))
 
+    def add_scavenger(self, button):
+        self.scavenger.append(Button(button[0], button[1], button[2], button[3], button[4], button[5], button[6], button[7], button[8], button[9], button[10], button[11], button[12], button[13], button[14], button[15], button[16]))
+        self.add_into_ui(self.scavenger[-1])
+
     def add_into_ui(self, object):
         self.ui.append(object)
 
@@ -85,8 +93,12 @@ class Game:
 
     def get_buttons(self):
         return self.buttons
+
     def get_e_buttons(self):
         return self.e_buttons
+
+    def get_scavenger(self):
+        return self.scavenger
 
     def get_everything(self):
         return self.everything

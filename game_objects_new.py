@@ -1,5 +1,6 @@
 import pygame
 import random
+from button_class import Button
 
 #from game_pygame_interface_new import PIXEL_SCALER
 
@@ -341,16 +342,25 @@ class Key(GameObject):
         self.index = 0
         self.slower_down = 0
         self.key_found = False
-        self.door = Door(controller, f'{name}_door', door_pos, door_size, door_images, colour)
+        self.door = Door(controller, f'{name}_door', door_pos, door_size, door_images, colour, None)
         self.interaction_radius = 100
+        self.button = None
+
+    def __repr__(self):
+        return f'Key(name: {self.name}, pos: {self.pos}, size: {self.size}, colour: {self.colour}, button: {self.button})'
 
     def get_key_found(self):
         return self.key_found
     def get_colour(self):
         return self.colour
 
+    def add_button(self, button):
+        self.button = button
+        self.door.add_button(button)
+
     def set_key_found(self):
         self.key_found = True
+        self.button.make_active()
 
     def draw(self, screen, offset):
         self.slower_down += 1
@@ -374,15 +384,16 @@ class Key(GameObject):
             super().draw_interaction_circle(screen, offset)
 
     def interact(self):
-        self.key_found = True
+        self.set_key_found()
         self.door.set_key_found()
 
 class Door(Key):
-    def __init__(self, controller, name, pos, size, image, colour):
+    def __init__(self, controller, name, pos, size, image, colour, button):
         GameObject.__init__(self, controller, name, pos, size, True, False, True, None, colour)
         self.door_open = False
         self.key_found = False
         self.interaction_radius = self.size
+        self.button = button
 
         self.images = []
         if image is not None:
@@ -405,9 +416,13 @@ class Door(Key):
     def set_key_found(self):
         self.key_found = True
     def set_door_open(self):
+        self.button.make_used()
         self.door_open = True
         self.solid = False
         self.transparent = True
+
+    def add_button(self, button):
+        self.button = button
 
     def draw(self, screen, offset):
         if self.door_open:

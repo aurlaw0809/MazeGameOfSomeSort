@@ -89,8 +89,26 @@ class GameGUI:
                     [self.screen, 20 + 16 * 6 * PIXEL_SCALER, 430, 16 * PIXEL_SCALER, 16 * PIXEL_SCALER, 0, None, None, None, None, None, None, None, 'P', False, None, ['assets/buttons/e_key_active/1.png', 'assets/buttons/e_key_active/2.png']]
                     ]
 
-        self.game = Game(objects, keys, player, walls, buttons, e_buttons)
+        #blue, brown, yellow, green
+        scavenger = [[self.screen, 20 + 16 * 8 * PIXEL_SCALER, 430 - 16 * PIXEL_SCALER, 16 * PIXEL_SCALER, 16 * PIXEL_SCALER, 0, None, None, None, None, None, None, None, 'P', False, None, ['assets/buttons/frog_blue/1.png', 'assets/buttons/frog_blue/3.png', 'assets/buttons/frog_blue/2.png']],
+                     [self.screen, 20 + 16 * 9 * PIXEL_SCALER, 430 - 16 * PIXEL_SCALER, 16 * PIXEL_SCALER, 16 * PIXEL_SCALER, 0, None, None, None, None, None, None, None, 'P', False, None, ['assets/buttons/frog_brown/1.png', 'assets/buttons/frog_brown/3.png', 'assets/buttons/frog_brown/2.png']],
+                     [self.screen, 20 + 16 * 8 * PIXEL_SCALER, 430, 16 * PIXEL_SCALER, 16 * PIXEL_SCALER, 0, None, None, None, None, None, None, None, 'P', False, None, ['assets/buttons/frog_yellow/1.png', 'assets/buttons/frog_yellow/3.png', 'assets/buttons/frog_yellow/2.png']],
+                     [self.screen, 20 + 16 * 9 * PIXEL_SCALER, 430, 16 * PIXEL_SCALER, 16 * PIXEL_SCALER, 0, None, None, None, None, None, None, None, 'P', False, None, ['assets/buttons/frog_green/1.png', 'assets/buttons/frog_green/3.png', 'assets/buttons/frog_green/2.png']],
+                     ]
+
+        self.game = Game(objects, keys, player, walls, buttons, e_buttons, scavenger)
         self.game.set_up()
+
+        game_keys = self.game.get_keys()
+        scavenger_buttons = self.game.get_scavenger()
+        for i in range(len(game_keys)):
+            if i == 0:
+                game_keys[i].add_button(scavenger_buttons[3])
+            if i == 1:
+                game_keys[i].add_button(scavenger_buttons[0])
+
+            print(game_keys[i])
+
 
         self.current_e_button = self.game.get_e_buttons()[0]
 
