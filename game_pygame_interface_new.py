@@ -27,12 +27,12 @@ STARCHY = {
             'W': ['assets/starchy/W0.png', 'assets/starchy/W1.png', 'assets/starchy/W2.png', 'assets/starchy/W3.png',
                   'assets/starchy/W4.png', 'assets/starchy/W5.png', 'assets/starchy/W6.png']}
 
+PIXEL_SCALER = 2
+
 
 class GameGUI:
 
     def __init__(self):
-
-        pixel_scaler = 2
 
         pygame.init()
         pygame.display.set_caption('Maze testing')
@@ -52,17 +52,17 @@ class GameGUI:
 
         objects = []
 
-        walls = [['wall_1', (500, 500 - 16*pixel_scaler), 16*pixel_scaler, GREEN_WALL_2],
-                 ['wall_2', (500 + 33 * pixel_scaler, 500 - 16 * pixel_scaler), 16 * pixel_scaler, GREEN_WALL_2],
-                 ['wall_3', (500 - 33 * pixel_scaler, 500 - 16 * pixel_scaler), 16 * pixel_scaler, GREEN_WALL_2]
+        walls = [['wall_1', (500, 500), 16 * PIXEL_SCALER, GREEN_WALL_2],
+                 ['wall_2', (500 + 32 * PIXEL_SCALER, 500), 16 * PIXEL_SCALER, GREEN_WALL_2],
+                 ['wall_3', (500 - 32 * PIXEL_SCALER, 500), 16 * PIXEL_SCALER, GREEN_WALL_2]
                  ]
 
-        player = ['starchy', self.starting_player_pos, 16*pixel_scaler, 10, player_images]
+        player = ['starchy', self.starting_player_pos, 16 * PIXEL_SCALER, 10, player_images]
 
-        keys = [['test_key', (100, 100), 11*pixel_scaler, GREEN_FROG_KEY, 'red', (500 + 16*pixel_scaler, 500),
-                 17*pixel_scaler, EXIT_DOOR],
-                ['test_key2', (0, 0), 11 * pixel_scaler, BLUE_FROG_KEY, 'red', (500 - 17 * pixel_scaler, 500),
-                 17 * pixel_scaler, EXIT_DOOR],]
+        keys = [['test_key', (100, 100), 11 * PIXEL_SCALER, GREEN_FROG_KEY, 'red', (500 + 16 * PIXEL_SCALER, 500),
+                 17 * PIXEL_SCALER, EXIT_DOOR],
+                ['test_key2', (0, 0), 11 * PIXEL_SCALER, BLUE_FROG_KEY, 'red', (500 - 16 * PIXEL_SCALER, 500),
+                 17 * PIXEL_SCALER, EXIT_DOOR], ]
 
         self.bg = pygame.image.load("assets/test_bg/img.png")
         self.bg = pygame.transform.scale(self.bg, (800, 800))
@@ -74,20 +74,19 @@ class GameGUI:
         self.offset_speed = 10
 
         #order = A, D, S, W, O, P
-        buttons = [[self.screen, 20, 430, 16 * pixel_scaler, 16 * pixel_scaler, 0, None, None, None, None, None, None, None, 'P', False, None, ['assets/buttons/a_key/1.png', 'assets/buttons/a_key/2.png']],
-                   [self.screen, 20 + 16 * 2 * pixel_scaler, 430, 16 * pixel_scaler, 16 * pixel_scaler, 0, None, None, None, None, None, None, None, 'P', False, None, ['assets/buttons/d_key/1.png', 'assets/buttons/d_key/2.png']],
-                   [self.screen, 20 + 16 * pixel_scaler, 430, 16 * pixel_scaler, 16 * pixel_scaler, 0, None, None, None, None, None, None, None, 'P', False, None, ['assets/buttons/s_key/1.png', 'assets/buttons/s_key/2.png']],
-                   [self.screen, 20 + 16 * pixel_scaler, 430 - 16 * pixel_scaler, 16 * pixel_scaler, 16 * pixel_scaler, 0, None, None, None, None, None, None, None, 'P', False, None, ['assets/buttons/w_key/1.png', 'assets/buttons/w_key/2.png']],
-                   [self.screen, 20 + 16 * 4 * pixel_scaler, 430, 16 * pixel_scaler, 16 * pixel_scaler, 0, None, None, None, None, None, None, None, 'P', False, None, ['assets/buttons/o_key/1.png', 'assets/buttons/o_key/2.png']],
-                   [self.screen, 20 + 16 * 5 * pixel_scaler, 430, 16 * pixel_scaler, 16 * pixel_scaler, 0, None, None, None, None, None, None, None, 'P', False, None, ['assets/buttons/p_key/1.png', 'assets/buttons/p_key/2.png']],
-                   [self.screen, 20 + 16 * 4 * pixel_scaler, 430 - 16 * pixel_scaler, 16 * pixel_scaler, 16 * pixel_scaler, 0, None, None, None, None, None, None, None, 'P', False, None, ['assets/buttons/k_key/1.png', 'assets/buttons/k_key/2.png']],
-                   [self.screen, 20 + 16 * 5 * pixel_scaler, 430 - 16 * pixel_scaler, 16 * pixel_scaler, 16 * pixel_scaler, 0, None, None, None, None, None, None, None, 'P', False, None, ['assets/buttons/l_key/1.png', 'assets/buttons/l_key/2.png']],
-                   [self.screen, 20 + 16 * 6 * pixel_scaler, 430 - 16 * pixel_scaler, 16 * pixel_scaler, 16 * pixel_scaler, 0, None, None, None, None, None, None, None, 'P', False, None, ['assets/buttons/space_key/1.png', 'assets/buttons/space_key/2.png']],
-
+        buttons = [[self.screen, 20, 430, 16 * PIXEL_SCALER, 16 * PIXEL_SCALER, 0, None, None, None, None, None, None, None, 'P', False, None, ['assets/buttons/a_key/1.png', 'assets/buttons/a_key/2.png']],
+                   [self.screen, 20 + 16 * 2 * PIXEL_SCALER, 430, 16 * PIXEL_SCALER, 16 * PIXEL_SCALER, 0, None, None, None, None, None, None, None, 'P', False, None, ['assets/buttons/d_key/1.png', 'assets/buttons/d_key/2.png']],
+                   [self.screen, 20 + 16 * PIXEL_SCALER, 430, 16 * PIXEL_SCALER, 16 * PIXEL_SCALER, 0, None, None, None, None, None, None, None, 'P', False, None, ['assets/buttons/s_key/1.png', 'assets/buttons/s_key/2.png']],
+                   [self.screen, 20 + 16 * PIXEL_SCALER, 430 - 16 * PIXEL_SCALER, 16 * PIXEL_SCALER, 16 * PIXEL_SCALER, 0, None, None, None, None, None, None, None, 'P', False, None, ['assets/buttons/w_key/1.png', 'assets/buttons/w_key/2.png']],
+                   [self.screen, 20 + 16 * 4 * PIXEL_SCALER, 430, 16 * PIXEL_SCALER, 16 * PIXEL_SCALER, 0, None, None, None, None, None, None, None, 'P', False, None, ['assets/buttons/o_key/1.png', 'assets/buttons/o_key/2.png']],
+                   [self.screen, 20 + 16 * 5 * PIXEL_SCALER, 430, 16 * PIXEL_SCALER, 16 * PIXEL_SCALER, 0, None, None, None, None, None, None, None, 'P', False, None, ['assets/buttons/p_key/1.png', 'assets/buttons/p_key/2.png']],
+                   [self.screen, 20 + 16 * 4 * PIXEL_SCALER, 430 - 16 * PIXEL_SCALER, 16 * PIXEL_SCALER, 16 * PIXEL_SCALER, 0, None, None, None, None, None, None, None, 'P', False, None, ['assets/buttons/k_key/1.png', 'assets/buttons/k_key/2.png']],
+                   [self.screen, 20 + 16 * 5 * PIXEL_SCALER, 430 - 16 * PIXEL_SCALER, 16 * PIXEL_SCALER, 16 * PIXEL_SCALER, 0, None, None, None, None, None, None, None, 'P', False, None, ['assets/buttons/l_key/1.png', 'assets/buttons/l_key/2.png']],
+                   [self.screen, 20 + 16 * 6 * PIXEL_SCALER, 430 - 16 * PIXEL_SCALER, 16 * PIXEL_SCALER, 16 * PIXEL_SCALER, 0, None, None, None, None, None, None, None, 'P', False, None, ['assets/buttons/space_key/1.png', 'assets/buttons/space_key/2.png']],
                    ]
 
-        e_buttons = [[self.screen, 20 + 16 * 6 * pixel_scaler, 430, 16 * pixel_scaler, 16 * pixel_scaler, 0, None, None, None, None, None, None, None, 'P', False, None, ['assets/buttons/e_key/1.png', 'assets/buttons/e_key/2.png']],
-                    [self.screen, 20 + 16 * 6 * pixel_scaler, 430, 16 * pixel_scaler, 16 * pixel_scaler, 0, None, None, None, None, None, None, None, 'P', False, None, ['assets/buttons/e_key_active/1.png', 'assets/buttons/e_key_active/2.png']]
+        e_buttons = [[self.screen, 20 + 16 * 6 * PIXEL_SCALER, 430, 16 * PIXEL_SCALER, 16 * PIXEL_SCALER, 0, None, None, None, None, None, None, None, 'P', False, None, ['assets/buttons/e_key/1.png', 'assets/buttons/e_key/2.png']],
+                    [self.screen, 20 + 16 * 6 * PIXEL_SCALER, 430, 16 * PIXEL_SCALER, 16 * PIXEL_SCALER, 0, None, None, None, None, None, None, None, 'P', False, None, ['assets/buttons/e_key_active/1.png', 'assets/buttons/e_key_active/2.png']]
                     ]
 
         self.game = Game(objects, keys, player, walls, buttons, e_buttons)

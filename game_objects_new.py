@@ -1,7 +1,11 @@
-#TODO fix wall images
-
 import pygame
 import random
+
+#from game_pygame_interface_new import PIXEL_SCALER
+
+PIXEL_SCALER = 3
+
+WALL_HEIGHT = PIXEL_SCALER * 4
 
 class GameObject:
     def __init__(self, controller, name, pos, size, solid, transparent, interactable, image, colour):
@@ -64,7 +68,7 @@ class Wall(GameObject):
     def __init__(self, controller, name, pos, size, images, solid=True, transparent=False, interactable=False, image=None, colour=None):
         GameObject.__init__(self, controller, name, pos, size, solid, transparent, interactable, image, colour)
 
-        self.collision_rect = pygame.Rect(self.pos[0], self.pos[1] + self.size / 2, self.size, self.size / 2)
+        self.collision_rect = pygame.Rect(self.pos[0], self.pos[1] - WALL_HEIGHT, self.size, WALL_HEIGHT)
         self.images = images
         self.lower_image = pygame.image.load(images[0]).convert_alpha()
         self.lower_image = pygame.transform.scale(self.lower_image, (self.size, self.size))
@@ -72,13 +76,13 @@ class Wall(GameObject):
         self.upper_image = pygame.transform.scale(self.upper_image, (self.size, self.size))
 
     def draw(self, screen, offset):
-        lower_rect = pygame.Rect(self.pos[0] - offset[0], self.pos[1] - offset[1], self.size, self.size)
-        upper_rect = pygame.Rect(self.pos[0] - offset[0], self.pos[1] - self.size - offset[1], self.size, self.size)
+        lower_rect = pygame.Rect(self.pos[0] - offset[0], self.pos[1] - self.size- offset[1], self.size, self.size)
+        upper_rect = pygame.Rect(self.pos[0] - offset[0], self.pos[1] - self.size * 2 - offset[1], self.size, self.size)
         screen.blit(self.lower_image, lower_rect)
         screen.blit(self.upper_image, upper_rect)
 
     def draw_collision_rect(self, screen, offset):
-        drawn_collision_rect = pygame.Rect(self.pos[0] - offset[0], self.pos[1] + self.size / 2 - offset[1], self.size, self.size / 2)
+        drawn_collision_rect = pygame.Rect(self.pos[0] - offset[0], self.pos[1] - WALL_HEIGHT - offset[1], self.size, WALL_HEIGHT)
         pygame.draw.rect(screen, self.colour, drawn_collision_rect)
 
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -387,7 +391,7 @@ class Door(Key):
 
         self.image = pygame.image.load(self.images[0]).convert_alpha()
 
-        self.collision_rect = pygame.Rect(self.pos[0], self.pos[1] - self.size / 2, self.size, self.size / 2)
+        self.collision_rect = pygame.Rect(self.pos[0], self.pos[1] - WALL_HEIGHT, self.size, WALL_HEIGHT)
 
     def get_key_found(self):
         return self.key_found
@@ -419,13 +423,13 @@ class Door(Key):
 
     def draw_collision_rect(self, screen, offset):
         if not self.door_open:
-            drawn_collision_rect = pygame.Rect(self.pos[0] - offset[0], self.pos[1] - self.size / 2 - offset[1], self.size, self.size / 2)
+            drawn_collision_rect = pygame.Rect(self.pos[0] - offset[0], self.pos[1] - WALL_HEIGHT - offset[1], self.size, WALL_HEIGHT)
             pygame.draw.rect(screen, self.colour, drawn_collision_rect)
 
     def draw_interaction_circle(self, screen, offset):
         if not self.door_open:
             pygame.draw.circle(screen, 'blue', (self.pos[0] + self.size // 2 - offset[0], self.pos[1] - offset[1]), self.interaction_radius)
-            pygame.draw.circle(screen, 'blue', (self.pos[0] + self.size // 2 - offset[0], self.pos[1] - self.size / 2 - offset[1]), self.interaction_radius)
+            pygame.draw.circle(screen, 'blue', (self.pos[0] + self.size // 2 - offset[0], self.pos[1] - WALL_HEIGHT - offset[1]), self.interaction_radius)
 
     def interact(self):
         if self.key_found:
