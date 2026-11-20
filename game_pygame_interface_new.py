@@ -8,7 +8,7 @@ BACKGROUND_COLORS = {'W': (120, 176, 69),
                      }
 PLAYER_COLOR = (173, 39, 36)
 
-SCREEN_SIZE = (640, 480)
+SCREEN_SIZE = (1200, 600)
 
 GREEN_FROG_KEY = ['assets/doors/green_frog/1.png', 'assets/doors/green_frog/2.png', 'assets/doors/green_frog/3.png', 'assets/doors/green_frog/4.png', 'assets/doors/green_frog/5.png', 'assets/doors/green_frog/6.png']
 BLUE_FROG_KEY = ['assets/doors/blue_frog/1.png', 'assets/doors/blue_frog/2.png', 'assets/doors/blue_frog/3.png', 'assets/doors/blue_frog/4.png', 'assets/doors/blue_frog/5.png', 'assets/doors/blue_frog/6.png']
@@ -27,7 +27,8 @@ STARCHY = {
             'W': ['assets/starchy/W0.png', 'assets/starchy/W1.png', 'assets/starchy/W2.png', 'assets/starchy/W3.png',
                   'assets/starchy/W4.png', 'assets/starchy/W5.png', 'assets/starchy/W6.png']}
 
-PIXEL_SCALER = 2
+PIXEL_SCALER = 3
+PIXEL_SCALER_UI = 3
 
 
 class GameGUI:
@@ -73,27 +74,29 @@ class GameGUI:
         self.offset = (0, 0)
         self.offset_speed = 10
 
+        BUTTON_PADDING = 70
+
         #order = A, D, S, W, O, P
-        buttons = [[self.screen, 20, 430, 16 * PIXEL_SCALER, 16 * PIXEL_SCALER, 0, None, None, None, None, None, None, None, 'P', False, None, ['assets/buttons/a_key/1.png', 'assets/buttons/a_key/2.png']],
-                   [self.screen, 20 + 16 * 2 * PIXEL_SCALER, 430, 16 * PIXEL_SCALER, 16 * PIXEL_SCALER, 0, None, None, None, None, None, None, None, 'P', False, None, ['assets/buttons/d_key/1.png', 'assets/buttons/d_key/2.png']],
-                   [self.screen, 20 + 16 * PIXEL_SCALER, 430, 16 * PIXEL_SCALER, 16 * PIXEL_SCALER, 0, None, None, None, None, None, None, None, 'P', False, None, ['assets/buttons/s_key/1.png', 'assets/buttons/s_key/2.png']],
-                   [self.screen, 20 + 16 * PIXEL_SCALER, 430 - 16 * PIXEL_SCALER, 16 * PIXEL_SCALER, 16 * PIXEL_SCALER, 0, None, None, None, None, None, None, None, 'P', False, None, ['assets/buttons/w_key/1.png', 'assets/buttons/w_key/2.png']],
-                   [self.screen, 20 + 16 * 4 * PIXEL_SCALER, 430, 16 * PIXEL_SCALER, 16 * PIXEL_SCALER, 0, None, None, None, None, None, None, None, 'P', False, None, ['assets/buttons/o_key/1.png', 'assets/buttons/o_key/2.png']],
-                   [self.screen, 20 + 16 * 5 * PIXEL_SCALER, 430, 16 * PIXEL_SCALER, 16 * PIXEL_SCALER, 0, None, None, None, None, None, None, None, 'P', False, None, ['assets/buttons/p_key/1.png', 'assets/buttons/p_key/2.png']],
-                   [self.screen, 20 + 16 * 4 * PIXEL_SCALER, 430 - 16 * PIXEL_SCALER, 16 * PIXEL_SCALER, 16 * PIXEL_SCALER, 0, None, None, None, None, None, None, None, 'P', False, None, ['assets/buttons/k_key/1.png', 'assets/buttons/k_key/2.png']],
-                   [self.screen, 20 + 16 * 5 * PIXEL_SCALER, 430 - 16 * PIXEL_SCALER, 16 * PIXEL_SCALER, 16 * PIXEL_SCALER, 0, None, None, None, None, None, None, None, 'P', False, None, ['assets/buttons/l_key/1.png', 'assets/buttons/l_key/2.png']],
-                   [self.screen, 20 + 16 * 6 * PIXEL_SCALER, 430 - 16 * PIXEL_SCALER, 16 * PIXEL_SCALER, 16 * PIXEL_SCALER, 0, None, None, None, None, None, None, None, 'P', False, None, ['assets/buttons/space_key/1.png', 'assets/buttons/space_key/2.png']],
+        buttons = [[self.screen, 20, SCREEN_SIZE[1] - BUTTON_PADDING, 16 * PIXEL_SCALER_UI, 16 * PIXEL_SCALER_UI, 0, None, None, None, None, None, None, None, 'P', False, None, ['assets/buttons/a_key/1.png', 'assets/buttons/a_key/2.png']],
+                   [self.screen, 20 + 16 * 2 * PIXEL_SCALER_UI, SCREEN_SIZE[1] - BUTTON_PADDING, 16 * PIXEL_SCALER_UI, 16 * PIXEL_SCALER_UI, 0, None, None, None, None, None, None, None, 'P', False, None, ['assets/buttons/d_key/1.png', 'assets/buttons/d_key/2.png']],
+                   [self.screen, 20 + 16 * PIXEL_SCALER_UI, SCREEN_SIZE[1] - BUTTON_PADDING, 16 * PIXEL_SCALER_UI, 16 * PIXEL_SCALER_UI, 0, None, None, None, None, None, None, None, 'P', False, None, ['assets/buttons/s_key/1.png', 'assets/buttons/s_key/2.png']],
+                   [self.screen, 20 + 16 * PIXEL_SCALER_UI, SCREEN_SIZE[1] - BUTTON_PADDING - 16 * PIXEL_SCALER_UI, 16 * PIXEL_SCALER_UI, 16 * PIXEL_SCALER_UI, 0, None, None, None, None, None, None, None, 'P', False, None, ['assets/buttons/w_key/1.png', 'assets/buttons/w_key/2.png']],
+                   [self.screen, 20 + 16 * 4 * PIXEL_SCALER_UI, SCREEN_SIZE[1] - BUTTON_PADDING, 16 * PIXEL_SCALER_UI, 16 * PIXEL_SCALER_UI, 0, None, None, None, None, None, None, None, 'P', False, None, ['assets/buttons/o_key/1.png', 'assets/buttons/o_key/2.png']],
+                   [self.screen, 20 + 16 * 5 * PIXEL_SCALER_UI, SCREEN_SIZE[1] - BUTTON_PADDING, 16 * PIXEL_SCALER_UI, 16 * PIXEL_SCALER_UI, 0, None, None, None, None, None, None, None, 'P', False, None, ['assets/buttons/p_key/1.png', 'assets/buttons/p_key/2.png']],
+                   [self.screen, 20 + 16 * 4 * PIXEL_SCALER_UI, SCREEN_SIZE[1] - BUTTON_PADDING - 16 * PIXEL_SCALER_UI, 16 * PIXEL_SCALER_UI, 16 * PIXEL_SCALER_UI, 0, None, None, None, None, None, None, None, 'P', False, None, ['assets/buttons/k_key/1.png', 'assets/buttons/k_key/2.png']],
+                   [self.screen, 20 + 16 * 5 * PIXEL_SCALER_UI, SCREEN_SIZE[1] - BUTTON_PADDING - 16 * PIXEL_SCALER_UI, 16 * PIXEL_SCALER_UI, 16 * PIXEL_SCALER_UI, 0, None, None, None, None, None, None, None, 'P', False, None, ['assets/buttons/l_key/1.png', 'assets/buttons/l_key/2.png']],
+                   [self.screen, 20 + 16 * 6 * PIXEL_SCALER_UI, SCREEN_SIZE[1] - BUTTON_PADDING - 16 * PIXEL_SCALER_UI, 16 * PIXEL_SCALER_UI, 16 * PIXEL_SCALER_UI, 0, None, None, None, None, None, None, None, 'P', False, None, ['assets/buttons/space_key/1.png', 'assets/buttons/space_key/2.png']],
                    ]
 
-        e_buttons = [[self.screen, 20 + 16 * 6 * PIXEL_SCALER, 430, 16 * PIXEL_SCALER, 16 * PIXEL_SCALER, 0, None, None, None, None, None, None, None, 'P', False, None, ['assets/buttons/e_key/1.png', 'assets/buttons/e_key/2.png']],
-                    [self.screen, 20 + 16 * 6 * PIXEL_SCALER, 430, 16 * PIXEL_SCALER, 16 * PIXEL_SCALER, 0, None, None, None, None, None, None, None, 'P', False, None, ['assets/buttons/e_key_active/1.png', 'assets/buttons/e_key_active/2.png']]
+        e_buttons = [[self.screen, 20 + 16 * 6 * PIXEL_SCALER_UI, SCREEN_SIZE[1] - BUTTON_PADDING, 16 * PIXEL_SCALER_UI, 16 * PIXEL_SCALER_UI, 0, None, None, None, None, None, None, None, 'P', False, None, ['assets/buttons/e_key/1.png', 'assets/buttons/e_key/2.png']],
+                    [self.screen, 20 + 16 * 6 * PIXEL_SCALER_UI, SCREEN_SIZE[1] - BUTTON_PADDING, 16 * PIXEL_SCALER_UI, 16 * PIXEL_SCALER_UI, 0, None, None, None, None, None, None, None, 'P', False, None, ['assets/buttons/e_key_active/1.png', 'assets/buttons/e_key_active/2.png']]
                     ]
 
         #blue, brown, yellow, green
-        scavenger = [[self.screen, 20 + 16 * 8 * PIXEL_SCALER, 430 - 16 * PIXEL_SCALER, 16 * PIXEL_SCALER, 16 * PIXEL_SCALER, 0, None, None, None, None, None, None, None, 'P', False, None, ['assets/buttons/frog_blue/1.png', 'assets/buttons/frog_blue/3.png', 'assets/buttons/frog_blue/2.png']],
-                     [self.screen, 20 + 16 * 9 * PIXEL_SCALER, 430 - 16 * PIXEL_SCALER, 16 * PIXEL_SCALER, 16 * PIXEL_SCALER, 0, None, None, None, None, None, None, None, 'P', False, None, ['assets/buttons/frog_brown/1.png', 'assets/buttons/frog_brown/3.png', 'assets/buttons/frog_brown/2.png']],
-                     [self.screen, 20 + 16 * 8 * PIXEL_SCALER, 430, 16 * PIXEL_SCALER, 16 * PIXEL_SCALER, 0, None, None, None, None, None, None, None, 'P', False, None, ['assets/buttons/frog_yellow/1.png', 'assets/buttons/frog_yellow/3.png', 'assets/buttons/frog_yellow/2.png']],
-                     [self.screen, 20 + 16 * 9 * PIXEL_SCALER, 430, 16 * PIXEL_SCALER, 16 * PIXEL_SCALER, 0, None, None, None, None, None, None, None, 'P', False, None, ['assets/buttons/frog_green/1.png', 'assets/buttons/frog_green/3.png', 'assets/buttons/frog_green/2.png']],
+        scavenger = [[self.screen, 20 + 16 * 8 * PIXEL_SCALER_UI, SCREEN_SIZE[1] - BUTTON_PADDING - 16 * PIXEL_SCALER_UI, 16 * PIXEL_SCALER_UI, 16 * PIXEL_SCALER_UI, 0, None, None, None, None, None, None, None, 'P', False, None, ['assets/buttons/frog_blue/1.png', 'assets/buttons/frog_blue/3.png', 'assets/buttons/frog_blue/2.png']],
+                     [self.screen, 20 + 16 * 9 * PIXEL_SCALER_UI, SCREEN_SIZE[1] - BUTTON_PADDING - 16 * PIXEL_SCALER_UI, 16 * PIXEL_SCALER_UI, 16 * PIXEL_SCALER_UI, 0, None, None, None, None, None, None, None, 'P', False, None, ['assets/buttons/frog_brown/1.png', 'assets/buttons/frog_brown/3.png', 'assets/buttons/frog_brown/2.png']],
+                     [self.screen, 20 + 16 * 8 * PIXEL_SCALER_UI, SCREEN_SIZE[1] - BUTTON_PADDING, 16 * PIXEL_SCALER_UI, 16 * PIXEL_SCALER_UI, 0, None, None, None, None, None, None, None, 'P', False, None, ['assets/buttons/frog_yellow/1.png', 'assets/buttons/frog_yellow/3.png', 'assets/buttons/frog_yellow/2.png']],
+                     [self.screen, 20 + 16 * 9 * PIXEL_SCALER_UI, SCREEN_SIZE[1] - BUTTON_PADDING, 16 * PIXEL_SCALER_UI, 16 * PIXEL_SCALER_UI, 0, None, None, None, None, None, None, None, 'P', False, None, ['assets/buttons/frog_green/1.png', 'assets/buttons/frog_green/3.png', 'assets/buttons/frog_green/2.png']],
                      ]
 
         self.game = Game(objects, keys, player, walls, buttons, e_buttons, scavenger)
@@ -106,8 +109,6 @@ class GameGUI:
                 game_keys[i].add_button(scavenger_buttons[3])
             if i == 1:
                 game_keys[i].add_button(scavenger_buttons[0])
-
-            print(game_keys[i])
 
 
         self.current_e_button = self.game.get_e_buttons()[0]

@@ -1,6 +1,7 @@
 import pygame
 import random
 from button_class import Button
+#TODO THE SHADOW POS RECT JAZZ
 
 #from game_pygame_interface_new import PIXEL_SCALER
 
@@ -118,6 +119,8 @@ class Player(GameObject):
         self.rotating_ac = False
 
         self.s_colour = (30, 30, 30, 100)
+
+        self.cropped = False
 
         self.update_shadow_image()
 
@@ -253,6 +256,10 @@ class Player(GameObject):
         self.update_image(offset)
         screen.blit(self.image, self.image_rect)
 
+        drawn_s_end_pos_rect = (self.s_end_pos_rect.x - offset[0], self.s_end_pos_rect.y - offset[1], self.s_end_pos_rect.width, self.s_end_pos_rect.height)
+
+        pygame.draw.rect(screen, 'green', drawn_s_end_pos_rect)
+
         '''
         self.drawn_collision_rect = pygame.Rect(self.collision_rect.x - offset[0], self.collision_rect.y - offset[1], self.size // 2, self.size // 2)
         pygame.draw.rect(screen, 'blue', self.drawn_collision_rect)
@@ -309,14 +316,14 @@ class Player(GameObject):
 
         if 0 <= self.s_angle <= 180:
             corner_y = self.pos[1]
-            r_corner_y = self.pos[1] + self.shadow_image.get_height() - self.size
+            r_corner_y = self.pos[1] + self.shadow_image.get_height() - self.size / 2
             self.shadow_image = pygame.transform.flip(self.shadow_image, False, True)
         else:
             corner_y = self.pos[1] - self.shadow_image.get_height()
-            r_corner_y = corner_y - self.size
+            r_corner_y = corner_y - self.size / 2
 
         self.shadow_pos = (corner_x, corner_y)
-        self.s_end_pos_rect = pygame.Rect(r_corner_x, r_corner_y, self.size, self.size)
+        self.s_end_pos_rect = pygame.Rect(r_corner_x + self.size / 4, r_corner_y, self.size / 2, self.size / 2)
 
 
 
